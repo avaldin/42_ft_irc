@@ -6,31 +6,27 @@
 #include <csignal>
 #include <iostream>
 #include <cstring>
+#include "Server.class.hpp"
+#include "Exception.class.hpp"
 
 int	main(int argc, char **argv)
 {
-	int					serverFd, clientFd, port, serverLen;
-	struct sockaddr_in	adresse;
+	int					clientFd, port, serverLen;
 	char				buffer[1024];
+	Server*				ircServer = Server::instanciate();
 
-	if (argc != 3)
+	if (argc != 2)
 		return (perror("bad arguments"), -1);
 	port = atoi(argv[1]);
-	serverFd = socket(AF_INET, SOCK_STREAM, 0);
-	if (serverFd == -1)
-		return (perror("socket failed"), -1);
-	adresse.sin_family = AF_INET;
-	adresse.sin_addr.s_addr = INADDR_ANY;
-	adresse.sin_port = htons(port);
-	if (bind(serverFd, (const sockaddr *)&adresse, sizeof(adresse)) == -1)
-		return (perror("bind failed"), close(serverFd), -1);
-	if (listen(serverFd, 3) == -1)
-		return (perror("listen failed"), close(serverFd), -1);
-	std::cout << "listening done" << std::endl;
-	serverLen = sizeof(adresse);
-	clientFd = accept(serverFd, (sockaddr *)&adresse, (socklen_t *)(&serverLen));
+	try {ircServer->startServer(port);}
+	catch (Exception& e) {
+		e.what();
+		return 1;
+	}
+	serverLen = sizeof(*ircServer->getAddress());
+	clientFd = accept(ircServer->getSocketID(), (sockaddr *)ircServer->getAddress(), (socklen_t *)(&serverLen));
 	if (clientFd == -1)
-		return (perror("Accept failed"), close(serverFd), -1);
+		return (perror("Accept failed"), close(ircServer->getSocketID()), -1);
 	while (true)
 	{
 		std::string	message;
@@ -38,11 +34,11 @@ int	main(int argc, char **argv)
 		std::cout << "message to client : ";
 		getline(std::cin, message);
 		if (message.length() == 0)
-			return (close(serverFd), 0);
+			return (close(ircServer->getSocketID()), 0);
 		send(clientFd, message.c_str(), message.length(), 0);
 		send(clientFd, "\nenter your response : ", 23, 0);
 		recv(clientFd, buffer, 1024, 0);
 		std::cout << buffer;
 	}
-	return (close(serverFd), 0);
+	return (close(ircServer->getSocketID()), 0);
 }
