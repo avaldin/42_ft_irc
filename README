@@ -1,0 +1,12 @@
+
+La base est faite.
+
+On peux host un serveur qui peut aceuillir le prochain client qui essaie de s'y connecter.
+on peux echanger avec le clien chacun sont tour.
+
+#usage
+
+./ircserv (port) (password uslesse actuellement)
+
+attendre listening done, puis se connecter via nc avec un autre terminal comme cela :
+nc 127.0.0.1 (port)
