@@ -40,9 +40,9 @@ int	main(int argc, char **argv)
 		if (message.length() == 0)
 			return (close(serverFd), 0);
 		send(clientFd, message.c_str(), message.length(), 0);
-		send(clientFd, "enter your response : ", 23, 0);
+		send(clientFd, "\nenter your response : ", 23, 0);
 		recv(clientFd, buffer, 1024, 0);
-		std::cout << buffer << std::endl;
+		std::cout << buffer;
 	}
 	return (close(serverFd), 0);
 }
