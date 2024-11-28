@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 19:58:10 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/27 20:40:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/11/28 20:14:43 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,48 @@ class AcceptException : public Exception {
 	public:
 		void	what() const throw() {
 			std::cerr << "Error: Accept failed" << std::endl;
+		}
+};
+
+class ServerStartException : public Exception {
+	public:
+		void	what() const throw() {
+			std::cerr << "Error: Server already started" << std::endl;
+		}
+};
+
+class EpollCreateException : public Exception {
+	public:
+		void	what() const throw() {
+			std::cerr << "Error: Epoll create failed" << std::endl;
+		}
+};
+
+class EpollCtlException : public Exception {
+	public:
+		void	what() const throw() {
+			std::cerr << "Error: Epoll ctl failed" << std::endl;
+		}
+};
+
+class EpollWaitException : public Exception {
+	public:
+		void	what() const throw() {
+			std::cerr << "Error: Epoll wait failed" << std::endl;
+		}
+};
+
+class OpenException : public Exception {
+	public:
+		void	what() const throw() {
+			std::cerr << "Error: Open failed" << std::endl;
+		}	
+};
+
+class IfstreamException : public Exception {
+	public:
+		void	what() const throw() {
+			std::cerr << "Error: Ifstream failed" << std::endl;
 		}
 };
 
