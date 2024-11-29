@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/28 20:54:53 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/11/29 10:11:27 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,21 +81,24 @@ void	Server::startServer(int port) {
 }
 
 void	Server::runServer( void ) {
-	int	nfds;
+	int					nfds;
+	struct epoll_event	events[10];
 
+	std::cout << "server start running, my socket = " << this->_mySocket << std::endl;
 	while (true) {
-		nfds = epoll_wait(this->_epollfd, this->_events, 10, -1);
+		nfds = epoll_wait(this->_epollfd, events, 10, -1);
+		std::cout << "epoll received something" << std::endl;
 		if (nfds == -1) 
 			throw EpollWaitException();
 		for (int nfd = 0; nfd < nfds; ++nfd) {
-			if (this->_events[nfd].data.fd == this->_mySocket) {
+			if (events[nfd].data.fd == this->_mySocket) {
 				try {this->addClient();}
 				catch (Exception const & e) {
 					throw AcceptException();
 				}
 			}
 			else {
-				this->_clientDatabase[this->_events[nfd].data.fd]->action();
+				this->_clientDatabase[events[nfd].data.fd]->action();
 			}
 		}
 	}
@@ -114,16 +117,17 @@ void	Server::sendToServer(int clientID, std::string token) {
 }
 
 void	Server::addClient() {
+	struct epoll_event	event;
 	int	clientID = accept(this->_mySocket, (sockaddr *)this->_address, &this->_serverLen);
 	if (clientID == -1)
 		throw AcceptException();
-	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &this->_ev) == -1)
+	event.data.fd = clientID;
+	event.events = EPOLLIN | EPOLLPRI;             //jsp pk epollpri je l'ai pris sur internet
+	std::cout << "client accepted" << std::endl;
+	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
 	Client*	newClient = new Client(clientID, "Toto");
 	this->_clientDatabase[clientID] = newClient;
-	this->_ev.events = EPOLLIN | EPOLLET;
-	this->_ev.data.fd = clientID;
-	return ;
 }
 
 void	Server::deleteClient(int clientID) {
