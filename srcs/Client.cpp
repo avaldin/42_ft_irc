@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/28 20:40:36 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/11/29 09:26:43 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ Client&	Client::operator=(Client const & rhs) {
 
 void	Client::action( void ) {
 	char	buffer[1024];
-	
+
 	recv(this->_clientID, buffer, 1024, 0);
 	std::cout << "buff: " << buffer << std::endl;
 	Server::instanciate()->sendToServer(this->_clientID, buffer);

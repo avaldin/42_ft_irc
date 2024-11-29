@@ -50,7 +50,7 @@ private:
 	int						_epollfd;
 	unsigned int			_serverLen;
 	sockaddr_in*			_address;
-	epoll_event				_ev, _events[10];
+	epoll_event				_ev;
 	std::map<int, Client *>	_clientDatabase;
 };
 
