@@ -89,4 +89,10 @@ class IfstreamException : public Exception {
 		}
 };
 
+class RecvException : public Exception {
+public:
+	void	what() const throw() {
+		std::cerr << "Error: recv failed" << std::endl;
+	}
+};
 #endif
