@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 10:11:27 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/11/29 18:27:08 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,20 +98,20 @@ void	Server::runServer( void ) {
 				}
 			}
 			else {
-				this->_clientDatabase[events[nfd].data.fd]->action();
+				this->_serverClient[events[nfd].data.fd]->action();
 			}
 		}
 	}
 }
 
 void	Server::sendToServer(int clientID, std::string token) {
-	std::string username = this->_clientDatabase[clientID]->getUsername() + ": " + token;
+	std::string nickname = this->_serverClient[clientID]->getnickname() + ": " + token;
 
-	std::cout << username << std::endl;
-	for (std::map<int, Client *>::iterator it = this->_clientDatabase.begin(); it != this->_clientDatabase.end(); it++) {
+	std::cout << nickname << std::endl;
+	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
 		if (it->first != clientID) {
 			int otherClient = it->second->getClientID();
-			send(otherClient, username.c_str(), username.size(), 0);
+			send(otherClient, nickname.c_str(), nickname.size(), 0);
 		}
 	}
 }
@@ -127,12 +127,12 @@ void	Server::addClient() {
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
 	Client*	newClient = new Client(clientID, "Toto");
-	this->_clientDatabase[clientID] = newClient;
+	this->_serverClient[clientID] = newClient;
 }
 
 void	Server::deleteClient(int clientID) {
-	delete this->_clientDatabase[clientID];
-	this->_clientDatabase.erase(clientID);
+	delete this->_serverClient[clientID];
+	this->_serverClient.erase(clientID);
 	return ;	
 }
 

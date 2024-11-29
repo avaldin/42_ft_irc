@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/28 20:37:33 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/11/29 18:28:53 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sys/epoll.h>
 
 class	Client;
+class	Channel;
 struct	sockaddr_in;
 struct	epoll_event;
 
@@ -35,10 +36,12 @@ public:
 	int				getSocketID( void );
 	unsigned int	getServerLen( void );
 	
-	static Server*			_me;
+	static Server*	_me;
 
-private:
+protected:
 	Server( void );
+	
+private:
 	Server(Server const & src);
 	Server&	operator=(Server const & rhs);
 
@@ -51,7 +54,8 @@ private:
 	unsigned int			_serverLen;
 	sockaddr_in*			_address;
 	epoll_event				_ev;
-	std::map<int, Client *>	_clientDatabase;
+	std::map<int, Client*>	_serverClient;
+	std::map<int, Channel*>	_serverChannel;
 };
 
 #endif

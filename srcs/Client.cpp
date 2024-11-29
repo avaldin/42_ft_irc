@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 09:26:43 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/11/29 17:36:22 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <fstream>
 #include <stdio.h>
 
-Client::Client( void ) : _clientID(0), _username("") {
+Client::Client( void ) : _clientID(0), _nickname("") {
 	return ;
 }
 
@@ -27,11 +27,11 @@ Client::~Client( void ) {
 	return ;
 }
 
-Client::Client(int clientID, std::string username) : _clientID(clientID), _username(username) {
+Client::Client(int clientID, std::string nickname) : _clientID(clientID), _nickname(nickname) {
 	return ;
 }
 
-Client::Client(Client const & src) : _clientID(src._clientID), _username(src._username) {
+Client::Client(Client const & src) : _clientID(src._clientID), _nickname(src._nickname) {
 	*this = src;
 	return ;
 }
@@ -50,8 +50,8 @@ void	Client::action( void ) {
 	return ;
 }
 
-std::string	Client::getUsername( void ) {
-	return this->_username;
+std::string	Client::getnickname( void ) {
+	return this->_nickname;
 }
 
 int	Client::getClientID( void ) {

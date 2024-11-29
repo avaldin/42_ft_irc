@@ -1,37 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.class.hpp                                   :+:      :+:    :+:   */
+/*   Channel.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 20:03:33 by tmouche          ###   ########.fr       */
+/*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
+/*   Updated: 2024/11/29 20:00:45 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_CLASS_HPP
-# define CLIENT_CLASS_HPP
+#ifndef CHANNEL_CLASS_HPP
+# define CHANNEL_CLASS_HPP
+# include <map>
 # include <string>
-# include "Channel.class.hpp"
 
-class Client {
+class Client;
+
+class Channel {
 public:
-	virtual ~Client( void );
-	Client(int clientID, std::string nickname);
+	Channel( void );
+	~Channel( void );
+	Channel(Channel const & src);
+
+	Channel&	operator=(Channel const & rhs);
 	
-	void	action( void );
-	
-	std::string	getnickname( void );
-	int			getClientID( void );
-	
-protected:
-	Client( void );
-	Client(Client const & src);
-	Client&	operator=(Client const & rhs);
-	int const			_clientID;
-	std::string const	_nickname;
-	Channel*			_actualChannel;
+	void	sendToChannel(int clientID, std::string token);
+
+private:
+	int						_channelID;
+	std::map<int, Client*>	_channelClient;
 };
 
 #endif
