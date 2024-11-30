@@ -6,18 +6,15 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 09:26:43 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/11/29 14:59:11 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.class.hpp"
 #include "Server.class.hpp"
-#include "Exception.class.hpp"
+#include "utils.hpp"
 
-#include <sys/socket.h>
 #include <iostream>
-#include <fstream>
-#include <stdio.h>
 
 Client::Client( void ) : _clientID(0), _username("") {
 	return ;
@@ -42,11 +39,8 @@ Client&	Client::operator=(Client const & rhs) {
 }
 
 void	Client::action( void ) {
-	char	buffer[1024];
-
-	recv(this->_clientID, buffer, 1024, 0);
-	std::cout << "buff: " << buffer << std::endl;
-	Server::instanciate()->sendToServer(this->_clientID, buffer);
+	std::string message = my_recv(this->_clientID);
+	Server::instanciate()->sendToServer(this->_clientID, message);
 	return ;
 }
 
