@@ -6,13 +6,14 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 18:27:08 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/11/30 20:52:44 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.class.hpp"
 #include "Exception.class.hpp"
 #include "Client.class.hpp"
+#include "Channel.class.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -39,7 +40,7 @@ Server&	Server::operator=(Server const & rhs) {
 	return  *this;
 }
 
-Server*	Server::instanciate( void ) {
+Server*	Server::instantiate( void ) {
 	Server* singleton = new Server();
 	Server* res = singleton->_me;
 
@@ -104,17 +105,37 @@ void	Server::runServer( void ) {
 	}
 }
 
-void	Server::sendToServer(int clientID, std::string token) {
+void	Server::sendToServer(int const clientID, std::string token) {
 	std::string nickname = this->_serverClient[clientID]->getnickname() + ": " + token;
 
 	std::cout << nickname << std::endl;
 	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
-		if (it->first != clientID) {
-			int otherClient = it->second->getClientID();
-			send(otherClient, nickname.c_str(), nickname.size(), 0);
-		}
+		int otherClient = it->second->getClientID();
+		send(otherClient, nickname.c_str(), nickname.size(), 0);
 	}
 }
+
+void	Server::sendToChannel(int const channelID, int const clientID, std::string token) {
+	std::string	line;
+
+	if (this->_serverChannel[channelID]->isOperator(clientID))
+		line += "@";
+	line += (this->_serverClient[clientID]->getnickname() + ": " + token);
+	this->_serverChannel[channelID]->sendToChannel(clientID, line);
+	return ;
+}
+
+// void	Server::sendToConsole(int channelID, int clientID, std::string token) {
+// 	return ;
+// }
+
+// void	Server::createChannel(int clientID, std::string token) {
+// 	return ;
+// }
+
+// void	Server::deleteChannel(int channelID) {
+// 	return ;
+// }
 
 void	Server::addClient() {
 	struct epoll_event	event;
@@ -126,7 +147,7 @@ void	Server::addClient() {
 	std::cout << "client accepted" << std::endl;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
-	Client*	newClient = new Client(clientID, "Toto");
+	Client*	newClient = Factory::createClient(clientID, "Toto");
 	this->_serverClient[clientID] = newClient;
 }
 
@@ -136,14 +157,28 @@ void	Server::deleteClient(int clientID) {
 	return ;	
 }
 
-sockaddr_in*	Server::getAddress( void ) {
-	return this->_address;
+Server::Factory::Factory( void ) {
+	return ;
 }
 
-int	Server::getSocketID( void ) {
-	return this->_mySocket;
+Server::Factory::~Factory( void ) {
+	return ;
 }
 
-unsigned int	Server::getServerLen( void ) {
-	return this->_serverLen;
+Server::Factory::Factory(Server::Factory const & src) {
+	*this = src;
+	return ;
+}
+
+Server::Factory&	Server::Factory::operator=(Server::Factory const & rhs) {
+	(void)rhs;
+	return *this;
+}
+
+Client*	Server::Factory::createClient(int clientID, std::string nickname) {
+	return Client::instantiate(clientID, nickname);
+}
+
+Channel*	Server::Factory::createChannel(int channelID, std::string channelName) {
+	return Channel::instantiate(channelID, channelName);	
 }

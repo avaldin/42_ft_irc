@@ -15,7 +15,7 @@
 int	main(int argc, char **argv)
 {
 	int					port;
-	Server*				ircServer = Server::instanciate();
+	Server*				ircServer = Server::instantiate();
 
 	if (argc != 2)
 		return (perror("bad arguments"), -1);
@@ -46,5 +46,5 @@ int	main(int argc, char **argv)
 	// 	recv(clientFd, buffer, 1024, 0);
 	// 	std::cout << buffer;
 	// }
-	return (close(ircServer->getSocketID()), 0);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 17:36:22 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/11/30 20:21:41 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,17 @@ Client&	Client::operator=(Client const & rhs) {
 	return *this;
 }
 
+Client*	Client::instantiate(int clientID, std::string nickname) {
+	return new Client(clientID, nickname);
+}
+
+
 void	Client::action( void ) {
 	char	buffer[1024];
 
 	recv(this->_clientID, buffer, 1024, 0);
 	std::cout << "buff: " << buffer << std::endl;
-	Server::instanciate()->sendToServer(this->_clientID, buffer);
+	Server::instantiate()->sendToServer(this->_clientID, buffer);
 	return ;
 }
 
