@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/30 20:52:44 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/01 19:57:59 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,36 +106,41 @@ void	Server::runServer( void ) {
 }
 
 void	Server::sendToServer(int const clientID, std::string token) {
-	std::string nickname = this->_serverClient[clientID]->getnickname() + ": " + token;
+	std::string nickname = this->_serverClient[clientID]->_nickname + ": " + token;
 
 	std::cout << nickname << std::endl;
 	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
-		int otherClient = it->second->getClientID();
+		int otherClient = it->second->_clientID;
 		send(otherClient, nickname.c_str(), nickname.size(), 0);
 	}
 }
 
-void	Server::sendToChannel(int const channelID, int const clientID, std::string token) {
+void	Server::sendToChannel(std::string const channelName, int const clientID, std::string token) {
 	std::string	line;
 
-	if (this->_serverChannel[channelID]->isOperator(clientID))
+	if (this->_serverChannel[channelName]->isOperator(clientID))
 		line += "@";
-	line += (this->_serverClient[clientID]->getnickname() + ": " + token);
-	this->_serverChannel[channelID]->sendToChannel(clientID, line);
+	line += (this->_serverClient[clientID]->_nickname + ": " + token);
+	this->_serverChannel[channelName]->sendToChannel(clientID, line);
 	return ;
 }
 
-// void	Server::sendToConsole(int channelID, int clientID, std::string token) {
+// void	Server::serverRequest(std::string channelName, int clientID, std::string rawLine) {
+// 	//parse line and call the good SERVER METHOD: KICK INVITE TOPIC or MODE
 // 	return ;
 // }
 
-// void	Server::createChannel(int clientID, std::string token) {
-// 	return ;
-// }
+void	Server::addChannel(t_channelType channelType, std::string channelName) {
+	Channel*	newChannel = Factory::createChannel(channelType, channelName);
+	this->_serverChannel[channelName] = newChannel;
+	return ;
+}
 
-// void	Server::deleteChannel(int channelID) {
-// 	return ;
-// }
+void	Server::eraseChannel(std::string channelName) {
+	Factory::deleteChannel(this->_serverChannel[channelName]);
+	this->_serverChannel.erase(channelName);
+	return ;
+}
 
 void	Server::addClient() {
 	struct epoll_event	event;
@@ -151,11 +156,13 @@ void	Server::addClient() {
 	this->_serverClient[clientID] = newClient;
 }
 
-void	Server::deleteClient(int clientID) {
-	delete this->_serverClient[clientID];
+void	Server::eraseClient(int clientID) {
+	Factory::deleteClient(this->_serverClient[clientID]);
 	this->_serverClient.erase(clientID);
 	return ;	
 }
+
+// SUBCLASS FACTORY //
 
 Server::Factory::Factory( void ) {
 	return ;
@@ -176,9 +183,19 @@ Server::Factory&	Server::Factory::operator=(Server::Factory const & rhs) {
 }
 
 Client*	Server::Factory::createClient(int clientID, std::string nickname) {
-	return Client::instantiate(clientID, nickname);
+	return (Client::instantiateClient(clientID, nickname));
 }
 
-Channel*	Server::Factory::createChannel(int channelID, std::string channelName) {
-	return Channel::instantiate(channelID, channelName);	
+void	Server::Factory::deleteClient(Client* oldClient) {
+	Client::uninstantiateClient(oldClient);
+	return ;
+}
+
+Channel*	Server::Factory::createChannel(t_channelType channelType, std::string channelName) {
+	return (Channel::instantiateChannel(channelType, channelName));	
+}
+
+void	Server::Factory::deleteChannel(Channel* oldChannel) {
+	Channel::uninstantiateChannel(oldChannel);
+	return ;
 }

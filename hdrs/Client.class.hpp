@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/30 20:20:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/01 19:33:20 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,24 @@
 
 class Client {
 public:
-	virtual ~Client( void );
-	
+
 	void	action( void );
 	
-	std::string	getnickname( void );
-	int			getClientID( void );
+	int const			_clientID;
+	std::string const	_nickname;
+	std::string			_actualChannel;
 
 protected:
 	Client( void );
-	Client(int clientID, std::string nickname);
+	virtual ~Client( void );
+
+	static Client*	instantiateClient(int clientID, std::string nickname);
+	static void		uninstantiateClient(Client* oldClient);
+
+private:
 	Client(Client const & src);
-
+	Client(int clientID, std::string nickname);
 	Client&	operator=(Client const & rhs);
-
-	static Client*	instantiate(int clientID, std::string nickname);
-
-	int const			_clientID;
-	std::string const	_nickname;
-	Channel*			_actualChannel;
 };
 
 #endif
