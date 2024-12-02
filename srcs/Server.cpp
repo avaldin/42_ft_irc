@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 17:12:28 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/02 19:34:16 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
+#include "Command.class.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -132,6 +133,17 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 
 void	Server::serverRequest(int clientID, std::string rawLine) {
 	//parse line and call the good SERVER METHOD: KICK INVITE TOPIC or MODE
+	Command	myCommand;
+	std::string	line;
+	std::string	prefix;
+
+	myCommand.parseRawline(rawLine);
+	prefix = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName;
+	if (myCommand.getPrefix() && myCommand.getPrefix()->compare(":" + this->_serverClient[clientID]->_nickname))
+		// Server ignore silently but send to the Console the failure (prefix + rawLine)
+	if (myCommand.getArgs() && myCommand.getArgs()->size() > 15)
+		// Server send to Client An error and the failed (prefix + rawLine)
+	
 	return ;
 }
 

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 19:58:10 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/28 20:14:43 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/02 17:25:08 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,4 +102,12 @@ public:
 		std::cerr << "Error: send failed" << std::endl;
 	}
 };
+
+class CommandException : public Exception {
+public:
+	std::string	what(std::string err) const throw() {
+		return err;
+	}
+};
+
 #endif
