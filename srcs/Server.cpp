@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 10:11:27 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/02 09:55:55 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ void	Server::runServer( void ) {
 }
 
 void	Server::sendToServer(int clientID, std::string token) {
+	if (!this->_clientDatabase[clientID]->getRegistered() && token != "PASS" && token != "NICK" && token != "USER")
+
 	std::string username = this->_clientDatabase[clientID]->getUsername() + ": " + token;
 
 	std::cout << username << std::endl;

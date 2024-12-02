@@ -44,10 +44,15 @@ void	Client::action( void ) {
 	return ;
 }
 
-std::string	Client::getUsername( void ) {
+std::string	Client::getUsername( void ) const {
 	return this->_username;
 }
 
-int	Client::getClientID( void ) {
+int	Client::getClientID( void ) const {
 	return this->_clientID;
+}
+
+bool Client::getRegistered(void) const
+{
+	return this->_registered;
 }
