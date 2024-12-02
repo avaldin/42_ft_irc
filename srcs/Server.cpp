@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/01 19:57:59 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:53:27 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	Server::runServer( void ) {
 	}
 }
 
-void	Server::sendToServer(int const clientID, std::string token) {
+void	Server::LegacysendToServer(int const clientID, std::string token) {
 	std::string nickname = this->_serverClient[clientID]->_nickname + ": " + token;
 
 	std::cout << nickname << std::endl;
@@ -115,7 +115,7 @@ void	Server::sendToServer(int const clientID, std::string token) {
 	}
 }
 
-void	Server::sendToChannel(std::string const channelName, int const clientID, std::string token) {
+void	Server::LegacysendToChannel(std::string const channelName, int const clientID, std::string token) {
 	std::string	line;
 
 	if (this->_serverChannel[channelName]->isOperator(clientID))
@@ -127,6 +127,22 @@ void	Server::sendToChannel(std::string const channelName, int const clientID, st
 
 // void	Server::serverRequest(std::string channelName, int clientID, std::string rawLine) {
 // 	//parse line and call the good SERVER METHOD: KICK INVITE TOPIC or MODE
+// 	return ;
+// }
+
+// void	Server::sendToConsole(int clientID, std::string message) {
+// 	return ;
+// }
+
+// void	Server::sendToServer(int clientID, std::string message) {
+// 	return ;
+// }
+
+// void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
+// 	return ;
+// }
+
+// void	Server::sendToClient(int clientID, int targetID, std::string message) {
 // 	return ;
 // }
 

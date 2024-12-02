@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/01 19:58:16 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:53:41 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,15 @@ public:
 	void			startServer(int port);
 	void			runServer( void );
 
-	void			sendToServer(int clientID, std::string message);
-	void			sendToChannel(std::string channelName, int clientID, std::string message);
-	// void			sendToClient(int senderID, int receiverID, std::string message);
-	// void			serverRequest(std::string channelName, int clientID, std::string rawLine);
+	// void			serverRequest(int clientID, std::string rawLine);
+
+	void			LegacysendToChannel(std::string channelName, int clientID, std::string message);
+	void			LegacysendToServer(int clientID, std::string message);
+
+	// void			sendToConsole(int clientID, std::string message);
+	// void			sendToServer(int clientID, std::string message);
+	// void			sendToChannel(int clientID, std::string channelName, std::string message);
+	// void			sendToClient(int clientID, int targetID, std::string message);
 	
 	void			addChannel(t_channelType channelType, std::string channelName);
 	void			eraseChannel(std::string channelName);
@@ -50,16 +55,16 @@ private:
 	void	addClient( void );
 	void	eraseClient(int clientID);
 
-	static Server*			_me;
+	static Server*					_me;
 
-	int						_port;
-	int						_mySocket;
-	int						_epollfd;
-	unsigned int			_serverLen;
-	sockaddr_in*			_address;
-	epoll_event				_ev;
-	std::map<int, Client*>	_serverClient;
-	std::map<int, Client*>	_serverOperator;
+	int								_port;
+	int								_mySocket;
+	int								_epollfd;
+	unsigned int					_serverLen;
+	sockaddr_in*					_address;
+	epoll_event						_ev;
+	std::map<int, Client*>			_serverClient;
+	std::map<int, Client*>			_serverOperator;
 	std::map<std::string, Channel*>	_serverChannel;
 
 	class Factory : public Client, public Channel {

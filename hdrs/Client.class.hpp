@@ -6,23 +6,25 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/01 19:33:20 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:06:39 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_CLASS_HPP
 # define CLIENT_CLASS_HPP
-# include <string>
 # include "Channel.class.hpp"
+# include <string>
+# include <vector>
 
 class Client {
 public:
 
 	void	action( void );
 	
-	int const			_clientID;
-	std::string const	_nickname;
-	std::string			_actualChannel;
+	int const					_clientID;
+	std::string const			_username;
+	std::string 				_nickname;
+	std::vector<std::string>	_actualChannel;
 
 protected:
 	Client( void );
