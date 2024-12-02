@@ -12,14 +12,11 @@
 
 #include "Client.class.hpp"
 #include "Server.class.hpp"
-#include "Exception.class.hpp"
+#include "utils.hpp"
 
-#include <sys/socket.h>
 #include <iostream>
-#include <fstream>
-#include <stdio.h>
 
-Client::Client( void ) : _clientID(0), _nickname("") {
+Client::Client( void ) : _clientID(0), _username("*") {
 	return ;
 }
 
@@ -27,7 +24,7 @@ Client::~Client( void ) {
 	return ;
 }
 
-Client::Client(int clientID, std::string nickname) : _clientID(clientID), _nickname(nickname) {
+Client::Client(int clientID) : _clientID(clientID), _username("*") {
 	return ;
 }
 
@@ -52,11 +49,7 @@ void	Client::uninstantiateClient(Client* oldClient) {
 }
 
 void	Client::action( void ) {
-	char	buffer[1024];
-
-	recv(this->_clientID, buffer, 1024, 0);
-	std::cout << "buff: " << buffer << std::endl;
-	Server::instantiate()->sendToServer(this->_clientID, buffer);
-	// Server::instantiate()->serverRequest(this->_actualChannel, this->_clientID, buffer);
+	std::string message = my_recv(this->_clientID);
+	Server::instanciate()->sendToServer(this->_clientID, message);
 	return ;
 }

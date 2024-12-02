@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+         #
+#    By: avaldin <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/15 17:21:22 by thibaud           #+#    #+#              #
 #    Updated: 2024/11/30 20:47:48 by tmouche          ###   ########.fr        #
@@ -16,11 +16,12 @@ END   = \033[0m
 
 NAME		= ircserv
 
+
 HEADER		=	hdrs/
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	.objs/
 DEPS_DIR	=	.deps/
-SRCS		=	main.cpp Server.cpp Client.cpp Channel.cpp
+SRCS		=	main.cpp Server.cpp Client.cpp message.cpp Channel.cpp
 
 
 OBJS		= $(SRCS:%.cpp=$(OBJS_DIR)%.o)

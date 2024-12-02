@@ -14,11 +14,13 @@
 #include "Exception.class.hpp"
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
+#include "Error.define.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <string.h>
+#include <sstream>
 
 Server*	Server::_me = nullptr;
 
@@ -168,7 +170,7 @@ void	Server::addClient() {
 	std::cout << "client accepted" << std::endl;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
-	Client*	newClient = Factory::createClient(clientID, "Toto");
+	Client*	newClient = Factory::createClient(clientID);
 	this->_serverClient[clientID] = newClient;
 }
 
@@ -214,4 +216,15 @@ Channel*	Server::Factory::createChannel(t_channelType channelType, std::string c
 void	Server::Factory::deleteChannel(Channel* oldChannel) {
 	Channel::uninstantiateChannel(oldChannel);
 	return ;
+}
+
+void	Server::sendError(int clientId, int codeError, const std::string& msgError)
+{
+	std::stringstream 	message;
+
+	message << ":" << this->getAddress()->sin_addr.s_addr << " "
+			<< codeError << " " << this->_clientDatabase[clientId]->getUsername()
+			<< msgError << std::endl;
+	if (send(clientId, message.str().c_str(), message.str().length(), 0) == -1)
+		throw SendException();
 }
