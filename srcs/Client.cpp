@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/01 19:59:22 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/02 15:34:20 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ Client&	Client::operator=(Client const & rhs) {
 	return *this;
 }
 
-Client*	Client::instantiateClient(int clientID, std::string nickname) {
-	return new Client(clientID, nickname);
+Client*	Client::instantiateClient(int clientID) {
+	return new Client(clientID);
 }
 
 void	Client::uninstantiateClient(Client* oldClient) {
@@ -50,6 +50,11 @@ void	Client::uninstantiateClient(Client* oldClient) {
 
 void	Client::action( void ) {
 	std::string message = my_recv(this->_clientID);
-	Server::instanciate()->sendToServer(this->_clientID, message);
+	Server::instantiate()->LegacysendToServer(this->_clientID, message);
+	return ;
+}
+
+void	Client::addChannel(std::string newChannel) {
+	this->_actualChannel.push_back(newChannel);
 	return ;
 }

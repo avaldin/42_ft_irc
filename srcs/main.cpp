@@ -9,6 +9,7 @@
 #include <cstring>
 #include "Server.class.hpp"
 #include "Exception.class.hpp"
+#include "Error.define.hpp"
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include <map>

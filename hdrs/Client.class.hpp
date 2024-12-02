@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 14:06:39 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/02 15:33:03 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,25 @@ public:
 	void	action( void );
 	
 	int const					_clientID;
-	std::string const			_username;
+	std::string					_username;
 	std::string 				_nickname;
-	std::vector<std::string>	_actualChannel;
+
+	void	addChannel(std::string newChannel);
 
 protected:
 	Client( void );
 	virtual ~Client( void );
 
-	static Client*	instantiateClient(int clientID, std::string nickname);
+	static Client*	instantiateClient(int clientID);
 	static void		uninstantiateClient(Client* oldClient);
 
 private:
 	Client(Client const & src);
-	Client(int clientID, std::string nickname);
+	Client(int clientID);
 	Client&	operator=(Client const & rhs);
+
+	std::vector<std::string>	_actualChannel;
 };
 
 #endif
+
