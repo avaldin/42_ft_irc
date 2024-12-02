@@ -17,7 +17,7 @@
 class Client {
 public:
 	~Client( void );
-	Client(int clientID, std::string username);
+	Client(int clientID);
 	
 	void	action( void );
 	
