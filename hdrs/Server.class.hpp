@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 13:39:47 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/02 10:18:33 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ public:
 	void			startServer(int port);
 	void			runServer( void );
 	void			sendToServer(int clientID, std::string token);
+	void			sendError(int ClientId, int codeError, const std::string& msgError);
 
 	sockaddr_in*	getAddress( void );
 	int				getSocketID( void );
