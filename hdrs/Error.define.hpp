@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Error.define.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:38:55 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 15:24:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/02 15:39:05 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 // 432 Returned after receiving a NICK message which contains characters which do
 // not fall in the defined set. See section x.x.x for details on valid nicknames.
 
-#define ERR_NICKNAMEINUSE(nick) nick" :Nickname is already in use"
+#define ERR_NICKNAMEINUSE(nick) (std::string(nick) + " :Nickname is already in use")
 // 433 Returned when a NICK message is processed that results in an attempt to
 // change to a currently existing nickname.
 

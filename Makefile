@@ -21,7 +21,7 @@ HEADER		=	hdrs/
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	.objs/
 DEPS_DIR	=	.deps/
-SRCS		=	main.cpp Server.cpp Client.cpp message.cpp
+SRCS		=	main.cpp Server.cpp Client.cpp message.cpp command.cpp
 
 
 OBJS		= $(SRCS:%.cpp=$(OBJS_DIR)%.o)

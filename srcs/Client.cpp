@@ -6,13 +6,14 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 10:25:53 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/02 11:02:22 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.class.hpp"
 #include "Server.class.hpp"
 #include "utils.hpp"
+#include "Error.define.hpp"
 
 #include <iostream>
 
@@ -40,7 +41,10 @@ Client&	Client::operator=(Client const & rhs) {
 
 void	Client::action( void ) {
 	std::string message = my_recv(this->_clientID);
-	Server::instanciate()->sendToServer(this->_clientID, message);
+	if (!this->_registered && message != "PASS" && message != "USER" && message != "NICK")
+		Server::instanciate()->sendError(this->_clientID, 451, ERR_NOTREGISTRATED);
+	else
+		Server::instanciate()->sendToServer(this->_clientID, message);
 	return ;
 }
 
@@ -55,4 +59,9 @@ int	Client::getClientID( void ) const {
 bool Client::getRegistered(void) const
 {
 	return this->_registered;
+}
+
+void Client::setRegistered(bool registered)
+{
+	_registered = registered;
 }

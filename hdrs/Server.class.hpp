@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 10:18:33 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:01:10 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,31 +27,38 @@ public:
 	~Server( void );
 	
 	static Server*	instanciate( void );
-	void			startServer(int port);
+	void			startServer(int port, const std::string& password);
 	void			runServer( void );
 	void			sendToServer(int clientID, std::string token);
 	void			sendError(int ClientId, int codeError, const std::string& msgError);
 
+	void			pass(int cliendId, const std::string& password);
+
+	Client*			getClient(int clienId);
+	void nick(int clientId, const std::string &nickname);
 	sockaddr_in*	getAddress( void );
 	int				getSocketID( void );
 	unsigned int	getServerLen( void );
-	
-	static Server*			_me;
 
+	std::string		getPassword( void );
+
+	static Server*			_me;
 private:
 	Server( void );
 	Server(Server const & src);
+
 	Server&	operator=(Server const & rhs);
-
 	void	addClient( void );
-	void	deleteClient(int clientID);
 
+	void	deleteClient(int clientID);
+	std::string				_password;
 	int						_port;
 	int						_mySocket;
 	int						_epollfd;
 	unsigned int			_serverLen;
 	sockaddr_in*			_address;
 	epoll_event				_ev;
+
 	std::map<int, Client *>	_clientDatabase;
 };
 

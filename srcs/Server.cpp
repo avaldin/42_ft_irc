@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 10:11:27 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/02 12:46:49 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,10 @@ Server*	Server::instanciate( void ) {
 	return res;
 }
 
-void	Server::startServer(int port) {
+void	Server::startServer(int port, const std::string& password) {
 	static sockaddr_in	address;
-	
+
+	this->_password = password;  //need to verify the restriction on password
 	if (this->_mySocket != -1)
 		throw ServerStartException();
 	this->_mySocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -128,7 +129,7 @@ void	Server::addClient() {
 	std::cout << "client accepted" << std::endl;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
-	Client*	newClient = new Client(clientID, "Toto");
+	Client*	newClient = new Client(clientID);
 	this->_clientDatabase[clientID] = newClient;
 }
 
@@ -161,4 +162,9 @@ void	Server::sendError(int clientId, int codeError, const std::string& msgError)
 			<< msgError << std::endl;
 	if (send(clientId, message.str().c_str(), message.str().length(), 0) == -1)
 		throw SendException();
+}
+
+Client *Server::getClient(int clienId)
+{
+	return this->_clientDatabase[clienId];
 }

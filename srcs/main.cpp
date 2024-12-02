@@ -15,12 +15,14 @@
 int	main(int argc, char **argv)
 {
 	int					port;
+	std::string			password;
 	Server*				ircServer = Server::instanciate();
 
-	if (argc != 2)
+	if (argc != 3)
 		return (perror("bad arguments"), -1);
 	port = atoi(argv[1]);
-	try {ircServer->startServer(port);}
+	password = argv[2];
+	try {ircServer->startServer(port, password);}
 	catch (Exception& e) {
 		e.what();
 		return 1;
