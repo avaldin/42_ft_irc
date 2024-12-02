@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 10:25:53 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/01 19:59:22 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ Client::Client(int clientID) : _clientID(clientID), _username("*") {
 	return ;
 }
 
-Client::Client(Client const & src) : _clientID(src._clientID), _username(src._username) {
+Client::Client(Client const & src) : _clientID(src._clientID), _nickname(src._nickname) {
 	*this = src;
 	return ;
 }
@@ -38,16 +38,18 @@ Client&	Client::operator=(Client const & rhs) {
 	return *this;
 }
 
+Client*	Client::instantiateClient(int clientID, std::string nickname) {
+	return new Client(clientID, nickname);
+}
+
+void	Client::uninstantiateClient(Client* oldClient) {
+	if (oldClient)
+		delete oldClient;
+	return ;
+}
+
 void	Client::action( void ) {
 	std::string message = my_recv(this->_clientID);
 	Server::instanciate()->sendToServer(this->_clientID, message);
 	return ;
-}
-
-std::string	Client::getUsername( void ) {
-	return this->_username;
-}
-
-int	Client::getClientID( void ) {
-	return this->_clientID;
 }

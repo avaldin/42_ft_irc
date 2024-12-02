@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 10:42:26 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/02 14:53:27 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.class.hpp"
 #include "Exception.class.hpp"
 #include "Client.class.hpp"
+#include "Channel.class.hpp"
 #include "Error.define.hpp"
 
 #include <netinet/in.h>
@@ -41,7 +42,7 @@ Server&	Server::operator=(Server const & rhs) {
 	return  *this;
 }
 
-Server*	Server::instanciate( void ) {
+Server*	Server::instantiate( void ) {
 	Server* singleton = new Server();
 	Server* res = singleton->_me;
 
@@ -100,22 +101,63 @@ void	Server::runServer( void ) {
 				}
 			}
 			else {
-				this->_clientDatabase[events[nfd].data.fd]->action();
+				this->_serverClient[events[nfd].data.fd]->action();
 			}
 		}
 	}
 }
 
-void	Server::sendToServer(int clientID, std::string token) {
-	std::string username = this->_clientDatabase[clientID]->getUsername() + ": " + token;
+void	Server::LegacysendToServer(int const clientID, std::string token) {
+	std::string nickname = this->_serverClient[clientID]->_nickname + ": " + token;
 
-	std::cout << username << std::endl;
-	for (std::map<int, Client *>::iterator it = this->_clientDatabase.begin(); it != this->_clientDatabase.end(); it++) {
-		if (it->first != clientID) {
-			int otherClient = it->second->getClientID();
-			send(otherClient, username.c_str(), username.size(), 0);
-		}
+	std::cout << nickname << std::endl;
+	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
+		int otherClient = it->second->_clientID;
+		send(otherClient, nickname.c_str(), nickname.size(), 0);
 	}
+}
+
+void	Server::LegacysendToChannel(std::string const channelName, int const clientID, std::string token) {
+	std::string	line;
+
+	if (this->_serverChannel[channelName]->isOperator(clientID))
+		line += "@";
+	line += (this->_serverClient[clientID]->_nickname + ": " + token);
+	this->_serverChannel[channelName]->sendToChannel(clientID, line);
+	return ;
+}
+
+// void	Server::serverRequest(std::string channelName, int clientID, std::string rawLine) {
+// 	//parse line and call the good SERVER METHOD: KICK INVITE TOPIC or MODE
+// 	return ;
+// }
+
+// void	Server::sendToConsole(int clientID, std::string message) {
+// 	return ;
+// }
+
+// void	Server::sendToServer(int clientID, std::string message) {
+// 	return ;
+// }
+
+// void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
+// 	return ;
+// }
+
+// void	Server::sendToClient(int clientID, int targetID, std::string message) {
+// 	return ;
+// }
+
+void	Server::addChannel(t_channelType channelType, std::string channelName) {
+	Channel*	newChannel = Factory::createChannel(channelType, channelName);
+	this->_serverChannel[channelName] = newChannel;
+	return ;
+}
+
+void	Server::eraseChannel(std::string channelName) {
+	Factory::deleteChannel(this->_serverChannel[channelName]);
+	this->_serverChannel.erase(channelName);
+	return ;
 }
 
 void	Server::addClient() {
@@ -128,29 +170,53 @@ void	Server::addClient() {
 	std::cout << "client accepted" << std::endl;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
-	Client*	newClient = new Client(clientID);
-	this->_clientDatabase[clientID] = newClient;
+	Client*	newClient = Factory::createClient(clientID);
+	this->_serverClient[clientID] = newClient;
 }
 
-void	Server::deleteClient(int clientID) {
-	delete this->_clientDatabase[clientID];
-	this->_clientDatabase.erase(clientID);
+void	Server::eraseClient(int clientID) {
+	Factory::deleteClient(this->_serverClient[clientID]);
+	this->_serverClient.erase(clientID);
 	return ;	
 }
 
-sockaddr_in*	Server::getAddress( void ) {
-	return this->_address;
+// SUBCLASS FACTORY //
+
+Server::Factory::Factory( void ) {
+	return ;
 }
 
-int	Server::getSocketID( void ) {
-	return this->_mySocket;
+Server::Factory::~Factory( void ) {
+	return ;
 }
 
-unsigned int	Server::getServerLen( void ) {
-	return this->_serverLen;
+Server::Factory::Factory(Server::Factory const & src) {
+	*this = src;
+	return ;
 }
 
+Server::Factory&	Server::Factory::operator=(Server::Factory const & rhs) {
+	(void)rhs;
+	return *this;
+}
 
+Client*	Server::Factory::createClient(int clientID, std::string nickname) {
+	return (Client::instantiateClient(clientID, nickname));
+}
+
+void	Server::Factory::deleteClient(Client* oldClient) {
+	Client::uninstantiateClient(oldClient);
+	return ;
+}
+
+Channel*	Server::Factory::createChannel(t_channelType channelType, std::string channelName) {
+	return (Channel::instantiateChannel(channelType, channelName));	
+}
+
+void	Server::Factory::deleteChannel(Channel* oldChannel) {
+	Channel::uninstantiateChannel(oldChannel);
+	return ;
+}
 
 void	Server::sendError(int clientId, int codeError, const std::string& msgError)
 {
