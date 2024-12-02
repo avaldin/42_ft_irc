@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/11/29 14:59:11 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/02 10:25:53 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 #include <iostream>
 
-Client::Client( void ) : _clientID(0), _username("") {
+Client::Client( void ) : _clientID(0), _username("*") {
 	return ;
 }
 
@@ -24,7 +24,7 @@ Client::~Client( void ) {
 	return ;
 }
 
-Client::Client(int clientID, std::string username) : _clientID(clientID), _username(username) {
+Client::Client(int clientID) : _clientID(clientID), _username("*") {
 	return ;
 }
 

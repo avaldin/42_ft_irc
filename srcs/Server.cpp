@@ -6,18 +6,20 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 09:55:55 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/11/29 10:11:27 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.class.hpp"
 #include "Exception.class.hpp"
 #include "Client.class.hpp"
+#include "Error.define.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <string.h>
+#include <sstream>
 
 Server*	Server::_me = nullptr;
 
@@ -105,8 +107,6 @@ void	Server::runServer( void ) {
 }
 
 void	Server::sendToServer(int clientID, std::string token) {
-	if (!this->_clientDatabase[clientID]->getRegistered() && token != "PASS" && token != "NICK" && token != "USER")
-
 	std::string username = this->_clientDatabase[clientID]->getUsername() + ": " + token;
 
 	std::cout << username << std::endl;
@@ -148,4 +148,17 @@ int	Server::getSocketID( void ) {
 
 unsigned int	Server::getServerLen( void ) {
 	return this->_serverLen;
+}
+
+
+
+void	Server::sendError(int clientId, int codeError, const std::string& msgError)
+{
+	std::stringstream 	message;
+
+	message << ":" << this->getAddress()->sin_addr.s_addr << " "
+			<< codeError << " " << this->_clientDatabase[clientId]->getUsername()
+			<< msgError << std::endl;
+	if (send(clientId, message.str().c_str(), message.str().length(), 0) == -1)
+		throw SendException();
 }
