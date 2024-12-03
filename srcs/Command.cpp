@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 19:36:54 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/03 20:14:21 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,11 @@ Command::Command( void ) {
 }
 
 Command::~Command( void ) {
+	return ;
+}
+
+Command::Command(std::string const & rawLine) {
+	this->_rawLine = rawLine;
 	return ;
 }
 

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 19:35:28 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/03 20:14:04 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 # include <string>
 # include <vector>
 
+typedef struct s_user {
+	std::string	targetUsername;
+	std::string	targetNickname;
+	std::string	targetServer;
+}	t_user;
+
 class Client;
 
 class Command {
@@ -22,6 +28,7 @@ public:
 	Command( void );
 	~Command( void );
 	Command(Command const & src);
+	Command(std::string const & rawLine);
 
 	Command&	operator=(Command & const rhs);
 
@@ -33,10 +40,15 @@ public:
 	std::vector<std::string>	getArgs( void );
 	
 private:
+	std::string					_rawLine;
+
 	std::string					_prefix;
 	std::string					_command;
-	std::vector<std::string>	_arguments;
-	std::string					_message;
+	std::string					_password;
+	std::string					_targetChannel;
+	std::vector<std::string>	_targetChannels;
+	std::vector<t_user*>		_targetUsers;
+	
 };
 
 #endif
