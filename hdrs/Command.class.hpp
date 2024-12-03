@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/03 20:14:04 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/03 23:03:41 by thibaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define COMMAND_CLASS_HPP
 # include <string>
 # include <vector>
+# include <map>
 
 typedef struct s_user {
 	std::string	targetUsername;
@@ -25,21 +26,27 @@ class Client;
 
 class Command {
 public:
-	Command( void );
 	~Command( void );
 	Command(Command const & src);
-	Command(std::string const & rawLine);
 
-	Command&	operator=(Command & const rhs);
 
 	void	parseRawline(std::string rawline);
-
-	std::string					getPrefix( void );
-	std::string					getCommand( void );
-	std::string					getMessage( void );
-	std::vector<std::string>	getArgs( void );
 	
+	void	setPASS(std::vector<std::string> splitedLine, int idx);
+	void	setNICK(std::vector<std::string> splitedLine, int idx);
+	void	setUSER(std::vector<std::string> splitedLine, int idx);
+	void	setJOIN(std::vector<std::string> splitedLine, int idx);
+	void	setKICK(std::vector<std::string> splitedLine, int idx);
+	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
+	void	setMODE(std::vector<std::string> splitedLine, int idx);
+	void	setINVITE(std::vector<std::string> splitedLine, int idx);
+	void	setQUIT(std::vector<std::string> splitedLine, int idx);
+
 private:
+	Command( void );
+	Command(std::string const & rawLine);
+	Command&	operator=(Command & const rhs);
+
 	std::string					_rawLine;
 
 	std::string					_prefix;
@@ -49,6 +56,7 @@ private:
 	std::vector<std::string>	_targetChannels;
 	std::vector<t_user*>		_targetUsers;
 	
+	std::map<std::string,void(Command::*)(std::vector<std::string> splitedLine, int idx)>	_cmdMethods;
 };
 
 #endif
