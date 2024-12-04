@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/04 17:24:21 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:27:28 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,18 +154,35 @@ void	Server::processCommand(Command* command) {
 }
 
 void	Server::sendToConsole(int clientID, std::string message) {
+	std::string const	line = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName + message;
+
+	send(this->_mySocket, line.c_str(), line.size(), 0);
 	return ;
 }
 
 void	Server::sendToServer(int clientID, std::string message) {
+	int const			size = this->_serverClient.size();
+	std::string const	line = this->_serverClient[clientID]->_nickname + message;
+
+	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
+		int otherClient = it->second->_clientID;
+		send(otherClient, line.c_str(), line.size(), 0);
+	}
+	
 	return ;
 }
 
 void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
+	std::string const	line = this->_serverClient[clientID]->_nickname + message;
+	
+	this->_serverChannel[channelName]->sendToChannel(clientID, message);
 	return ;
 }
 
 void	Server::sendToClient(int clientID, int targetID, std::string message) {
+	std::string const	line = this->_serverClient[clientID]->_nickname + message;
+
+	send(targetID, line.c_str(), line.size(), 0);
 	return ;
 }
 
