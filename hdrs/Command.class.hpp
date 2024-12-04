@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/03 23:03:41 by thibaud          ###   ########.fr       */
+/*   Updated: 2024/12/04 17:24:48 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,26 @@ class Client;
 class Command {
 public:
 	~Command( void );
-	Command(Command const & src);
+	Command(std::string const & rawLine);
 
+	std::string					getPrefix( void );
+	std::string					getCommand( void );
+	std::string					getPassword( void );
+	std::string					getMessage( void );
+	std::vector<std::string>	getTargetChannels( void );
+	std::vector<t_user*>		getTargetUsers( void );
+	
+	bool						onError;
+	std::string					err;
+	bool						onReply;
+	std::string					rpl;
+private:
+	Command( void );
+	Command(Command const & src);
+	Command&	operator=(Command & const rhs);
 
 	void	parseRawline(std::string rawline);
+	t_user*	parseUser(std::string user);
 	
 	void	setPASS(std::vector<std::string> splitedLine, int idx);
 	void	setNICK(std::vector<std::string> splitedLine, int idx);
@@ -42,17 +58,12 @@ public:
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);
 	void	setQUIT(std::vector<std::string> splitedLine, int idx);
 
-private:
-	Command( void );
-	Command(std::string const & rawLine);
-	Command&	operator=(Command & const rhs);
-
 	std::string					_rawLine;
 
 	std::string					_prefix;
 	std::string					_command;
 	std::string					_password;
-	std::string					_targetChannel;
+	std::string					_message;
 	std::vector<std::string>	_targetChannels;
 	std::vector<t_user*>		_targetUsers;
 	
