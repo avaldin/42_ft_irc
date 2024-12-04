@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 17:12:28 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/04 17:24:21 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
+#include "Command.class.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -132,29 +133,41 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 
 void	Server::serverRequest(int clientID, std::string rawLine) {
 	//parse line and call the good SERVER METHOD: KICK INVITE TOPIC or MODE
+	Command	myCommand(rawLine);
+	std::string	line;
+	std::string	prefix;
+
+	prefix = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName;
+	sendToConsole(clientID, prefix + " " + rawLine);
+	if (myCommand.getPrefix().compare(prefix))
+		// Server ignore silently but send to the Console the failure (prefix + rawLine)
+	if (myCommand.onError)
+		sendToClient(this->_mySocket, clientID, myCommand.err);
+	else if (myCommand.onReply)
+		sendToClient(this->_mySocket, clientID, myCommand.rpl);
+	processCommand(&myCommand);
 	return ;
 }
 
-// void	Server::processCommand(Command* command) {
-	
-// 	return ;	
-// }
+void	Server::processCommand(Command* command) {
+	return ;
+}
 
-// void	Server::sendToConsole(int clientID, std::string message) {
-// 	return ;
-// }
+void	Server::sendToConsole(int clientID, std::string message) {
+	return ;
+}
 
-// void	Server::sendToServer(int clientID, std::string message) {
-// 	return ;
-// }
+void	Server::sendToServer(int clientID, std::string message) {
+	return ;
+}
 
-// void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
-// 	return ;
-// }
+void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
+	return ;
+}
 
-// void	Server::sendToClient(int clientID, int targetID, std::string message) {
-// 	return ;
-// }
+void	Server::sendToClient(int clientID, int targetID, std::string message) {
+	return ;
+}
 
 void	Server::addChannel(t_channelType channelType, std::string channelName) {
 	Channel*	newChannel = Factory::createChannel(channelType, channelName);
