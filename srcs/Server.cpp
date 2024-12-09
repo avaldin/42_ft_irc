@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/04 18:27:28 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/09 18:48:55 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	Server::startServer(int port) {
 	this->_ev.data.fd = this->_mySocket;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, this->_mySocket, &this->_ev) == -1)
 		throw EpollCtlException();
-	this->_console = Factory::createClient(this->_mySocket);
+	this->_console = Factory::createClient(1);
 	this->_console->_nickname = "CONSOLE";
 	this->_console->_username = "CONSOLE";
 	return ;
@@ -132,55 +132,45 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 }
 
 void	Server::serverRequest(int clientID, std::string rawLine) {
-	//parse line and call the good SERVER METHOD: KICK INVITE TOPIC or MODE
-	Command	myCommand(rawLine);
-	std::string	line;
-	std::string	prefix;
+	Command		myCommand(rawLine);
 
-	prefix = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName;
-	sendToConsole(clientID, prefix + " " + rawLine);
-	if (myCommand.getPrefix().compare(prefix))
-		// Server ignore silently but send to the Console the failure (prefix + rawLine)
-	if (myCommand.onError)
-		sendToClient(this->_mySocket, clientID, myCommand.err);
-	else if (myCommand.onReply)
-		sendToClient(this->_mySocket, clientID, myCommand.rpl);
+	sendToConsole(clientID, rawLine);
 	processCommand(&myCommand);
 	return ;
 }
 
 void	Server::processCommand(Command* command) {
+	(void)command;
 	return ;
 }
 
 void	Server::sendToConsole(int clientID, std::string message) {
-	std::string const	line = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName + message;
+	std::string const	prefix = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName;
+	std::string const	line = prefix + " " + message;
 
-	send(this->_mySocket, line.c_str(), line.size(), 0);
+	send(this->_console->_clientID, line.c_str(), line.size(), 0); // pb ca marche pas j ai essaye d envoyer le this->_mySocket mais ca plante, la on est sur une valeur fix de 1, le std::cout marche bien mais jsp j aime pas
 	return ;
 }
 
 void	Server::sendToServer(int clientID, std::string message) {
-	int const			size = this->_serverClient.size();
-	std::string const	line = this->_serverClient[clientID]->_nickname + message;
+	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
 
 	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
 		int otherClient = it->second->_clientID;
 		send(otherClient, line.c_str(), line.size(), 0);
 	}
-	
 	return ;
 }
 
 void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
-	std::string const	line = this->_serverClient[clientID]->_nickname + message;
+	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
 	
 	this->_serverChannel[channelName]->sendToChannel(clientID, message);
 	return ;
 }
 
 void	Server::sendToClient(int clientID, int targetID, std::string message) {
-	std::string const	line = this->_serverClient[clientID]->_nickname + message;
+	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
 
 	send(targetID, line.c_str(), line.size(), 0);
 	return ;

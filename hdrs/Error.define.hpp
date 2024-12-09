@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:38:55 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 16:03:33 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/09 17:56:25 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ std::string	ERR_NOSUCHNICK(std::string const nickname) {return (nickname + " :No
 std::string	ERR_NOSUCHCHANNEL(std::string const channelName) {return (channelName + " :No such channel");}
 // 403 Used to indicate the given channel name is invalid
 
-std::string	ERR_TOOMANYCHANNELS(std::string const channelName) {channelName + " :You have joined too many channels";}
+std::string	ERR_TOOMANYCHANNELS(std::string const channelName) {return (channelName + " :You have joined too many channels");}
 // 405 Sent to a user when they have joined the maximum number of allowed channels
 // and they try to join another channel.
 
@@ -93,7 +93,7 @@ std::string	ERR_KEYSET(std::string const channel) {return (channel + " :Channel 
 std::string	ERR_CHANNELISFULL(std::string const channel) {return (channel + " :Cannot join channel (+l)");}
 // 471
 
-std::string	ERR_UNKNOWNMODE(char const c) {return (c + " :is unknown mode char to me");}
+std::string	ERR_UNKNOWNMODE(std::string const c) {return (c + " :is unknown mode char to me");}
 // 472
 
 std::string	ERR_INVITEONLYCHAN(std::string const channel) {return (channel + " :Cannot join channel (+i)");}

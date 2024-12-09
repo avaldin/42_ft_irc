@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 15:34:20 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/09 18:13:53 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	Client::uninstantiateClient(Client* oldClient) {
 
 void	Client::action( void ) {
 	std::string message = my_recv(this->_clientID);
-	Server::instantiate()->LegacysendToServer(this->_clientID, message);
+	Server::instantiate()->serverRequest(this->_clientID, message);
 	return ;
 }
 

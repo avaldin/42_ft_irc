@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/04 17:24:48 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/09 18:53:09 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,12 @@ public:
 	std::vector<std::string>	getTargetChannels( void );
 	std::vector<t_user*>		getTargetUsers( void );
 	
-	bool						onError;
-	std::string					err;
-	bool						onReply;
-	std::string					rpl;
 private:
 	Command( void );
 	Command(Command const & src);
-	Command&	operator=(Command & const rhs);
+	Command&	operator=(Command const & rhs);
 
-	void	parseRawline(std::string rawline);
+	void	parseRawline( void );
 	t_user*	parseUser(std::string user);
 	
 	void	setPASS(std::vector<std::string> splitedLine, int idx);
@@ -56,7 +52,7 @@ private:
 	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
 	void	setMODE(std::vector<std::string> splitedLine, int idx);
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);
-	void	setQUIT(std::vector<std::string> splitedLine, int idx);
+	// void	setQUIT(std::vector<std::string> splitedLine, int idx);
 
 	std::string					_rawLine;
 

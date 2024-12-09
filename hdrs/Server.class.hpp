@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/04 18:08:50 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/09 17:53:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 
 struct	sockaddr_in;
 struct	epoll_event;
+
+class	Command;
 
 class Server {
 public:
