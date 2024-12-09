@@ -65,3 +65,8 @@ void Client::setRegistered(bool registered)
 {
 	_registered = registered;
 }
+
+void Client::setNickname(const std::string& nickname)
+{
+	this->_nickname = nickname;
+}

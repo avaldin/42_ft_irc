@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 14:08:29 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/09 13:03:33 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 typedef enum RegisterState {
 	NOT_REGISTERED,
 	PASS,
-
+	NICK,
+	USER,
+	REGISTERED
 };
 
 class Client {
@@ -28,10 +30,11 @@ public:
 	void	action( void );
 
 	
-	std::string	getUsername( void ) const;
-	int			getClientID( void ) const;
-	bool		getRegistered( void ) const;
-	void setRegistered(bool registered);
+	std::string		getUsername( void ) const;
+	int				getClientID( void ) const;
+	RegisterState	getRegistered( void ) const;
+	void 			setRegistered(bool registered);
+	void			setNickname(const std::string&	nickname);
 
 private:
 	Client( void );
@@ -39,7 +42,8 @@ private:
 	Client&	operator=(Client const & rhs);
 	int const			_clientID;
 	std::string const	_username;
-	bool				_registered;
+	std::string			_nickname;
+	RegisterState		_registered;
 };
 
 #endif

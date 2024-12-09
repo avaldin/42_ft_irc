@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 14:01:10 by avaldin          ###   ########.fr       */
+/*   Updated: 2024/12/09 12:33:15 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,17 @@ public:
 	void			sendToServer(int clientID, std::string token);
 	void			sendError(int ClientId, int codeError, const std::string& msgError);
 
+
+						// COMMAND  //
 	void			pass(int cliendId, const std::string& password);
+	void 			nick(int clientId, const std::string &nickname);
+	void 			user(int clientId, const std::string &username);
+
 
 	Client*			getClient(int clienId);
-	void nick(int clientId, const std::string &nickname);
 	sockaddr_in*	getAddress( void );
 	int				getSocketID( void );
 	unsigned int	getServerLen( void );
-
-	std::string		getPassword( void );
 
 	static Server*			_me;
 private:
@@ -49,8 +51,8 @@ private:
 
 	Server&	operator=(Server const & rhs);
 	void	addClient( void );
-
 	void	deleteClient(int clientID);
+
 	std::string				_password;
 	int						_port;
 	int						_mySocket;
@@ -60,6 +62,7 @@ private:
 	epoll_event				_ev;
 
 	std::map<int, Client *>	_clientDatabase;
+
 };
 
 #endif
