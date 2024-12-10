@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 17:03:48 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 17:58:39 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,9 @@ void	Channel::uninstantiateChannel(Channel* oldChannel) {
 	return ;
 }
 
-void	Channel::sendToChannel(int const clientID, std::string const message) {
+void	Channel::sendToChannel(std::string const message) {
 	for (std::map<int, Client*>::iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
-		if (it->first != clientID) {
-			int otherClient = it->second->_clientID;
-			send(otherClient, message.c_str(), message.size(), 0);
-		}
+		send(it->second->_clientID, message.c_str(), message.size(), 0);
 	}
 	return ;
 }
@@ -76,4 +73,20 @@ bool	Channel::isOperator(int const clientID) {
 	if (this->_channelOperator[clientID])
 		return true;
 	return false;
+}
+
+bool	Channel::isClient(int const clientID) {
+	if (this->_channelClient[clientID])
+		return true;
+	return false;
+}
+
+void	Channel::addOperator(int const clientID) {
+	this->_channelOperator[clientID] = this->_channelClient[clientID];
+	return ;
+}
+
+void	Channel::deleteOperator(int const clientID) {
+	this->_channelOperator.erase(clientID);
+	return ;
 }

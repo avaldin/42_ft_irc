@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 14:51:24 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 17:50:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ public:
 
 	void			startServer(int port);
 	void			runServer( void );
-	void			sendError(int ClientId, int codeError, const std::string& msgError);
+	void			sendError(int const ClientId, std::string const & msgError);
 
 	void			serverRequest(int clientID, std::string rawLine);
 
@@ -52,7 +52,13 @@ private:
 	Server&	operator=(Server const & rhs);
 
 	void	processCommand(Command* command);
-	void	MODE(Command* command);
+	
+	void	MODE(Command* command, int clientID);
+	void	MODEt(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+	void	MODEi(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+	void	MODEl(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+	void	MODEk(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+	void	MODEo(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
 	
 	void	sendToConsole(int clientID, std::string message);
 	void	sendToServer(int clientID, std::string message);

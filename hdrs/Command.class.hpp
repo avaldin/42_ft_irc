@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 15:01:32 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 15:55:59 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Client;
 class Command {
 public:
 	~Command( void );
-	Command(std::string const & rawLine, int const clientID);
+	Command(std::string const & rawLine);
 
 	std::string					getPrefix( void );
 	std::string					getCommand( void );
@@ -61,7 +61,6 @@ private:
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);
 	// void	setQUIT(std::vector<std::string> splitedLine, int idx);
 
-	int const					_clientID;
 	std::string					_rawLine;
 
 	std::string					_prefix;

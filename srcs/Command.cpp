@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 15:03:16 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 17:28:00 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-Command::Command( void ) : _clientID(0) {
+Command::Command( void ) {
 	return ;
 }
 
@@ -27,7 +27,7 @@ Command::~Command( void ) {
 	return ;
 }
 
-Command::Command(std::string const & rawLine, int const clientID) : _clientID(clientID) {
+Command::Command(std::string const & rawLine) {
 	this->_rawLine = rawLine;
 	this->_cmdMethods["PASS"] = &Command::setPASS;
 	this->_cmdMethods["NICK"] = &Command::setNICK;
@@ -42,7 +42,7 @@ Command::Command(std::string const & rawLine, int const clientID) : _clientID(cl
 	return ;
 }
 
-Command::Command(Command const & src) : _clientID(src._clientID) {
+Command::Command(Command const & src) {
 	(void)src;
 	return ;
 }
