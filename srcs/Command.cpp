@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/09 18:49:09 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 12:47:26 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,21 @@ void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 }
 
 void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
+	int const	size = splitedLine.size();
+
+	for (;idx < size; idx++) {
+		if (splitedLine[idx][0] == '+' || splitedLine[idx][0] == '-') {
+			unsigned int	sign = splitedLine[idx][0]; 
+			for (int idxWord = 1; splitedLine[idx][idxWord]; idxWord++) {
+				t_mode	*newMode = new t_mode;
+				newMode->sign = sign;
+				newMode->mode = splitedLine[idx][idxWord];
+				this->_mode.push_back(newMode);
+			}
+		}
+		else if (!this->_mode.empty())
+			this->_mode.back()->args.push_back(splitedLine[idx]);
+	}
 	return ;
 }
 
