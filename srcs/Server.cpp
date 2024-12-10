@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 14:53:27 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/09 18:48:55 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
+#include "Command.class.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -24,7 +25,7 @@
 
 Server*	Server::_me = nullptr;
 
-Server::Server( void ) {
+Server::Server( void ) : _serverName("irc.serv") {
 	return ;
 }
 
@@ -32,7 +33,7 @@ Server::~Server( void ) {
 	return ;
 }
 
-Server::Server(Server const & src) {
+Server::Server(Server const & src) : _serverName("irc.serv") {
 	*this = src;
 	return ;
 }
@@ -80,6 +81,9 @@ void	Server::startServer(int port) {
 	this->_ev.data.fd = this->_mySocket;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, this->_mySocket, &this->_ev) == -1)
 		throw EpollCtlException();
+	this->_console = Factory::createClient(1);
+	this->_console->_nickname = "CONSOLE";
+	this->_console->_username = "CONSOLE";
 	return ;
 }
 
@@ -127,26 +131,50 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 	return ;
 }
 
-// void	Server::serverRequest(std::string channelName, int clientID, std::string rawLine) {
-// 	//parse line and call the good SERVER METHOD: KICK INVITE TOPIC or MODE
-// 	return ;
-// }
+void	Server::serverRequest(int clientID, std::string rawLine) {
+	Command		myCommand(rawLine);
 
-// void	Server::sendToConsole(int clientID, std::string message) {
-// 	return ;
-// }
+	sendToConsole(clientID, rawLine);
+	processCommand(&myCommand);
+	return ;
+}
 
-// void	Server::sendToServer(int clientID, std::string message) {
-// 	return ;
-// }
+void	Server::processCommand(Command* command) {
+	(void)command;
+	return ;
+}
 
-// void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
-// 	return ;
-// }
+void	Server::sendToConsole(int clientID, std::string message) {
+	std::string const	prefix = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName;
+	std::string const	line = prefix + " " + message;
 
-// void	Server::sendToClient(int clientID, int targetID, std::string message) {
-// 	return ;
-// }
+	send(this->_console->_clientID, line.c_str(), line.size(), 0); // pb ca marche pas j ai essaye d envoyer le this->_mySocket mais ca plante, la on est sur une valeur fix de 1, le std::cout marche bien mais jsp j aime pas
+	return ;
+}
+
+void	Server::sendToServer(int clientID, std::string message) {
+	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
+
+	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
+		int otherClient = it->second->_clientID;
+		send(otherClient, line.c_str(), line.size(), 0);
+	}
+	return ;
+}
+
+void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
+	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
+	
+	this->_serverChannel[channelName]->sendToChannel(clientID, message);
+	return ;
+}
+
+void	Server::sendToClient(int clientID, int targetID, std::string message) {
+	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
+
+	send(targetID, line.c_str(), line.size(), 0);
+	return ;
+}
 
 void	Server::addChannel(t_channelType channelType, std::string channelName) {
 	Channel*	newChannel = Factory::createChannel(channelType, channelName);
@@ -200,8 +228,8 @@ Server::Factory&	Server::Factory::operator=(Server::Factory const & rhs) {
 	return *this;
 }
 
-Client*	Server::Factory::createClient(int clientID, std::string nickname) {
-	return (Client::instantiateClient(clientID, nickname));
+Client*	Server::Factory::createClient(int clientID) {
+	return (Client::instantiateClient(clientID));
 }
 
 void	Server::Factory::deleteClient(Client* oldClient) {
@@ -222,8 +250,8 @@ void	Server::sendError(int clientId, int codeError, const std::string& msgError)
 {
 	std::stringstream 	message;
 
-	message << ":" << this->getAddress()->sin_addr.s_addr << " "
-			<< codeError << " " << this->_clientDatabase[clientId]->getUsername()
+	message << ":" << this->_address->sin_addr.s_addr << " "
+			<< codeError << " " << this->_serverClient[clientId]->_nickname
 			<< msgError << std::endl;
 	if (send(clientId, message.str().c_str(), message.str().length(), 0) == -1)
 		throw SendException();
