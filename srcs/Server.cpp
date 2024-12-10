@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/09 18:48:55 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 15:06:43 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 }
 
 void	Server::serverRequest(int clientID, std::string rawLine) {
-	Command		myCommand(rawLine);
+	Command		myCommand(rawLine, clientID);
 
 	sendToConsole(clientID, rawLine);
 	processCommand(&myCommand);
@@ -143,6 +143,16 @@ void	Server::processCommand(Command* command) {
 	(void)command;
 	return ;
 }
+
+void	Server::MODE(Command* command) {
+	std::vector<t_mode*> const	allMode = command->getMode();
+
+	Channel const *	currentChannel = this->_serverChannel[command->getTargetChannels().front()];	
+	if (!currentChannel) {
+		
+	}
+}
+
 
 void	Server::sendToConsole(int clientID, std::string message) {
 	std::string const	prefix = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName;

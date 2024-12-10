@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 12:47:26 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 15:03:16 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-Command::Command( void ) {
+Command::Command( void ) : _clientID(0) {
 	return ;
 }
 
@@ -27,7 +27,7 @@ Command::~Command( void ) {
 	return ;
 }
 
-Command::Command(std::string const & rawLine) {
+Command::Command(std::string const & rawLine, int const clientID) : _clientID(clientID) {
 	this->_rawLine = rawLine;
 	this->_cmdMethods["PASS"] = &Command::setPASS;
 	this->_cmdMethods["NICK"] = &Command::setNICK;
@@ -42,7 +42,7 @@ Command::Command(std::string const & rawLine) {
 	return ;
 }
 
-Command::Command(Command const & src) {
+Command::Command(Command const & src) : _clientID(src._clientID) {
 	(void)src;
 	return ;
 }
@@ -190,6 +190,10 @@ std::vector<std::string>	Command::getTargetChannels( void ) {
 	return this->_targetChannels;
 }
 
-std::vector<t_user *>	Command::getTargetUsers( void ) {
+std::vector<t_user*>	Command::getTargetUsers( void ) {
 	return this->_targetUsers;
 }
+
+std::vector<t_mode*>	Command::getMode( void ) {
+	return this->_mode;
+}	

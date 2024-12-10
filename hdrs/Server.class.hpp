@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/09 17:53:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 14:51:24 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "Channel.class.hpp"
 
 # include <map>
+# include <vector>
 # include <string>
 # include <sys/epoll.h>
 
@@ -41,15 +42,8 @@ public:
 	void			LegacysendToChannel(std::string channelName, int clientID, std::string message);
 	void			LegacysendToServer(int clientID, std::string message);
 
-	void			processCommand(Command* command);
 
-	void			sendToConsole(int clientID, std::string message);
-	void			sendToServer(int clientID, std::string message);
-	void			sendToChannel(int clientID, std::string channelName, std::string message);
-	void			sendToClient(int clientID, int targetID, std::string message);
 	
-	void			addChannel(t_channelType channelType, std::string channelName);
-	void			eraseChannel(std::string channelName);
 
 
 private:
@@ -57,8 +51,18 @@ private:
 	Server(Server const & src);
 	Server&	operator=(Server const & rhs);
 
+	void	processCommand(Command* command);
+	void	MODE(Command* command);
+	
+	void	sendToConsole(int clientID, std::string message);
+	void	sendToServer(int clientID, std::string message);
+	void	sendToChannel(int clientID, std::string channelName, std::string message);
+	void	sendToClient(int clientID, int targetID, std::string message);
+
 	void	addClient( void );
 	void	eraseClient(int clientID);
+	void	addChannel(t_channelType channelType, std::string channelName);
+	void	eraseChannel(std::string channelName);
 
 	std::string const	_serverName;
 
