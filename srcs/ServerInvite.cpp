@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/13 19:58:58 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 20:10:33 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,6 @@ void	Server::INVITE(Command* command, int const clientID) {
 	}
 	currentChannel->addInvited(targetID, targetClient);
 	this->sendToClient(this->_mySocket, clientID, RPL_INVITING(currentChannel->_channelName, targetClient->_nickname));
+	this->sendToClient(this->_mySocket, clientID, ""); // Change something on send command that s not work easily
 	return ;
 }
