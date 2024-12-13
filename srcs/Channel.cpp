@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 17:58:39 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:51:49 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,18 +69,6 @@ void	Channel::sendToChannel(std::string const message) {
 	return ;
 }
 
-bool	Channel::isOperator(int const clientID) {
-	if (this->_channelOperator[clientID])
-		return true;
-	return false;
-}
-
-bool	Channel::isClient(int const clientID) {
-	if (this->_channelClient[clientID])
-		return true;
-	return false;
-}
-
 void	Channel::addOperator(int const clientID) {
 	this->_channelOperator[clientID] = this->_channelClient[clientID];
 	return ;
@@ -89,4 +77,42 @@ void	Channel::addOperator(int const clientID) {
 void	Channel::deleteOperator(int const clientID) {
 	this->_channelOperator.erase(clientID);
 	return ;
+}
+
+void	Channel::addClient(int const clientID, Client* client) {
+	this->_channelClient[clientID] = client;
+	return ;
+}
+
+void	Channel::deleteClient(int const clientID) {
+	this->_channelClient.erase(clientID);
+	return ;
+}
+
+void	Channel::addInvited(int const clientID, Client* client) {
+	this->_invitedClient[clientID] = client;
+	return ;
+}
+
+void	Channel::deleteInvited(int const clientID) {
+	this->_invitedClient.erase(clientID);
+	return ;
+}
+
+bool	Channel::isOperator(int const clientID) {
+	if (this->_channelOperator[clientID])
+		return true;
+	return false;
+}
+
+bool	Channel::isInvited(int const clientID) {
+	if (this->_invitedClient[clientID])
+		return true;
+	return false;
+}
+
+bool	Channel::isClient(int const clientID) {
+	if (this->_channelClient[clientID])
+		return true;
+	return false;
 }

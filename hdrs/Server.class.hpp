@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 17:50:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:18:50 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ private:
 	void	MODEl(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
 	void	MODEk(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
 	void	MODEo(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+
+	void	INVITE(Command* command, int clientID);
 	
 	void	sendToConsole(int clientID, std::string message);
 	void	sendToServer(int clientID, std::string message);
@@ -81,6 +83,7 @@ private:
 	unsigned int					_serverLen;
 	sockaddr_in*					_address;
 	epoll_event						_ev;
+	std::map<std::string, int>		_searchClientID;
 	std::map<int, Client*>			_serverClient;
 	std::map<int, Client*>			_serverOperator;
 	std::map<std::string, Channel*>	_serverChannel;

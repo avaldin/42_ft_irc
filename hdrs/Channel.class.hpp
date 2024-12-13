@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 17:57:55 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:51:52 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,12 @@ public:
 
 	void			sendToChannel(std::string const message);
 	bool			isOperator(int const clientID);
+	bool			isInvited(int const clientID);
 	bool			isClient(int const clientID);
+	void			addClient(int const clientID, Client* client);
+	void			deleteClient(int const clientID);
+	void			addInvited(int const clientID, Client* client);
+	void			deleteInvited(int const clientID);
 	void			addOperator(int const clientID);
 	void			deleteOperator(int const clientID);
 
@@ -54,9 +59,10 @@ private:
 
 	Channel&	operator=(Channel const & rhs);
 
-	std::map<int, Client*>	_channelClient;
-	std::map<int, Client*>	_channelOperator;
-	std::map<int, Client*>	_channelCreator;
+	std::map<int, Client*>			_channelClient;
+	std::map<int, Client*>			_channelOperator;
+	std::map<int, Client*>			_channelCreator;
+	std::map<int, Client*>			_invitedClient;
 };
 
 #endif
