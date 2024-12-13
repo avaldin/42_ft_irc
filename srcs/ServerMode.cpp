@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/13 16:38:58 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 17:17:42 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ void	Server::MODE(Command* command, int const clientID) {
 		void (Server::*func)(t_mode const *, Channel * const , int const) = _modeCmd[currentMode->mode];
 		if (func)
 			(this->*func)(currentMode, currentChannel, clientID);
+		else {
+			std::string error;
+			error[0] = currentMode->mode;
+			this->sendToClient(this->_mySocket, clientID, ERR_UNKNOWNMODE(error));
+		}
 	}
 }
 

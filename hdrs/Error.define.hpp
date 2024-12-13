@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:38:55 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 15:45:21 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 17:01:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@
 
 # define ERR_CHANNELISFULL(channel) ("471 :" + (channel) + " :Cannot join channel (+l)\r\n")
 
-# define ERR_UNKNOWNMODE(char) ("472 :" + (char) +  ":is unknown mode char to me\r\n") 
+# define ERR_UNKNOWNMODE(mode) ("472 :" + (mode) +  ":is unknown mode char to me\r\n") 
 
 # define ERR_INVITEONLYCHAN(channel) ("473 :" + (channel) + " :Cannot join channel (+i)\r\n")
 
