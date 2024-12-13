@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/09 18:48:55 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 16:40:16 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 	if (this->_serverChannel[channelName]->isOperator(clientID))
 		line += "@";
 	line += (this->_serverClient[clientID]->_nickname + ": " + token);
-	this->_serverChannel[channelName]->sendToChannel(clientID, line);
+	this->_serverChannel[channelName]->sendToChannel(line);
 	return ;
 }
 
@@ -141,38 +141,6 @@ void	Server::serverRequest(int clientID, std::string rawLine) {
 
 void	Server::processCommand(Command* command) {
 	(void)command;
-	return ;
-}
-
-void	Server::sendToConsole(int clientID, std::string message) {
-	std::string const	prefix = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName;
-	std::string const	line = prefix + " " + message;
-
-	send(this->_console->_clientID, line.c_str(), line.size(), 0); // pb ca marche pas j ai essaye d envoyer le this->_mySocket mais ca plante, la on est sur une valeur fix de 1, le std::cout marche bien mais jsp j aime pas
-	return ;
-}
-
-void	Server::sendToServer(int clientID, std::string message) {
-	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
-
-	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
-		int otherClient = it->second->_clientID;
-		send(otherClient, line.c_str(), line.size(), 0);
-	}
-	return ;
-}
-
-void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
-	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
-	
-	this->_serverChannel[channelName]->sendToChannel(clientID, message);
-	return ;
-}
-
-void	Server::sendToClient(int clientID, int targetID, std::string message) {
-	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
-
-	send(targetID, line.c_str(), line.size(), 0);
 	return ;
 }
 
@@ -246,13 +214,9 @@ void	Server::Factory::deleteChannel(Channel* oldChannel) {
 	return ;
 }
 
-void	Server::sendError(int clientId, int codeError, const std::string& msgError)
+void	Server::sendError(int const clientId, std::string const & msgError)
 {
-	std::stringstream 	message;
-
-	message << ":" << this->_address->sin_addr.s_addr << " "
-			<< codeError << " " << this->_serverClient[clientId]->_nickname
-			<< msgError << std::endl;
-	if (send(clientId, message.str().c_str(), message.str().length(), 0) == -1)
+	if (send(clientId, msgError.c_str(), msgError.size(), 0) == -1)
 		throw SendException();
+	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 12:34:23 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 16:34:48 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct s_user {
 typedef struct s_mode {
 	unsigned int				sign;
 	char						mode;
-	std::vector<std::string>	args;
+	std::string					args;
 }	t_mode;
 
 class Client;
@@ -41,6 +41,7 @@ public:
 	std::string					getMessage( void );
 	std::vector<std::string>	getTargetChannels( void );
 	std::vector<t_user*>		getTargetUsers( void );
+	std::vector<t_mode*>		getMode( void );
 	
 private:
 	Command( void );

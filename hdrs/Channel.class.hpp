@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/01 19:33:15 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/10 17:57:55 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,11 @@ typedef enum	e_channelType {
 class Channel {
 public:
 
-	void			sendToChannel(int const clientID, std::string const message);
+	void			sendToChannel(std::string const message);
 	bool			isOperator(int const clientID);
+	bool			isClient(int const clientID);
+	void			addOperator(int const clientID);
+	void			deleteOperator(int const clientID);
 
 	t_channelType const		_channelType;
 	std::string const		_channelName;
