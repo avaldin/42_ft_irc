@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 17:28:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 16:36:29 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,8 @@ void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
 				this->_mode.push_back(newMode);
 			}
 		}
-		else if (!this->_mode.empty())
-			this->_mode.back()->args.push_back(splitedLine[idx]);
+		else if (!this->_mode.empty() && this->_mode.back()->args.empty())
+			this->_mode.back()->args = splitedLine[idx];
 	}
 	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 18:02:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 16:40:16 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 #include <sys/epoll.h>
 #include <string.h>
 #include <sstream>
-#include <cstdlib>
 
 Server*	Server::_me = nullptr;
 
@@ -142,129 +141,6 @@ void	Server::serverRequest(int clientID, std::string rawLine) {
 
 void	Server::processCommand(Command* command) {
 	(void)command;
-	return ;
-}
-
-void	Server::MODE(Command* command, int const clientID) {
-	std::vector<t_mode*> const	allMode = command->getMode();
-	std::string	const			nameTargetChannel = command->getTargetChannels().front();
-	Channel * const				currentChannel = this->_serverChannel[nameTargetChannel];
-	
-	if (!currentChannel) {
-		this->sendToClient(this->_mySocket, clientID, ERR_NOSUCHCHANNEL(nameTargetChannel));
-		return ;
-	}
-	std::vector<t_mode*>	allModes = command->getMode();
-	std::map<char,void(Server::*)(t_mode const *, Channel * const , int const)> _modeCmd;
-	_modeCmd['t'] = &Server::MODEt;
-	_modeCmd['i'] = &Server::MODEi;
-	_modeCmd['l'] = &Server::MODEl;
-	_modeCmd['k'] = &Server::MODEk;
-	_modeCmd['o'] = &Server::MODEo;
-	int const	size = allModes.size();
-	for (int idx = 0; idx < size; idx++) {
-		t_mode*	currentMode = allModes[idx];
-		void (Server::*func)(t_mode const *, Channel * const , int const) = _modeCmd[currentMode->mode];
-		if (func)
-			(this->*func)(currentMode, currentChannel, clientID);
-	}
-}
-
-void	Server::MODEt(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		this->sendToClient(this->_mySocket, clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
-	}
-	currentChannel->_topicMode = currentMode->sign % 5;
-	return ;
-}
-
-void	Server::MODEi(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		this->sendToClient(this->_mySocket, clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
-	}
-	currentChannel->_inviteOnlyMode = currentMode->sign % 5;
-	return ;
-}
-
-void	Server::MODEl(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		this->sendToClient(this->_mySocket, clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
-	}
-	if (currentMode->sign == '+')
-		currentChannel->_channelLimit = std::atoi(currentMode->args.front().c_str());
-	else if (currentMode->sign == '-')
-		currentChannel->_channelLimit = -1;
-	return ;
-}
-
-void	Server::MODEk(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		this->sendToClient(this->_mySocket, clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
-	}
-	if (currentMode->sign == '+')
-		currentChannel->_channelPassword = currentMode->args.front();
-	else if (currentMode->sign == '-')
-		currentChannel->_channelPassword = "";
-	return ;
-}
-
-void	Server::MODEo(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		this->sendToClient(this->_mySocket, clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
-	}
-	int const	targetID = std::atoi(currentMode->args.front().c_str());
-	if (!currentChannel->isClient(targetID)) {
-		// ERR
-		return ;
-	}
-	if (currentMode->sign == '+')
-		currentChannel->addOperator(targetID);
-	else if (currentMode->sign == '-') {
-		if (currentChannel->isOperator(targetID))
-			currentChannel->deleteOperator(targetID);
-		else {
-			// ERR
-			return ;
-		}
-	}
-	return ; 
-}
-
-
-void	Server::sendToConsole(int clientID, std::string message) {
-	std::string const	prefix = ":" + this->_serverClient[clientID]->_nickname + "!" + this->_serverClient[clientID]->_username + "@" + this->_serverName;
-	std::string const	line = prefix + " " + message;
-
-	send(this->_console->_clientID, line.c_str(), line.size(), 0); // pb ca marche pas j ai essaye d envoyer le this->_mySocket mais ca plante, la on est sur une valeur fix de 1, le std::cout marche bien mais jsp j aime pas
-	return ;
-}
-
-void	Server::sendToServer(int clientID, std::string message) {
-	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
-
-	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
-		int otherClient = it->second->_clientID;
-		send(otherClient, line.c_str(), line.size(), 0);
-	}
-	return ;
-}
-
-void	Server::sendToChannel(int clientID, std::string channelName, std::string message) {
-	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
-	
-	this->_serverChannel[channelName]->sendToChannel(message);
-	return ;
-}
-
-void	Server::sendToClient(int clientID, int targetID, std::string message) {
-	std::string const	line = this->_serverClient[clientID]->_nickname + " " + message;
-
-	send(targetID, line.c_str(), line.size(), 0);
 	return ;
 }
 
