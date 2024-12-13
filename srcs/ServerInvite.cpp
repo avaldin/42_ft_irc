@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/13 20:10:33 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/13 20:23:00 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,16 @@
 #include "Reply.define.hpp"
 
 void	Server::INVITE(Command* command, int const clientID) {
-	if (command->getTargetChannels().empty()) {
+	if (command->getTargetChannels().empty() || command->getTargetChannels().empty()) {
 		this->sendToClient(this->_mySocket, clientID, ERR_NEEDMOREPARAMS(command->getCommand()));
 		return ;
 	}
 	std::string const	nameTargetChannel = command->getTargetChannels().front();
 	Channel *	const	currentChannel = this->_serverChannel[nameTargetChannel];
-	
+	if (!currentChannel) {
+		this->sendToClient(this->_mySocket, clientID, ERR_NOSUCHCHANNEL(nameTargetChannel));
+		return ;
+	}
 	if (!currentChannel->isClient(clientID)) {
 		this->sendToClient(this->_mySocket, clientID, ERR_NOTONCHANNEL(currentChannel->_channelName));
 		return ;
@@ -31,16 +34,11 @@ void	Server::INVITE(Command* command, int const clientID) {
 		this->sendToClient(this->_mySocket, clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
 		return ;
 	}
-	if (!currentChannel) {
-		this->sendToClient(this->_mySocket, clientID, ERR_NOSUCHCHANNEL(nameTargetChannel));
-		return ;
-	}
 	t_user const *	targetUser = command->getTargetUsers().front();
 	int const		targetID = this->_searchClientID[targetUser->targetNickname];
 	Client*			targetClient = this->_serverClient[targetID];
-	
 	if (!targetClient) {
-		this->sendToClient(this->_mySocket, clientID, ERR_NOSUCHNICK(targetClient->_nickname));
+		this->sendToClient(this->_mySocket, clientID, ERR_NOSUCHNICK(targetUser->targetNickname));
 		return ;
 	}
 	if (!currentChannel->isClient(targetID)) {
