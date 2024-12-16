@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/13 16:40:16 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/16 18:01:31 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,16 +184,6 @@ Server::Factory::Factory( void ) {
 
 Server::Factory::~Factory( void ) {
 	return ;
-}
-
-Server::Factory::Factory(Server::Factory const & src) {
-	*this = src;
-	return ;
-}
-
-Server::Factory&	Server::Factory::operator=(Server::Factory const & rhs) {
-	(void)rhs;
-	return *this;
 }
 
 Client*	Server::Factory::createClient(int clientID) {

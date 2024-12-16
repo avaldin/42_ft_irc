@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/13 19:18:50 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/16 19:47:11 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,11 @@ public:
 	void			LegacysendToChannel(std::string channelName, int clientID, std::string message);
 	void			LegacysendToServer(int clientID, std::string message);
 
-
-	
-
-
 private:
+	friend class Mode;
 	Server( void );
-	Server(Server const & src);
-	Server&	operator=(Server const & rhs);
 
 	void	processCommand(Command* command);
-	
-	void	MODE(Command* command, int clientID);
-	void	MODEt(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	void	MODEi(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	void	MODEl(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	void	MODEk(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	void	MODEo(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
 
 	void	INVITE(Command* command, int clientID);
 	
@@ -98,9 +86,43 @@ private:
 	private:
 		Factory( void );
 		~Factory( void );
-		Factory(Factory const & src);
-		Factory&	operator=(Factory const & rhs);
 	};
+
+	class Mode {
+	public:
+		static void	execute(Server* server, Command* command, int const clientID);
+	private:
+		Mode( void );
+		~Mode( void );
+	
+		void	MODE(Command* command, int const clientID);
+		void	MODEt(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+		void	MODEi(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+		void	MODEl(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+		void	MODEk(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+		void	MODEo(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+		
+		Server* const	_server = Server::instantiate();
+	};
+
+	class Invite {
+	public:
+		static void	execute(Server* server, Command* command, int const clientID);
+	private:
+		Invite( void );
+		~Invite( void );
+	};
+
+	class Send {
+	public:
+		static void	ToConsole(int const targetID, std::string const message);
+		static void	ToServer(std::string const message);
+		static void	ToChannel(int const targetID, std::string const channelName, std::string const message);
+		static void	ToClient(int const targetID, std::string const message);
+	private:
+		Send( void );
+		~Send( void );
+	}
 };
 
 #endif
