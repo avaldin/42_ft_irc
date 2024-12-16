@@ -36,7 +36,7 @@ public:
 						// COMMAND  //
 	void			pass(int cliendId, const std::string& password);
 	void 			nick(int clientId, const std::string &nickname);
-	void 			user(int clientId, const std::string &username);
+	void 			user(int clientId, const std::string &param);
 
 
 	Client*			getClient(int clienId);

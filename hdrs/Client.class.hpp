@@ -33,16 +33,19 @@ public:
 	std::string		getUsername( void ) const;
 	int				getClientID( void ) const;
 	RegisterState	getRegistered( void ) const;
-	void 			setRegistered(bool registered);
+	void 			setRegistered(RegisterState registered);
 	void			setNickname(const std::string&	nickname);
+	void			setUsername(const std::string&	username);
+	void			setRealname(const std::string&	realname);
 
 private:
 	Client( void );
 	Client(Client const & src);
 	Client&	operator=(Client const & rhs);
 	int const			_clientID;
-	std::string const	_username;
+	std::string			_username;
 	std::string			_nickname;
+	std::string			_realname;
 	RegisterState		_registered;
 };
 

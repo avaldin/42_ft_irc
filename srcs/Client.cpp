@@ -56,12 +56,12 @@ int	Client::getClientID( void ) const {
 	return this->_clientID;
 }
 
-bool Client::getRegistered(void) const
+RegisterState Client::getRegistered(void) const
 {
 	return this->_registered;
 }
 
-void Client::setRegistered(bool registered)
+void Client::setRegistered(const RegisterState registered)
 {
 	_registered = registered;
 }
@@ -69,4 +69,14 @@ void Client::setRegistered(bool registered)
 void Client::setNickname(const std::string& nickname)
 {
 	this->_nickname = nickname;
+}
+
+void Client::setUsername(const std::string& username)
+{
+	this->_username = username;
+}
+
+void Client::setRealname(const std::string& realname)
+{
+	this->_realname = realname;
 }
