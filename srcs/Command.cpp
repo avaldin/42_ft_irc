@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/13 16:36:29 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/17 20:29:00 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	 Command::parseRawline( void ) {
 	if (splited[idx][0] == ':')
 		this->_prefix = splited[idx++];
 	this->_command = splited[idx++];
-	void (Command::*func)(std::vector<std::string>, int) = _cmdMethods[_command];
+	void(Command::*func)(std::vector<std::string>, int) = _cmdMethods[_command];
 	if (!func)
 		return ;
 	(this->*func)(splited, idx);

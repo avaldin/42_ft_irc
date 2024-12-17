@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/16 18:01:31 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/17 18:34:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
 #include "Command.class.hpp"
+#include "Send.namespace.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -132,9 +133,13 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 }
 
 void	Server::serverRequest(int clientID, std::string rawLine) {
+	Client	*currentClient = this->_serverClient[clientID];
+	if (!currentClient)
+		;// throw BIG ERROR, make non sense if this append
+	std::string	const	logLine = ":" + currentClient->_nickname + "!" + currentClient->_username + "@" + this->_serverName + " " + rawLine; 
+	
+	Send::ToConsole(clientID, logLine);
 	Command		myCommand(rawLine);
-
-	sendToConsole(clientID, rawLine);
 	processCommand(&myCommand);
 	return ;
 }

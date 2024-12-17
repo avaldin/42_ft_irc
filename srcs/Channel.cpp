@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/13 19:51:49 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/17 19:49:42 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	Channel::uninstantiateChannel(Channel* oldChannel) {
 	return ;
 }
 
-void	Channel::sendToChannel(std::string const message) {
+void	Channel::sendToChannel(std::string const message) const {
 	for (std::map<int, Client*>::iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
 		send(it->second->_clientID, message.c_str(), message.size(), 0);
 	}
@@ -79,7 +79,7 @@ void	Channel::deleteOperator(int const clientID) {
 	return ;
 }
 
-void	Channel::addClient(int const clientID, Client* client) {
+void	Channel::addClient(int const clientID, Client const * client) {
 	this->_channelClient[clientID] = client;
 	return ;
 }
@@ -89,7 +89,7 @@ void	Channel::deleteClient(int const clientID) {
 	return ;
 }
 
-void	Channel::addInvited(int const clientID, Client* client) {
+void	Channel::addInvited(int const clientID, Client const * client) {
 	this->_invitedClient[clientID] = client;
 	return ;
 }

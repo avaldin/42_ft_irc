@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/16 19:47:11 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/17 20:30:22 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,13 @@ public:
 
 private:
 	friend class Mode;
+	friend class Invite;
+
 	Server( void );
 
 	void	processCommand(Command* command);
 
-	void	INVITE(Command* command, int clientID);
-	
-	void	sendToConsole(int clientID, std::string message);
-	void	sendToServer(int clientID, std::string message);
-	void	sendToChannel(int clientID, std::string channelName, std::string message);
-	void	sendToClient(int clientID, int targetID, std::string message);
+	void	INVITE(Command* command, Client const & client);
 
 	void	addClient( void );
 	void	eraseClient(int clientID);
@@ -107,22 +104,27 @@ private:
 
 	class Invite {
 	public:
-		static void	execute(Server* server, Command* command, int const clientID);
+		static void	execute(Command* command, Client const & client);
 	private:
 		Invite( void );
 		~Invite( void );
+
+		void		INVITE(Command* command, Client const & client);
+		std::string	checkChannelExist(void const * channel, int const & id);
+		std::string	checkChannelClient(void const * channel, int const & id);
+		std::string	checkChannelOperator(void const * channel, int const & id);
+		std::string	checkTargetExist(void const * channel, int const & id);
+		std::string	checkChannelTarget(void const * channel, int const & id);
+
+		Server* const	_server = Server::instantiate();
+
+		static int test;
+
+		static std::string(Server::Invite::*_method[5])(void const *, int const &);
+		
 	};
 
-	class Send {
-	public:
-		static void	ToConsole(int const targetID, std::string const message);
-		static void	ToServer(std::string const message);
-		static void	ToChannel(int const targetID, std::string const channelName, std::string const message);
-		static void	ToClient(int const targetID, std::string const message);
-	private:
-		Send( void );
-		~Send( void );
-	}
 };
+
 
 #endif
