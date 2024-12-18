@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 17:50:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 17:08:57 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,28 +42,15 @@ public:
 	void			LegacysendToChannel(std::string channelName, int clientID, std::string message);
 	void			LegacysendToServer(int clientID, std::string message);
 
-
-	
-
-
 private:
+	friend class Mode;
+	friend class Invite;
+
 	Server( void );
-	Server(Server const & src);
-	Server&	operator=(Server const & rhs);
 
 	void	processCommand(Command* command);
-	
-	void	MODE(Command* command, int clientID);
-	void	MODEt(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	void	MODEi(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	void	MODEl(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	void	MODEk(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	void	MODEo(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-	
-	void	sendToConsole(int clientID, std::string message);
-	void	sendToServer(int clientID, std::string message);
-	void	sendToChannel(int clientID, std::string channelName, std::string message);
-	void	sendToClient(int clientID, int targetID, std::string message);
+
+	void	INVITE(Command* command, Client const & client);
 
 	void	addClient( void );
 	void	eraseClient(int clientID);
@@ -81,6 +68,7 @@ private:
 	unsigned int					_serverLen;
 	sockaddr_in*					_address;
 	epoll_event						_ev;
+	std::map<std::string, int>		_searchClientID;
 	std::map<int, Client*>			_serverClient;
 	std::map<int, Client*>			_serverOperator;
 	std::map<std::string, Channel*>	_serverChannel;
@@ -95,9 +83,8 @@ private:
 	private:
 		Factory( void );
 		~Factory( void );
-		Factory(Factory const & src);
-		Factory&	operator=(Factory const & rhs);
 	};
 };
+
 
 #endif

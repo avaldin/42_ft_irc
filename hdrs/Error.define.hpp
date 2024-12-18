@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:38:55 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/13 17:01:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/17 17:40:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 // Returned by the server whenever a client tries to preform a channel effecting
 // command for which to client isn't a member.
 
-# define ERR_USERONCHANNEL(username, channel) ("443 :" + (user) + " " + (channel) + " :is already on channel\r\n")
+# define ERR_USERONCHANNEL(username, channel) ("443 :" + (username) + " " + (channel) + " :is already on channel\r\n")
 // 443 Returned when a client tries to invite a user to a channel they are already on.
 
 # define ERR_SUMMONDISABLED "445 :SUMMON has been disabled\r\n"
