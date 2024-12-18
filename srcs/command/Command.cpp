@@ -6,12 +6,17 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/17 20:29:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 19:46:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Command.class.hpp"
 #include "Reply.define.hpp"
+
+#include "Mode.class.hpp"
+#include "Topic.class.hpp"
+#include "Invite.class.hpp"
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -66,12 +71,11 @@ void	 Command::parseRawline( void ) {
 	int	idx = 0;
 	if (splited[idx][0] == ':')
 		this->_prefix = splited[idx++];
-	this->_command = splited[idx++];
-	void(Command::*func)(std::vector<std::string>, int) = _cmdMethods[_command];
+	void(Command::*func)(std::vector<std::string>, int) = _cmdMethods[splited[idx]];
 	if (!func)
 		return ;
 	(this->*func)(splited, idx);
-	return ;	
+	return ;
 }
 
 t_user	*Command::parseUser(std::string user) {
@@ -133,15 +137,17 @@ void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
 }
 
 void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
+	Topic*		newCommand = new Topic();
 	int const	size = splitedLine.size();
 	
-	this->_targetChannels.push_back(splitedLine[idx++]);
+	newCommand->_targetChannel = splitedLine[idx++];
 	while (idx < size)
 		this->_message += splitedLine[idx++];
 	return ;
 }
 
 void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
+	Mode*		newCommand = new Mode();
 	int const	size = splitedLine.size();
 
 	for (;idx < size; idx++) {
@@ -151,18 +157,22 @@ void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
 				t_mode	*newMode = new t_mode;
 				newMode->sign = sign;
 				newMode->mode = splitedLine[idx][idxWord];
-				this->_mode.push_back(newMode);
+				newCommand->_mode.push_back(newMode);
 			}
 		}
-		else if (!this->_mode.empty() && this->_mode.back()->args.empty())
-			this->_mode.back()->args = splitedLine[idx];
+		else if (!newCommand->_mode.empty() && newCommand->_mode.back()->args.empty())
+			newCommand->_mode.back()->args = splitedLine[idx];
 	}
+	this->_command = newCommand;
 	return ;
 }
 
 void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
-	this->_targetUsers.push_back(parseUser(splitedLine[idx++]));
-	this->_targetChannels.push_back(splitedLine[idx++]);
+	Invite*	newCommand = new Invite();
+
+	newCommand->_targetUsers.push_back(parseUser(splitedLine[idx++]));
+	newCommand->_targetChannels.push_back(splitedLine[idx++]);
+	this->_command = newCommand;
 	return ;
 }
 
@@ -174,7 +184,7 @@ std::string 	Command::getPrefix( void ) {
 	return this->_prefix;
 }
 
-std::string 	Command::getCommand( void ) {
+ICommand* 	Command::getCommand( void ) {
 	return this->_command;
 }
 
@@ -186,14 +196,11 @@ std::string 	Command::getMessage( void ) {
 	return this->_message;
 }
 
-std::vector<std::string>	Command::getTargetChannels( void ) {
+std::vector<std::string&>&	Command::getTargetChannels( void ) {
 	return this->_targetChannels;
 }
 
 std::vector<t_user*>	Command::getTargetUsers( void ) {
 	return this->_targetUsers;
 }
-
-std::vector<t_mode*>	Command::getMode( void ) {
-	return this->_mode;
-}	
+	

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/17 20:30:22 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 17:08:57 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,46 +84,6 @@ private:
 		Factory( void );
 		~Factory( void );
 	};
-
-	class Mode {
-	public:
-		static void	execute(Server* server, Command* command, int const clientID);
-	private:
-		Mode( void );
-		~Mode( void );
-	
-		void	MODE(Command* command, int const clientID);
-		void	MODEt(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		void	MODEi(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		void	MODEl(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		void	MODEk(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		void	MODEo(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		
-		Server* const	_server = Server::instantiate();
-	};
-
-	class Invite {
-	public:
-		static void	execute(Command* command, Client const & client);
-	private:
-		Invite( void );
-		~Invite( void );
-
-		void		INVITE(Command* command, Client const & client);
-		std::string	checkChannelExist(void const * channel, int const & id);
-		std::string	checkChannelClient(void const * channel, int const & id);
-		std::string	checkChannelOperator(void const * channel, int const & id);
-		std::string	checkTargetExist(void const * channel, int const & id);
-		std::string	checkChannelTarget(void const * channel, int const & id);
-
-		Server* const	_server = Server::instantiate();
-
-		static int test;
-
-		static std::string(Server::Invite::*_method[5])(void const *, int const &);
-		
-	};
-
 };
 
 

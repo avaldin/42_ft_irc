@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerMode.cpp                                     :+:      :+:    :+:   */
+/*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/17 18:03:46 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 19:30:37 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,52 +18,51 @@
 #include "Command.class.hpp"
 #include "Send.namespace.hpp"
 
+#include "Mode.class.hpp"
 #include <cstdlib>
 
-Server::Mode::Mode( void ) {
+Server* const	_server = Server::instantiate();
+
+Mode::Mode( void ) {
 	return ;
 }
 
-Server::Mode::~Mode( void ) {
+Mode::~Mode( void ) {
 	return ;
 }
 
-void	Server::Mode::execute(Server* server, Command* command, int const clientID) {
-	
-	return ;	
-}
-
-void	Server::Mode::MODE(Command* command, int const clientID) {
-	std::vector<t_mode*> const	allMode = command->getMode();
-	std::string	const			nameTargetChannel = command->getTargetChannels().front();
-	Channel * const				currentChannel = this->_server->_serverChannel[nameTargetChannel];
-	
+void	Mode::execute(Client const & client) {
+	if (this->_targetChannels.empty() || this->_mode.empty()) {
+		Send::ToClient(client._clientID, ERR_NEEDMOREPARAMS(this->_cmdName));
+		return ;	
+	}
+	Channel * const	currentChannel = this->_server->_serverChannel[this->_targetChannels.front()];
 	if (!currentChannel) {
-		Send::ToClient(clientID, ERR_NOSUCHCHANNEL(nameTargetChannel));
+		Send::ToClient(client._clientID, ERR_NOSUCHCHANNEL(currentChannel->_channelName));
 		return ;
 	}
-	std::vector<t_mode*>	allModes = command->getMode();
-	std::map<char,void(Server::Mode::*)(t_mode const *, Channel * const , int const)> _modeCmd;
-	_modeCmd['t'] = &Server::Mode::MODEt;
-	_modeCmd['i'] = &Server::Mode::MODEi;
-	_modeCmd['l'] = &Server::Mode::MODEl;
-	_modeCmd['k'] = &Server::Mode::MODEk;
-	_modeCmd['o'] = &Server::Mode::MODEo;
-	int const	size = allModes.size();
+	std::map<char,void(Mode::*)(t_mode const *, Channel * const , int const)> _modeCmd;
+	_modeCmd['t'] = &Mode::tFlag;
+	_modeCmd['i'] = &Mode::iFlag;
+	_modeCmd['l'] = &Mode::lFlag;
+	_modeCmd['k'] = &Mode::kFlag;
+	_modeCmd['o'] = &Mode::oFlag;
+	int const	size = this->_mode.size();
 	for (int idx = 0; idx < size; idx++) {
-		t_mode*	currentMode = allModes[idx];
-		void (Server::Mode::*func)(t_mode const *, Channel * const , int const) = _modeCmd[currentMode->mode];
+		t_mode*	currentMode = this->_mode[idx];
+		void (Mode::*func)(t_mode const *, Channel * const , int const) = _modeCmd[currentMode->mode];
 		if (func)
-			(this->*func)(currentMode, currentChannel, clientID);
+			(this->*func)(currentMode, currentChannel, client._clientID);
 		else {
 			std::string error;
 			error[0] = currentMode->mode;
-			Send::ToClient(clientID, ERR_UNKNOWNMODE(error));
+			Send::ToClient(client._clientID, ERR_UNKNOWNMODE(error));
 		}
 	}
+	return ;
 }
 
-void	Server::Mode::MODEt(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
+void	Mode::tFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
 		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
 		return ;
@@ -74,7 +73,7 @@ void	Server::Mode::MODEt(t_mode const * currentMode, Channel * const currentChan
 	return ;
 }
 
-void	Server::Mode::MODEi(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
+void	Mode::iFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
 		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
 		return ;
@@ -85,7 +84,7 @@ void	Server::Mode::MODEi(t_mode const * currentMode, Channel * const currentChan
 	return ;
 }
 
-void	Server::Mode::MODEl(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
+void	Mode::lFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
 		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
 		return ;
@@ -101,7 +100,7 @@ void	Server::Mode::MODEl(t_mode const * currentMode, Channel * const currentChan
 	return ;
 }
 
-void	Server::Mode::MODEk(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
+void	Mode::kFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
 		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
 		return ;
@@ -115,7 +114,7 @@ void	Server::Mode::MODEk(t_mode const * currentMode, Channel * const currentChan
 	return ;
 }
 
-void	Server::Mode::MODEo(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
+void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
 		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
 		return ;
