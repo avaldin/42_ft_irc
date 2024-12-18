@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/17 19:49:54 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 20:22:53 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ class Channel {
 public:
 
 	void			sendToChannel(std::string const message) const;
-	bool			isOperator(int const clientID);
-	bool			isInvited(int const clientID);
-	bool			isClient(int const clientID);
+	bool			isOperator(int const clientID) const;
+	bool			isInvited(int const clientID) const;
+	bool			isClient(int const clientID) const;
 	void			addClient(int const clientID, Client const * client);
 	void			deleteClient(int const clientID);
 	void			addInvited(int const clientID, Client const * client);

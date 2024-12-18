@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 19:46:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 20:08:44 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,8 @@ void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 	
 	newCommand->_targetChannel = splitedLine[idx++];
 	while (idx < size)
-		this->_message += splitedLine[idx++];
+		newCommand->_message += splitedLine[idx++];
+	this->_command = newCommand;
 	return ;
 }
 

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/17 19:49:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 20:23:28 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,19 +99,19 @@ void	Channel::deleteInvited(int const clientID) {
 	return ;
 }
 
-bool	Channel::isOperator(int const clientID) {
+bool	Channel::isOperator(int const clientID) const {
 	if (this->_channelOperator[clientID])
 		return true;
 	return false;
 }
 
-bool	Channel::isInvited(int const clientID) {
+bool	Channel::isInvited(int const clientID) const {
 	if (this->_invitedClient[clientID])
 		return true;
 	return false;
 }
 
-bool	Channel::isClient(int const clientID) {
+bool	Channel::isClient(int const clientID) const {
 	if (this->_channelClient[clientID])
 		return true;
 	return false;

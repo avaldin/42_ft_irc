@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:37:15 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 19:46:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 20:08:09 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ class Topic : public ICommand {
 		~Topic( void );
 
 		std::string const			_cmdName = "TOPIC";
-		std::string&				_targetChannel;
+		std::string					_targetChannel;
+		std::string					_message;
 
-		static Server* const	_server;
+		static Server*	_server;
 		
 	friend Command;
 };
