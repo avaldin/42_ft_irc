@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 19:33:53 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:42:58 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ private:
 	void	parseRawline( void );
 	t_user*	parseUser(std::string user);
 	
-	void	setPASS(std::vector<std::string> splitedLine, int idx);
-	void	setNICK(std::vector<std::string> splitedLine, int idx);
-	void	setUSER(std::vector<std::string> splitedLine, int idx);
-	void	setJOIN(std::vector<std::string> splitedLine, int idx);
-	void	setKICK(std::vector<std::string> splitedLine, int idx);
+	// void	setPASS(std::vector<std::string> splitedLine, int idx);
+	// void	setNICK(std::vector<std::string> splitedLine, int idx);
+	// void	setUSER(std::vector<std::string> splitedLine, int idx);
+	// void	setJOIN(std::vector<std::string> splitedLine, int idx);
+	// void	setKICK(std::vector<std::string> splitedLine, int idx);
 	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
 	void	setMODE(std::vector<std::string> splitedLine, int idx);
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);

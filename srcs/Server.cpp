@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/17 18:34:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:25:15 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,6 @@ Server::Server( void ) : _serverName("irc.serv") {
 
 Server::~Server( void ) {
 	return ;
-}
-
-Server::Server(Server const & src) : _serverName("irc.serv") {
-	*this = src;
-	return ;
-}
-
-Server&	Server::operator=(Server const & rhs) {
-	(void)rhs;
-	return  *this;
 }
 
 Server*	Server::instantiate( void ) {

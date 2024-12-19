@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 17:08:57 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/18 20:05:01 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ public:
 	void			LegacysendToServer(int clientID, std::string message);
 
 private:
-	friend class Mode;
-	friend class Invite;
 
 	Server( void );
 
@@ -84,6 +82,10 @@ private:
 		Factory( void );
 		~Factory( void );
 	};
+	
+friend class Mode;
+friend class Invite;
+friend class Topic;
 };
 
 

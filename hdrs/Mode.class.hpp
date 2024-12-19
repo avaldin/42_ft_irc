@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:03:19 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 19:30:26 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:44:26 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <vector>
 
 class Command;
+class Client;
 class Channel;
 class Server;
 
@@ -40,13 +41,13 @@ class Mode : public ICommand {
 		void	kFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
 		void	oFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
 		
-		std::string const			_cmdName = "MODE";
+		std::string const			_cmdName;
 		std::vector<t_mode*>		_mode;
-		std::vector<std::string&>	_targetChannels;
+		std::vector<std::string>	_targetChannels;
 
-		static Server* const	_server;
+		static Server*	_server;
 	
-	friend Command;
+	friend class Command;
 };
 
 #endif
