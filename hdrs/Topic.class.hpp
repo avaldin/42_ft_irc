@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:37:15 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 20:08:09 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:24:39 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <vector>
 
 class Client;
+class Channel;
 
 class Topic : public ICommand {
 	public:
@@ -26,14 +27,26 @@ class Topic : public ICommand {
 	private:
 		Topic( void );
 		~Topic( void );
+		
+		typedef struct s_data {
+			Channel* channel;
+			Client	const *	client;
+		}	t_data;
+		
+		std::string	checkChannelExist(t_data const & myData) const;
+		std::string	checkCommandMessage(t_data const & myData) const;
+		std::string	checkChannelClient(t_data const & myData) const;
+		std::string	checkChannelOperator(t_data const & myData) const;
 
-		std::string const			_cmdName = "TOPIC";
+		std::string const			_cmdName;
 		std::string					_targetChannel;
-		std::string					_message;
+		std::string					_topic;
 
 		static Server*	_server;
+
+		static std::string(Topic::*_method[4])(t_data const &) const;
 		
-	friend Command;
+	friend class Command;
 };
 
 #endif

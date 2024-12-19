@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 19:30:37 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:44:42 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 #include "Mode.class.hpp"
 #include <cstdlib>
 
-Server* const	_server = Server::instantiate();
+Server* Mode::_server = Server::instantiate();
 
-Mode::Mode( void ) {
+Mode::Mode( void ) : _cmdName("MODE") {
 	return ;
 }
 

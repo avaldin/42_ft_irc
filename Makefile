@@ -6,7 +6,7 @@
 #    By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/15 17:21:22 by thibaud           #+#    #+#              #
-#    Updated: 2024/12/13 16:42:00 by tmouche          ###   ########.fr        #
+#    Updated: 2024/12/19 18:26:29 by tmouche          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ HEADER		=	hdrs/
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	.objs/
 DEPS_DIR	=	.deps/
-SRCS		=	main.cpp Server.cpp ServerMode.cpp ServerSend.cpp Client.cpp message.cpp Channel.cpp Command.cpp 
+SRCS		=	main.cpp Server.cpp Client.cpp message.cpp Channel.cpp Command.cpp Invite.cpp Mode.cpp Send.cpp Topic.cpp
 
 
 OBJS		= $(SRCS:%.cpp=$(OBJS_DIR)%.o)

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 20:08:44 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:43:20 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ Command::~Command( void ) {
 
 Command::Command(std::string const & rawLine) {
 	this->_rawLine = rawLine;
-	this->_cmdMethods["PASS"] = &Command::setPASS;
-	this->_cmdMethods["NICK"] = &Command::setNICK;
-	this->_cmdMethods["USER"] = &Command::setUSER;
-	this->_cmdMethods["JOIN"] = &Command::setJOIN;
-	this->_cmdMethods["KICK"] = &Command::setKICK;
+	// this->_cmdMethods["PASS"] = &Command::setPASS;
+	// this->_cmdMethods["NICK"] = &Command::setNICK;
+	// this->_cmdMethods["USER"] = &Command::setUSER;
+	// this->_cmdMethods["JOIN"] = &Command::setJOIN;
+	// this->_cmdMethods["KICK"] = &Command::setKICK;
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
 	this->_cmdMethods["MODE"] = &Command::setMODE;
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
@@ -96,45 +96,45 @@ t_user	*Command::parseUser(std::string user) {
 	return userStruct;
 }
 
-void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
-	this->_password = splitedLine[idx];
-	return ;
-}
+// void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
+// 	this->_password = splitedLine[idx];
+// 	return ;
+// }
 
-void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
-	t_user	*user = new t_user;
+// void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
+// 	t_user	*user = new t_user;
 
-	user->targetNickname = splitedLine[idx];
-	return ;
-}
+// 	user->targetNickname = splitedLine[idx];
+// 	return ;
+// }
 
-void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
-	t_user	*user = new t_user;
+// void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
+// 	t_user	*user = new t_user;
 
-	user->targetUsername = splitedLine[idx];
-	return ;
-}
+// 	user->targetUsername = splitedLine[idx];
+// 	return ;
+// }
 
-void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
-	int	const	size = splitedLine.size();
+// void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
+// 	int	const	size = splitedLine.size();
 
-	this->_targetChannels.push_back(splitedLine[idx++]);
-	if (size > idx)
-		this->_password = splitedLine[idx];
-	return ;
-}
+// 	this->_targetChannels.push_back(splitedLine[idx++]);
+// 	if (size > idx)
+// 		this->_password = splitedLine[idx];
+// 	return ;
+// }
 
-void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
-	int const	size = splitedLine.size();
+// void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
+// 	int const	size = splitedLine.size();
 
-	while (size < idx && (splitedLine[idx][0] == '&' || splitedLine[idx][0] == '+' || splitedLine[idx][0] == '!'))
-		this->_targetChannels.push_back(splitedLine[idx++]);
-	while (size < idx && splitedLine[idx][0] != ':')
-		this->_targetUsers.push_back(parseUser(splitedLine[idx++]));
-	while (size < idx)
-		this->_message += splitedLine[idx++];
-	return ;
-}
+// 	while (size < idx && (splitedLine[idx][0] == '&' || splitedLine[idx][0] == '+' || splitedLine[idx][0] == '!'))
+// 		this->_targetChannels.push_back(splitedLine[idx++]);
+// 	while (size < idx && splitedLine[idx][0] != ':')
+// 		this->_targetUsers.push_back(parseUser(splitedLine[idx++]));
+// 	while (size < idx)
+// 		this->_message += splitedLine[idx++];
+// 	return ;
+// }
 
 void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 	Topic*		newCommand = new Topic();
@@ -142,7 +142,7 @@ void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 	
 	newCommand->_targetChannel = splitedLine[idx++];
 	while (idx < size)
-		newCommand->_message += splitedLine[idx++];
+		newCommand->_topic += splitedLine[idx++];
 	this->_command = newCommand;
 	return ;
 }
@@ -189,19 +189,19 @@ ICommand* 	Command::getCommand( void ) {
 	return this->_command;
 }
 
-std::string 	Command::getPassword( void ) {
-	return this->_password;
-}
+// std::string 	Command::getPassword( void ) {
+// 	return this->_password;
+// }
 
-std::string 	Command::getMessage( void ) {
-	return this->_message;
-}
+// std::string 	Command::getMessage( void ) {
+// 	return this->_message;
+// }
 
-std::vector<std::string&>&	Command::getTargetChannels( void ) {
-	return this->_targetChannels;
-}
+// std::vector<std::string&>&	Command::getTargetChannels( void ) {
+// 	return this->_targetChannels;
+// }
 
-std::vector<t_user*>	Command::getTargetUsers( void ) {
-	return this->_targetUsers;
-}
+// std::vector<t_user*>	Command::getTargetUsers( void ) {
+// 	return this->_targetUsers;
+// }
 	
