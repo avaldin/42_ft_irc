@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:43:20 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/21 01:13:00 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "Mode.class.hpp"
 #include "Topic.class.hpp"
 #include "Invite.class.hpp"
+#include "Kick.class.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -38,7 +39,7 @@ Command::Command(std::string const & rawLine) {
 	// this->_cmdMethods["NICK"] = &Command::setNICK;
 	// this->_cmdMethods["USER"] = &Command::setUSER;
 	// this->_cmdMethods["JOIN"] = &Command::setJOIN;
-	// this->_cmdMethods["KICK"] = &Command::setKICK;
+	this->_cmdMethods["KICK"] = &Command::setKICK;
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
 	this->_cmdMethods["MODE"] = &Command::setMODE;
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
@@ -124,17 +125,18 @@ t_user	*Command::parseUser(std::string user) {
 // 	return ;
 // }
 
-// void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
-// 	int const	size = splitedLine.size();
+void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
+	Kick*		newCommand = new Kick();
+	int const	size = splitedLine.size();
 
-// 	while (size < idx && (splitedLine[idx][0] == '&' || splitedLine[idx][0] == '+' || splitedLine[idx][0] == '!'))
-// 		this->_targetChannels.push_back(splitedLine[idx++]);
-// 	while (size < idx && splitedLine[idx][0] != ':')
-// 		this->_targetUsers.push_back(parseUser(splitedLine[idx++]));
-// 	while (size < idx)
-// 		this->_message += splitedLine[idx++];
-// 	return ;
-// }
+	while (size < idx && (splitedLine[idx][0] == '&' || splitedLine[idx][0] == '+' || splitedLine[idx][0] == '!'))
+		newCommand->_targetChannels.push_back(splitedLine[idx++]);
+	while (size < idx && splitedLine[idx][0] != ':')
+		newCommand->_targetUsers.push_back(parseUser(splitedLine[idx++]));
+	while (size < idx)
+		newCommand->_message += splitedLine[idx++];
+	return ;
+}
 
 void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 	Topic*		newCommand = new Topic();

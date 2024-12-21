@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:25:15 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/21 02:18:58 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 void	Server::serverRequest(int clientID, std::string rawLine) {
 	Client	*currentClient = this->_serverClient[clientID];
 	if (!currentClient)
-		;// throw BIG ERROR, make non sense if this append
+		return ;// throw BIG ERROR, make non sense if this append
 	std::string	const	logLine = ":" + currentClient->_nickname + "!" + currentClient->_username + "@" + this->_serverName + " " + rawLine; 
 	
 	Send::ToConsole(clientID, logLine);

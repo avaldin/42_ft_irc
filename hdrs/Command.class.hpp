@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:42:58 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/21 01:08:33 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ private:
 	// void	setNICK(std::vector<std::string> splitedLine, int idx);
 	// void	setUSER(std::vector<std::string> splitedLine, int idx);
 	// void	setJOIN(std::vector<std::string> splitedLine, int idx);
-	// void	setKICK(std::vector<std::string> splitedLine, int idx);
+	void	setKICK(std::vector<std::string> splitedLine, int idx);
 	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
 	void	setMODE(std::vector<std::string> splitedLine, int idx);
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);

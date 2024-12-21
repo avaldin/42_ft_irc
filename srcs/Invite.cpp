@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:22:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/21 02:02:46 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ std::string	Invite::checkChannelOperator(t_data& myData) {
 }
 
 std::string	Invite::checkTargetExist(t_data& myData) {
-	myData.targetUser = this->_targetUsers.front();
+	myData.targetUser = this->_targetUsers.front(); // PAS NICE
 	myData.targetID = this->_server->_searchClientID[myData.targetUser->targetNickname];
 	myData.targetClient = this->_server->_serverClient[myData.targetID];
 
