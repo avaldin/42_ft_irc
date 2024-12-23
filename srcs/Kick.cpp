@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 02:22:47 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/23 20:52:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@
 
 Server*	Kick::_server = Server::instantiate();
 
+std::string(Kick::*Kick::_method[4])(t_data&) = {
+	&Kick::checkChannelExist, 
+	&Kick::checkChannelClient,
+	&Kick::checkChannelOperator,
+	&Kick::checkClientTargetExist};
+
 Kick::Kick( void ) : _cmdName("KICK") {
 	return ;
 }
@@ -29,39 +35,55 @@ Kick::~Kick( void ) {
 }
 
 void	Kick::execute(Client const & client) {
-	// t_data		myData;
+	t_data		myData;
 	std::string	error;
 	
 	if (this->_targetChannels.empty() || this->_targetUsers.empty())
 		error = ERR_NEEDMOREPARAMS(this->_cmdName);
-	int const sizeChannel = this->_targetChannels.size();
-	for (int idxChannel = 0; idxChannel < sizeChannel; idxChannel++) {
-		Channel*	channel = this->_server->_serverChannel[this->_targetChannels[idxChannel]];
-		if (!channel) {
-			Send::ToClient(client._clientID, ERR_NOSUCHCHANNEL(this->_targetChannels[idxChannel]));
-			continue ;
+	myData.client = &client;
+	int const	sizeChannel = this->_targetChannels.size();
+	int const	sizeUser = this->_targetUsers.size();
+	for (myData.idxChannel = 0, myData.idxUser = 0; myData.idxChannel < sizeChannel && error.empty(); myData.idxChannel++) {
+		for (int idx = 0; idx < 4 && error.empty(); idx++)
+			error = (this->*_method[idx])(myData);
+		if (!error.empty())
+			Send::ToClient(client._clientID, error);
+		else {
+			myData.channel->deleteClient(myData.targetID);
+			std::string const	message = client._prefix + " KICK " + myData.channel->_channelName + " " + this->_message;
+			Send::ToChannel(*myData.channel, message);
+			Send::ToClient(myData.targetID, message);
 		}
-		else if (!channel->isClient(client._clientID)) {
-			Send::ToClient(client._clientID, ERR_NOTONCHANNEL(this->_targetChannels[idxChannel]));
-			continue ;
-		}
-		else if (!channel->isOperator(client._clientID)) {
-			Send::ToClient(client._clientID, ERR_CHANOPRIVSNEEDED(this->_targetChannels[idxChannel]));
-			continue ;
-		}
-		int const sizeUser = this->_targetUsers.size();
-		for (int idxClient = 0; idxClient < sizeUser; idxClient++) {
-			t_user const *	targetUser = this->_targetUsers[idxClient];
-			int const		targetID = this->_server->_searchClientID[targetUser->targetNickname];
-			Client const *	targetClient = this->_server->_serverClient[targetID];
-			if (!targetClient || !channel->isClient(targetID)) {
-				Send::ToClient(client._clientID, ERR_USERNOTINCHANNEL(targetUser->targetNickname, channel->_channelName));
-				continue ;
-			}
-			channel->deleteClient(targetID);
-			Send::ToChannel(*channel, client._prefix + " KICK " + channel->_channelName + " " + this->_message);
-			Send::ToClient(targetID, client._prefix + " KICK " + channel->_channelName + " " + this->_message);
-		}
+		if (myData.idxUser + 1 < sizeUser)
+			++myData.idxUser;
 	} 
 	return ;
+}
+
+std::string	Kick::checkChannelExist(t_data& myData) {
+	myData.channel = this->_server->_serverChannel[this->_targetChannels[myData.idxChannel]];
+	if (!myData.channel)
+		return ERR_NOSUCHCHANNEL(this->_targetChannels[myData.idxChannel]);
+	return "";
+}
+
+std::string	Kick::checkChannelClient(t_data& myData) {
+	if (!myData.channel->isClient(myData.client->_clientID))
+		return ERR_NOTONCHANNEL(myData.channel->_channelName);
+	return "";
+}
+
+std::string	Kick::checkChannelOperator(t_data& myData) {
+	if (!myData.channel->isOperator(myData.client->_clientID))
+		return ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
+	return "";
+}
+
+std::string	Kick::checkClientTargetExist(t_data& myData) {
+	myData.targetUser = this->_targetUsers[myData.idxUser];
+	myData.targetID = this->_server->_searchClientID[myData.targetUser->targetNickname];
+	myData.targetClient = this->_server->_serverClient[myData.targetID];
+	if (!myData.targetClient || !myData.channel->isClient(myData.targetID))
+		return ERR_USERNOTINCHANNEL(myData.targetUser->targetNickname, myData.channel->_channelName);
+	return "";
 }

@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 02:02:46 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/23 20:45:04 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,8 @@ void	Invite::execute(Client const & client) {
 	if (this->_targetChannels.empty() || this->_targetUsers.empty())
 		error = ERR_NEEDMOREPARAMS(this->_cmdName);
 	myData.channel = this->_server->_serverChannel[this->_targetChannels.front()];
-	for (int idx = 0;idx < 5 && error.empty(); idx++) {
-		std::string(Invite::*func)(t_data&) = this->_method[idx];
-		error = (this->*func)(myData);
-	} 
+	for (int idx = 0;idx < 5 && error.empty(); idx++)
+		error = (this->*_method[idx])(myData);
 	if (!error.empty()) {
 		Send::ToClient(client._clientID, error);
 		return ;
@@ -58,7 +56,7 @@ void	Invite::execute(Client const & client) {
 }
 
 std::string	Invite::checkChannelExist(t_data& myData) {
-	myData.nameTargetChannel = this->_targetChannels.front();
+	myData.nameTargetChannel = this->_targetChannels.front(); //????
 	myData.channel = this->_server->_serverChannel[myData.nameTargetChannel];
 
 	if (!myData.channel)
