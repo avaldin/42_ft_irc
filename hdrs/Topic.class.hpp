@@ -3,22 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.class.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:37:15 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:24:39 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/21 02:22:10 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOPIC_CLASS_HPP
 # define TOPIC_CLASS_HPP
 # include "ICommand.interface.hpp"
-# include "Command.class.hpp"
-# include <string>
 # include <vector>
 
 class Client;
 class Channel;
+class Server;
 
 class Topic : public ICommand {
 	public:

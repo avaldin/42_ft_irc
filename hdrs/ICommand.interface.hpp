@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ICommand.interface.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:29:24 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:39:15 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/21 00:58:02 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ class ICommand {
 public:
 	virtual ~ICommand( void ) {};
 	virtual void	execute(Client const & client) = 0;
-private:
-	std::string	_cmdName;
+protected:
+	std::string const	_cmdName;
 };
 
 #endif
