@@ -6,13 +6,13 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 17:01:59 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:44:06 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/26 18:34:52 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef INVITE_CLASS_HPP
 # define INVITE_CLASS_HPP
-# include "ICommand.interface.hpp"
+# include "ACommand.class.hpp"
 # include <string>
 # include <vector>
 
@@ -20,7 +20,7 @@ class Client;
 class Server;
 class Channel;
 
-class Invite : public ICommand {
+class Invite : public ACommand {
 	public:
 		void	execute(Client const & client);
 	
@@ -38,6 +38,8 @@ class Invite : public ICommand {
 			Client const *			client;
 		}	t_data;
 	
+		std::string	checkRegistered(t_data& myData);
+		std::string	checkParams(t_data& myData);
 		std::string	checkChannelExist(t_data& myData);
 		std::string	checkChannelClient(t_data& myData);
 		std::string	checkChannelOperator(t_data& myData);
@@ -50,7 +52,7 @@ class Invite : public ICommand {
 		
 		static Server*	_server;
 	
-		static std::string(Invite::*_method[5])(t_data&);
+		static std::string(Invite::*_method[7])(t_data&);
 	
 	friend class Command;
 };

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 01:24:26 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/26 15:46:09 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ private:
 	void	eraseChannel(std::string channelName);
 
 	std::string const	_serverName;
+	std::string			_serverPassword;
 
 	static Server*					_me;
 	Client*							_console;
@@ -87,6 +88,7 @@ friend class Mode;
 friend class Invite;
 friend class Topic;
 friend class Kick;
+friend class Pass;
 };
 
 

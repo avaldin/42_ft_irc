@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 01:13:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/26 18:26:09 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "Topic.class.hpp"
 #include "Invite.class.hpp"
 #include "Kick.class.hpp"
+#include "Pass.class.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -35,7 +36,7 @@ Command::~Command( void ) {
 
 Command::Command(std::string const & rawLine) {
 	this->_rawLine = rawLine;
-	// this->_cmdMethods["PASS"] = &Command::setPASS;
+	this->_cmdMethods["PASS"] = &Command::setPASS;
 	// this->_cmdMethods["NICK"] = &Command::setNICK;
 	// this->_cmdMethods["USER"] = &Command::setUSER;
 	// this->_cmdMethods["JOIN"] = &Command::setJOIN;
@@ -97,10 +98,13 @@ t_user	*Command::parseUser(std::string user) {
 	return userStruct;
 }
 
-// void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
-// 	this->_password = splitedLine[idx];
-// 	return ;
-// }
+void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
+	Pass*	newCommand = new Pass();
+	
+	newCommand->_password = splitedLine[idx];
+	this->_command = newCommand;
+	return ;
+}
 
 // void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
 // 	t_user	*user = new t_user;
@@ -187,7 +191,7 @@ std::string 	Command::getPrefix( void ) {
 	return this->_prefix;
 }
 
-ICommand* 	Command::getCommand( void ) {
+ACommand* 	Command::getCommand( void ) {
 	return this->_command;
 }
 

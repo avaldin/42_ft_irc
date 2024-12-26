@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:44:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/26 19:01:11 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,4 +135,16 @@ void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int
 	std::string const	reply = "MODE " + currentChannel->_channelName + static_cast<char>(currentMode->sign) + "o " + currentMode->args;
 	Send::ToChannel(*currentChannel, reply);
 	return ; 
+}
+
+std::string	Mode::checkRegistered(t_data& myData) {
+	if (myData.client->status != REGISTERED)
+		return ERR_NOTREGISTRATED;
+	return "";	
+}
+
+std::string	Mode::checkParams(t_data& myData) {
+	if (this->_targetChannels.empty() || this->_mode.empty())
+		return ERR_NEEDMOREPARAMS(this->_cmdName);
+	return "";
 }

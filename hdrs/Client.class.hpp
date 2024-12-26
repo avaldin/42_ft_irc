@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/17 19:37:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/26 18:36:27 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 # include "Channel.class.hpp"
 # include <string>
 # include <vector>
+
+typedef enum registeredState {
+	NOT_REGISTERED,
+	ONGOING_REGISTERING,
+	REGISTERED
+};
 
 class Client {
 public:
@@ -25,6 +31,7 @@ public:
 	std::string					_username;
 	std::string 				_nickname;
 	std::string					_prefix;
+	registeredState				status;
 
 	void	addChannel(std::string newChannel);
 
@@ -44,4 +51,3 @@ private:
 };
 
 #endif
-

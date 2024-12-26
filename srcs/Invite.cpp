@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/23 20:45:04 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/26 18:39:57 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 
 Server* Invite::_server = Server::instantiate();
 
-std::string(Invite::*Invite::_method[5])(t_data&) = {
+std::string(Invite::*Invite::_method[7])(t_data&) = {
+	&Invite::checkRegistered,
+	&Invite::checkParams,
 	&Invite::checkChannelExist, 
 	&Invite::checkChannelClient,
 	&Invite::checkChannelOperator,
@@ -39,10 +41,7 @@ void	Invite::execute(Client const & client) {
 	std::string		error;
 	
 	myData.client = &client;
-	if (this->_targetChannels.empty() || this->_targetUsers.empty())
-		error = ERR_NEEDMOREPARAMS(this->_cmdName);
-	myData.channel = this->_server->_serverChannel[this->_targetChannels.front()];
-	for (int idx = 0;idx < 5 && error.empty(); idx++)
+	for (int idx = 0;idx < 7 && error.empty(); idx++)
 		error = (this->*_method[idx])(myData);
 	if (!error.empty()) {
 		Send::ToClient(client._clientID, error);
@@ -55,8 +54,20 @@ void	Invite::execute(Client const & client) {
 	return ;
 }
 
+std::string	Invite::checkRegistered(t_data& myData) {
+	if (myData.client->status != REGISTERED)
+		return ERR_NOTREGISTRATED;
+	return "";	
+}
+
+std::string	Invite::checkParams(t_data& myData) {
+	if (this->_targetChannels.empty() || this->_targetUsers.empty())
+		return ERR_NEEDMOREPARAMS(this->_cmdName);
+	return "";
+}
+
 std::string	Invite::checkChannelExist(t_data& myData) {
-	myData.nameTargetChannel = this->_targetChannels.front(); //????
+	myData.nameTargetChannel = this->_targetChannels.front();
 	myData.channel = this->_server->_serverChannel[myData.nameTargetChannel];
 
 	if (!myData.channel)
@@ -77,7 +88,7 @@ std::string	Invite::checkChannelOperator(t_data& myData) {
 }
 
 std::string	Invite::checkTargetExist(t_data& myData) {
-	myData.targetUser = this->_targetUsers.front(); // PAS NICE
+	myData.targetUser = this->_targetUsers.front();
 	myData.targetID = this->_server->_searchClientID[myData.targetUser->targetNickname];
 	myData.targetClient = this->_server->_serverClient[myData.targetID];
 
