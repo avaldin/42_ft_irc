@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 15:33:03 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/17 19:37:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ public:
 	int const					_clientID;
 	std::string					_username;
 	std::string 				_nickname;
+	std::string					_prefix;
 
 	void	addChannel(std::string newChannel);
 

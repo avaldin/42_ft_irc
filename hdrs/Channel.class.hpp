@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/01 19:33:15 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:38:02 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,16 @@ typedef enum	e_channelType {
 class Channel {
 public:
 
-	void			sendToChannel(int const clientID, std::string const message);
+	void			sendToChannel(std::string const message) const;
 	bool			isOperator(int const clientID);
+	bool			isInvited(int const clientID);
+	bool			isClient(int const clientID);
+	void			addClient(int const clientID, Client const * client);
+	void			deleteClient(int const clientID);
+	void			addInvited(int const clientID, Client const * client);
+	void			deleteInvited(int const clientID);
+	void			addOperator(int const clientID);
+	void			deleteOperator(int const clientID);
 
 	t_channelType const		_channelType;
 	std::string const		_channelName;
@@ -51,9 +59,10 @@ private:
 
 	Channel&	operator=(Channel const & rhs);
 
-	std::map<int, Client*>	_channelClient;
-	std::map<int, Client*>	_channelOperator;
-	std::map<int, Client*>	_channelCreator;
+	std::map<int, Client const *>			_channelClient;
+	std::map<int, Client const *>			_channelOperator;
+	std::map<int, Client const *>			_channelCreator;
+	std::map<int, Client const *>			_invitedClient;
 };
 
 #endif

@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/10 12:47:26 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/21 01:13:00 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Command.class.hpp"
 #include "Reply.define.hpp"
+
+#include "Mode.class.hpp"
+#include "Topic.class.hpp"
+#include "Invite.class.hpp"
+#include "Kick.class.hpp"
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -29,10 +35,10 @@ Command::~Command( void ) {
 
 Command::Command(std::string const & rawLine) {
 	this->_rawLine = rawLine;
-	this->_cmdMethods["PASS"] = &Command::setPASS;
-	this->_cmdMethods["NICK"] = &Command::setNICK;
-	this->_cmdMethods["USER"] = &Command::setUSER;
-	this->_cmdMethods["JOIN"] = &Command::setJOIN;
+	// this->_cmdMethods["PASS"] = &Command::setPASS;
+	// this->_cmdMethods["NICK"] = &Command::setNICK;
+	// this->_cmdMethods["USER"] = &Command::setUSER;
+	// this->_cmdMethods["JOIN"] = &Command::setJOIN;
 	this->_cmdMethods["KICK"] = &Command::setKICK;
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
 	this->_cmdMethods["MODE"] = &Command::setMODE;
@@ -66,12 +72,11 @@ void	 Command::parseRawline( void ) {
 	int	idx = 0;
 	if (splited[idx][0] == ':')
 		this->_prefix = splited[idx++];
-	this->_command = splited[idx++];
-	void (Command::*func)(std::vector<std::string>, int) = _cmdMethods[_command];
+	void(Command::*func)(std::vector<std::string>, int) = _cmdMethods[splited[idx]];
 	if (!func)
 		return ;
 	(this->*func)(splited, idx);
-	return ;	
+	return ;
 }
 
 t_user	*Command::parseUser(std::string user) {
@@ -92,56 +97,60 @@ t_user	*Command::parseUser(std::string user) {
 	return userStruct;
 }
 
-void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
-	this->_password = splitedLine[idx];
-	return ;
-}
+// void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
+// 	this->_password = splitedLine[idx];
+// 	return ;
+// }
 
-void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
-	t_user	*user = new t_user;
+// void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
+// 	t_user	*user = new t_user;
 
-	user->targetNickname = splitedLine[idx];
-	return ;
-}
+// 	user->targetNickname = splitedLine[idx];
+// 	return ;
+// }
 
-void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
-	t_user	*user = new t_user;
+// void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
+// 	t_user	*user = new t_user;
 
-	user->targetUsername = splitedLine[idx];
-	return ;
-}
+// 	user->targetUsername = splitedLine[idx];
+// 	return ;
+// }
 
-void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
-	int	const	size = splitedLine.size();
+// void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
+// 	int	const	size = splitedLine.size();
 
-	this->_targetChannels.push_back(splitedLine[idx++]);
-	if (size > idx)
-		this->_password = splitedLine[idx];
-	return ;
-}
+// 	this->_targetChannels.push_back(splitedLine[idx++]);
+// 	if (size > idx)
+// 		this->_password = splitedLine[idx];
+// 	return ;
+// }
 
 void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
+	Kick*		newCommand = new Kick();
 	int const	size = splitedLine.size();
 
 	while (size < idx && (splitedLine[idx][0] == '&' || splitedLine[idx][0] == '+' || splitedLine[idx][0] == '!'))
-		this->_targetChannels.push_back(splitedLine[idx++]);
+		newCommand->_targetChannels.push_back(splitedLine[idx++]);
 	while (size < idx && splitedLine[idx][0] != ':')
-		this->_targetUsers.push_back(parseUser(splitedLine[idx++]));
+		newCommand->_targetUsers.push_back(parseUser(splitedLine[idx++]));
 	while (size < idx)
-		this->_message += splitedLine[idx++];
+		newCommand->_message += splitedLine[idx++];
 	return ;
 }
 
 void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
+	Topic*		newCommand = new Topic();
 	int const	size = splitedLine.size();
 	
-	this->_targetChannels.push_back(splitedLine[idx++]);
+	newCommand->_targetChannel = splitedLine[idx++];
 	while (idx < size)
-		this->_message += splitedLine[idx++];
+		newCommand->_topic += splitedLine[idx++];
+	this->_command = newCommand;
 	return ;
 }
 
 void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
+	Mode*		newCommand = new Mode();
 	int const	size = splitedLine.size();
 
 	for (;idx < size; idx++) {
@@ -151,18 +160,22 @@ void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
 				t_mode	*newMode = new t_mode;
 				newMode->sign = sign;
 				newMode->mode = splitedLine[idx][idxWord];
-				this->_mode.push_back(newMode);
+				newCommand->_mode.push_back(newMode);
 			}
 		}
-		else if (!this->_mode.empty())
-			this->_mode.back()->args.push_back(splitedLine[idx]);
+		else if (!newCommand->_mode.empty() && newCommand->_mode.back()->args.empty())
+			newCommand->_mode.back()->args = splitedLine[idx];
 	}
+	this->_command = newCommand;
 	return ;
 }
 
 void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
-	this->_targetUsers.push_back(parseUser(splitedLine[idx++]));
-	this->_targetChannels.push_back(splitedLine[idx++]);
+	Invite*	newCommand = new Invite();
+
+	newCommand->_targetUsers.push_back(parseUser(splitedLine[idx++]));
+	newCommand->_targetChannels.push_back(splitedLine[idx++]);
+	this->_command = newCommand;
 	return ;
 }
 
@@ -174,22 +187,23 @@ std::string 	Command::getPrefix( void ) {
 	return this->_prefix;
 }
 
-std::string 	Command::getCommand( void ) {
+ICommand* 	Command::getCommand( void ) {
 	return this->_command;
 }
 
-std::string 	Command::getPassword( void ) {
-	return this->_password;
-}
+// std::string 	Command::getPassword( void ) {
+// 	return this->_password;
+// }
 
-std::string 	Command::getMessage( void ) {
-	return this->_message;
-}
+// std::string 	Command::getMessage( void ) {
+// 	return this->_message;
+// }
 
-std::vector<std::string>	Command::getTargetChannels( void ) {
-	return this->_targetChannels;
-}
+// std::vector<std::string&>&	Command::getTargetChannels( void ) {
+// 	return this->_targetChannels;
+// }
 
-std::vector<t_user *>	Command::getTargetUsers( void ) {
-	return this->_targetUsers;
-}
+// std::vector<t_user*>	Command::getTargetUsers( void ) {
+// 	return this->_targetUsers;
+// }
+	

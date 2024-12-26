@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/02 17:03:48 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/19 18:38:09 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,57 @@ void	Channel::uninstantiateChannel(Channel* oldChannel) {
 	return ;
 }
 
-void	Channel::sendToChannel(int const clientID, std::string const message) {
-	for (std::map<int, Client*>::iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
-		if (it->first != clientID) {
-			int otherClient = it->second->_clientID;
-			send(otherClient, message.c_str(), message.size(), 0);
-		}
+void	Channel::sendToChannel(std::string const message) const {
+	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
+		send(it->second->_clientID, message.c_str(), message.size(), 0);
 	}
+	return ;
+}
+
+void	Channel::addOperator(int const clientID) {
+	this->_channelOperator[clientID] = this->_channelClient[clientID];
+	return ;
+}
+
+void	Channel::deleteOperator(int const clientID) {
+	this->_channelOperator.erase(clientID);
+	return ;
+}
+
+void	Channel::addClient(int const clientID, Client const * client) {
+	this->_channelClient[clientID] = client;
+	return ;
+}
+
+void	Channel::deleteClient(int const clientID) {
+	this->_channelClient.erase(clientID);
+	return ;
+}
+
+void	Channel::addInvited(int const clientID, Client const * client) {
+	this->_invitedClient[clientID] = client;
+	return ;
+}
+
+void	Channel::deleteInvited(int const clientID) {
+	this->_invitedClient.erase(clientID);
 	return ;
 }
 
 bool	Channel::isOperator(int const clientID) {
 	if (this->_channelOperator[clientID])
+		return true;
+	return false;
+}
+
+bool	Channel::isInvited(int const clientID) {
+	if (this->_invitedClient[clientID])
+		return true;
+	return false;
+}
+
+bool	Channel::isClient(int const clientID) {
+	if (this->_channelClient[clientID])
 		return true;
 	return false;
 }
