@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 19:01:11 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:11:28 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,12 +138,14 @@ void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int
 }
 
 std::string	Mode::checkRegistered(t_data& myData) {
+	(void)myData;
 	if (myData.client->status != REGISTERED)
 		return ERR_NOTREGISTRATED;
 	return "";	
 }
 
 std::string	Mode::checkParams(t_data& myData) {
+	(void)myData;
 	if (this->_targetChannels.empty() || this->_mode.empty())
 		return ERR_NEEDMOREPARAMS(this->_cmdName);
 	return "";

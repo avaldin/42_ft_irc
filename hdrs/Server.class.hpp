@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 23:19:40 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:19:52 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,7 @@ private:
 
 	Server( void );
 
-	void	processCommand(Command* command);
-
-	void	INVITE(Command* command, Client const & client);
+	// void	processCommand(ACommand* command);
 
 	void	addClient( void );
 	void	eraseClient(int clientID);

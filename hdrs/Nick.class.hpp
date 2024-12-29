@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 21:32:30 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 22:55:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:13:29 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ public :
 	void	execute(Client& client);
 	
 private:
-	Nick( void ) {}
-	~Nick( void ) {}
+	Nick( void );
+	~Nick( void );
 	
 	typedef struct	s_data {
 		Client*	client;

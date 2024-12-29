@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 18:47:48 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:11:10 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,14 @@ void	Kick::execute(Client const & client) {
 }
 
 std::string	Kick::checkRegistered(t_data& myData) {
+	(void)myData;
 	if (myData.client->status != REGISTERED)
 		return ERR_NOTREGISTRATED;
 	return "";	
 }
 
 std::string	Kick::checkParams(t_data& myData) {
+	(void)myData;
 	if (this->_targetChannels.empty() || this->_targetUsers.empty())
 		return ERR_NEEDMOREPARAMS(this->_cmdName);
 	return "";

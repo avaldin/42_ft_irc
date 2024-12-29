@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:29:24 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 20:45:06 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:08:26 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ public:
 	virtual void	execute(Client const &) {};
 	virtual void	execute(Client &) {};
 
-private:
-	virtual std::string	checkRegistered(t_data& myData) = 0;
-	virtual std::string checkParams(t_data& myData) = 0;
+// private:
+// 	virtual std::string	checkRegistered(t_data& myData) {}
+// 	virtual std::string checkParams(t_data& myData) {}
 };
 
 #endif

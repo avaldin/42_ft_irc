@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 22:43:58 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 23:15:15 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:13:50 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	Nick::execute(Client& client) {
 	if (client._username.empty())
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
-		client.status == REGISTERED;
+		client.status = REGISTERED;
 		Send::ToServer(this->_server->_serverClient, ""); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
 	}
 	else

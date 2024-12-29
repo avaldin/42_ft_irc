@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 02:18:58 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:21:41 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 Server*	Server::_me = nullptr;
 
 Server::Server( void ) : _serverName("irc.serv") {
+	this->_serverPassword = "tempo"; // a tej
 	return ;
 }
 
@@ -130,14 +131,15 @@ void	Server::serverRequest(int clientID, std::string rawLine) {
 	
 	Send::ToConsole(clientID, logLine);
 	Command		myCommand(rawLine);
-	processCommand(&myCommand);
+	if (myCommand._command)
+		myCommand._command->execute(*currentClient); // have to do error return
 	return ;
 }
 
-void	Server::processCommand(Command* command) {
-	(void)command;
-	return ;
-}
+// void	Server::processCommand(ACommand* command) {
+// 	command->execute();
+// 	return ;
+// }
 
 void	Server::addChannel(t_channelType channelType, std::string channelName) {
 	Channel*	newChannel = Factory::createChannel(channelType, channelName);

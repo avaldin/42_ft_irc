@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 18:39:57 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:10:55 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,14 @@ void	Invite::execute(Client const & client) {
 }
 
 std::string	Invite::checkRegistered(t_data& myData) {
+	(void)myData;
 	if (myData.client->status != REGISTERED)
 		return ERR_NOTREGISTRATED;
 	return "";	
 }
 
 std::string	Invite::checkParams(t_data& myData) {
+	(void)myData;
 	if (this->_targetChannels.empty() || this->_targetUsers.empty())
 		return ERR_NEEDMOREPARAMS(this->_cmdName);
 	return "";

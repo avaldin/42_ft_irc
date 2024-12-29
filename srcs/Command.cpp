@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 22:11:54 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:10:09 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "Kick.class.hpp"
 #include "Pass.class.hpp"
 #include "Nick.class.hpp"
+#include "User.class.hpp"
 
 
 #include <iostream>
@@ -40,7 +41,7 @@ Command::Command(std::string const & rawLine) {
 	this->_rawLine = rawLine;
 	this->_cmdMethods["PASS"] = &Command::setPASS;
 	this->_cmdMethods["NICK"] = &Command::setNICK;
-	// this->_cmdMethods["USER"] = &Command::setUSER;
+	this->_cmdMethods["USER"] = &Command::setUSER;
 	// this->_cmdMethods["JOIN"] = &Command::setJOIN;
 	this->_cmdMethods["KICK"] = &Command::setKICK;
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
@@ -111,17 +112,18 @@ void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
 void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
 	Nick*	newCommand = new Nick();
 	
-	newCommand->_ = splitedLine[idx];
+	newCommand->_nickname = splitedLine[idx];
 	this->_command = newCommand;
 	return ;
 }
 
-// void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
-// 	t_user	*user = new t_user;
-
-// 	user->targetUsername = splitedLine[idx];
-// 	return ;
-// }
+void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
+	User*	newCommand = new User();
+	
+	newCommand->_username = splitedLine[idx];
+	this->_command = newCommand;
+	return ;
+}
 
 // void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
 // 	int	const	size = splitedLine.size();

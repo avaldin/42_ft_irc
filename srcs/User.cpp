@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 23:26:59 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:13:05 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ void	User::execute(Client& client) {
 		Send::ToClient(client._clientID, error);
 		return ;
 	}
-	client._username = this->_Username;
+	client._username = this->_username;
 	if (client._nickname.empty())
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
-		client.status == REGISTERED;
+		client.status = REGISTERED;
 		Send::ToServer(this->_server->_serverClient, ""); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
 	}
 	return ;
@@ -63,7 +63,7 @@ std::string	User::checkRegistered(t_data& myData) {
 
 std::string	User::checkParams(t_data& myData) {
 	(void)myData;
-	if (this->_Username.empty())
+	if (this->_username.empty())
 		return ERR_NEEDMOREPARAMS(this->_cmdName);
 	return "";
 }

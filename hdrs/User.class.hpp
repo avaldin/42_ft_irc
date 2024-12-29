@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:17:06 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 23:18:17 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:12:43 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ public :
 	void	execute(Client& client);
 	
 private:
-	User( void ) {}
-	~User( void ) {}
+	User( void );
+	~User( void );
 	
 	typedef struct	s_data {
 		Client*	client;
@@ -36,7 +36,7 @@ private:
 	std::string checkNicknameExist(t_data& myData);
 
 	std::string const	_cmdName;
-	std::string			_Username;
+	std::string			_username;
 	
 	static Server*	_server;
 	

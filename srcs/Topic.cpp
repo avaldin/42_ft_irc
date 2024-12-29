@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:01:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 19:24:23 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:11:49 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,14 @@ void	Topic::execute(Client const & client) {
 }
 
 std::string Topic::checkRegistered(t_data& myData) {
+	(void)myData;
 	if (myData.client->status != REGISTERED)
 		return ERR_NOTREGISTRATED;
 	return "";
 }
 
 std::string	Topic::checkParams(t_data& myData) {
+	(void)myData;
 	if (this->_targetChannel.empty())
 		return ERR_NEEDMOREPARAMS(this->_cmdName);
 	return "";

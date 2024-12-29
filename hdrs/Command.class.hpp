@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 22:11:32 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:18:19 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ public:
 	Command(std::string const & rawLine);
 
 	std::string					getPrefix( void );
+	ACommand*							_command;
 	ACommand*					getCommand( void );
 	// std::string					getPassword( void );
 	// std::string					getMessage( void );
@@ -49,7 +50,7 @@ private:
 	
 	void	setPASS(std::vector<std::string> splitedLine, int idx);
 	void	setNICK(std::vector<std::string> splitedLine, int idx);
-	// void	setUSER(std::vector<std::string> splitedLine, int idx);
+	void	setUSER(std::vector<std::string> splitedLine, int idx);
 	// void	setJOIN(std::vector<std::string> splitedLine, int idx);
 	void	setKICK(std::vector<std::string> splitedLine, int idx);
 	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
@@ -60,7 +61,6 @@ private:
 	std::string							_rawLine;
 		
 	std::string							_prefix;
-	ACommand*							_command;
 	std::string							_password;
 	std::string							_message;
 	
