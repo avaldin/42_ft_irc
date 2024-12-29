@@ -39,8 +39,10 @@ void	Pass::execute(Client& client) {
 	myData.client = &client;
 	for (int idx = 0; idx < 3 && !error.empty(); idx++)
 		error = (this->*_method[idx])(myData);
-	if (!error.empty())
+	if (!error.empty()) {
 		Send::ToClient(client._clientID, error);
+		return ;
+	}
 	client.status = ONGOING_REGISTERING;
 	return ;
 }
