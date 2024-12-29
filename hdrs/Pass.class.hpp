@@ -26,15 +26,19 @@ private:
 	~Pass( void );
 
 	typedef struct	s_data {
-		std::string	error;
+		Client*	client;
 	}	t_data;
+
+	std::string	checkRegistered(t_data& myData);
+	std::string checkParams(t_data& myData);
+	std::string	checkPassword(t_data& myData);
 	
 	std::string const	_cmdName;
 	std::string			_password;
 
 	static Server*	_server;
 	
-	static std::string(Pass::*_method[4])(t_data&);
+	static std::string(Pass::*_method[3])(t_data&);
 
 friend class Command;	
 };

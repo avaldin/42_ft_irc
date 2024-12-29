@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ACommand.class.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:29:24 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 19:27:17 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/29 20:45:06 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ struct t_data;
 
 class ACommand {
 public:
-	ACommand ( void );
-	virtual ~ACommand( void );
+	ACommand ( void ) {};
+	virtual ~ACommand( void ) {};
 	
-	virtual void	execute(Client const &);
-	virtual void	execute(Client &);
+	virtual void	execute(Client const &) {};
+	virtual void	execute(Client &) {};
 
 private:
 	virtual std::string	checkRegistered(t_data& myData) = 0;

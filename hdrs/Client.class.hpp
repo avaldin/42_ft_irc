@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 18:36:27 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/29 19:56:43 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 # include <string>
 # include <vector>
 
-typedef enum registeredState {
+typedef enum s_registeredState {
 	NOT_REGISTERED,
 	ONGOING_REGISTERING,
 	REGISTERED
-};
+}			t_registeredState;
 
 class Client {
 public:
@@ -31,7 +31,7 @@ public:
 	std::string					_username;
 	std::string 				_nickname;
 	std::string					_prefix;
-	registeredState				status;
+	t_registeredState			status;
 
 	void	addChannel(std::string newChannel);
 
