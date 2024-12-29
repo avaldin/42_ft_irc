@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/23 20:52:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/26 18:47:48 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@
 
 Server*	Kick::_server = Server::instantiate();
 
-std::string(Kick::*Kick::_method[4])(t_data&) = {
+std::string(Kick::*Kick::_method[6])(t_data&) = {
+	&Kick::checkRegistered,
+	&Kick::checkParams,
 	&Kick::checkChannelExist, 
 	&Kick::checkChannelClient,
 	&Kick::checkChannelOperator,
@@ -37,14 +39,14 @@ Kick::~Kick( void ) {
 void	Kick::execute(Client const & client) {
 	t_data		myData;
 	std::string	error;
-	
-	if (this->_targetChannels.empty() || this->_targetUsers.empty())
-		error = ERR_NEEDMOREPARAMS(this->_cmdName);
+
 	myData.client = &client;
+	for (int idx = 0; idx < 2; idx++)
+		error = (this->*_method[idx])(myData);
 	int const	sizeChannel = this->_targetChannels.size();
 	int const	sizeUser = this->_targetUsers.size();
 	for (myData.idxChannel = 0, myData.idxUser = 0; myData.idxChannel < sizeChannel && error.empty(); myData.idxChannel++) {
-		for (int idx = 0; idx < 4 && error.empty(); idx++)
+		for (int idx = 2; idx < 6 && error.empty(); idx++)
 			error = (this->*_method[idx])(myData);
 		if (!error.empty())
 			Send::ToClient(client._clientID, error);
@@ -58,6 +60,18 @@ void	Kick::execute(Client const & client) {
 			++myData.idxUser;
 	} 
 	return ;
+}
+
+std::string	Kick::checkRegistered(t_data& myData) {
+	if (myData.client->status != REGISTERED)
+		return ERR_NOTREGISTRATED;
+	return "";	
+}
+
+std::string	Kick::checkParams(t_data& myData) {
+	if (this->_targetChannels.empty() || this->_targetUsers.empty())
+		return ERR_NEEDMOREPARAMS(this->_cmdName);
+	return "";
 }
 
 std::string	Kick::checkChannelExist(t_data& myData) {
