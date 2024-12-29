@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 18:25:29 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/29 22:11:32 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ private:
 	t_user*	parseUser(std::string user);
 	
 	void	setPASS(std::vector<std::string> splitedLine, int idx);
-	// void	setNICK(std::vector<std::string> splitedLine, int idx);
+	void	setNICK(std::vector<std::string> splitedLine, int idx);
 	// void	setUSER(std::vector<std::string> splitedLine, int idx);
 	// void	setJOIN(std::vector<std::string> splitedLine, int idx);
 	void	setKICK(std::vector<std::string> splitedLine, int idx);
