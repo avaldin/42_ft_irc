@@ -6,7 +6,7 @@
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/29 22:09:27 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/29 23:19:40 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ friend class Topic;
 friend class Kick;
 friend class Pass;
 friend class Nick;
+friend class User;
 };
 
 
