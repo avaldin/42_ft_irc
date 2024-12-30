@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:03:19 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 18:59:57 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 18:24:49 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ class Mode : public ACommand {
 		void	execute(Client const & client);
 	
 	private:
-		Mode( void );
-		~Mode( void );
+		Mode( void ) : _cmdName("MODE") {}
+		~Mode( void ){}
 		
 		typedef struct	s_data {
 			Client const *	client;

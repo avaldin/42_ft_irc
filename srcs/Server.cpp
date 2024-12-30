@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 16:49:01 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 17:17:39 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,17 +97,17 @@ void	Server::runServer( void ) {
 				}
 			}
 			else {
-				this->_serverClient[events[nfd].data.fd]->action();
+				this->_serverClientId[events[nfd].data.fd]->action();
 			}
 		}
 	}
 }
 
 void	Server::LegacysendToServer(int const clientID, std::string token) {
-	std::string nickname = this->_serverClient[clientID]->_nickname + ": " + token;
+	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
 
 	std::cout << nickname << std::endl;
-	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
+	for (std::map<int const &, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 		int otherClient = it->second->_clientID;
 		send(otherClient, nickname.c_str(), nickname.size(), 0);
 	}
@@ -118,7 +118,7 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 
 	if (this->_serverChannel[channelName]->isOperator(clientID))
 		line += "@";
-	line += (this->_serverClient[clientID]->_nickname + ": " + token);
+	line += (this->_serverClientId[clientID]->_nickname + ": " + token);
 	this->_serverChannel[channelName]->sendToChannel(line);
 	return ;
 }
@@ -161,12 +161,15 @@ void	Server::addClient() {
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
 	Client*	newClient = Factory::createClient(clientID);
-	this->_serverClient[clientID] = newClient;
+	this->_serverClientId[clientID] = newClient;
 }
 
-void	Server::eraseClient(int clientID) {
-	Factory::deleteClient(this->_serverClient[clientID]);
-	this->_serverClient.erase(clientID);
+void	Server::eraseClient(int const & clientID) {
+	Client*	client = this->_serverClientId[clientID];
+	this->_serverNickname.erase(client->_nickname);
+	this->_serverUsername.erase(client->_username);
+	this->_serverClientId.erase(clientID);
+	Factory::deleteClient(this->_serverClientId[clientID]);
 	return ;	
 }
 

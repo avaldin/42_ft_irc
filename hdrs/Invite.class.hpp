@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 17:01:59 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 18:34:52 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 17:54:03 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,26 +25,25 @@ class Invite : public ACommand {
 		void	execute(Client const & client);
 	
 	private:
-		Invite( void );
-		~Invite( void );
+		Invite( void ) : _cmdName("INVITE") {}
+		~Invite( void ) {}
 
 		typedef struct s_data {
-			t_user const *			targetUser;
-			int						targetID;
-			Client const *			targetClient;
-			std::string				nameTargetChannel;
-			Channel*				channel;
-			std::string				error;
-			Client const *			client;
+			t_user*			targetUser;
+			Client const *	targetClient;
+			std::string		nameTargetChannel;
+			Channel*		channel;
+			std::string		error;
+			Client const *	client;
 		}	t_data;
 	
-		std::string	checkRegistered(t_data& myData);
-		std::string	checkParams(t_data& myData);
-		std::string	checkChannelExist(t_data& myData);
-		std::string	checkChannelClient(t_data& myData);
-		std::string	checkChannelOperator(t_data& myData);
-		std::string	checkTargetExist(t_data& myData);
-		std::string	checkChannelTarget(t_data& myData);
+		void	checkRegistered(t_data& myData);
+		void	checkParams(t_data& myData);
+		void	checkChannelExist(t_data& myData);
+		void	checkChannelClient(t_data& myData);
+		void	checkChannelOperator(t_data& myData);
+		void	checkTargetExist(t_data& myData);
+		void	checkChannelTarget(t_data& myData);
 		
 		std::string const			_cmdName;
 		std::vector<t_user*>		_targetUsers;
@@ -52,7 +51,7 @@ class Invite : public ACommand {
 		
 		static Server*	_server;
 	
-		static std::string(Invite::*_method[7])(t_data&);
+		static void(Invite::*_method[7])(t_data&);
 	
 	friend class Command;
 };

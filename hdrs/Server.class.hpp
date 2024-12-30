@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 16:49:25 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 17:17:55 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ private:
 	// void	processCommand(ACommand* command);
 
 	void			addClient( void );
-	void			eraseClient(int clientID);
+	void			eraseClient(int const & clientID);
 	void			addChannel(t_channelType channelType, std::string channelName);
 	void			eraseChannel(std::string channelName);
 
@@ -65,9 +65,10 @@ private:
 	unsigned int						_serverLen;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
-	std::map<std::string, int>			_serverClientID;
-	std::map<int, Client*>				_serverClient;
-	std::map<int, Client*>				_serverOperator;
+	std::map<std::string&, Client*>		_serverUsername;
+	std::map<std::string&, Client*>		_serverNickname;
+	std::map<int const &, Client*>		_serverClientId;
+	std::map<int const &, Client*>		_serverOperator;
 	std::map<std::string, Channel*>		_serverChannel;
 
 	class Factory : public Client, public Channel {
