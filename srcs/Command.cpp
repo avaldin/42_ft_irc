@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 17:01:02 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 19:38:49 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,11 +133,17 @@ void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
 }
 
 void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
-	int	const	size = splitedLine.size();
+	int	const			size = splitedLine.size();
+	Join*				newCommand = new Join();
+	std::string			parsed;
 
-	this->_targetChannels.push_back(splitedLine[idx++]);
-	if (size > idx)
-		this->_password = splitedLine[idx];
+	std::stringstream	channelSS(splitedLine[idx++]);
+	while(std::getline(channelSS, parsed, ','))
+		newCommand->_targetChannels.push_back(parsed);
+	parsed.clear();
+	std::stringstream	keySS(splitedLine[idx++]);
+	while(size > idx && std::getline(channelSS, parsed, ','))
+		newCommand->_targetKeys.push_back(parsed);
 	return ;
 }
 

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 16:59:40 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 17:25:11 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 19:40:22 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 # define JOIN_CLASS_HPP
 # include "ACommand.class.hpp"
 # include <vector>
-# define NB_CHECK 2
+# define CHECK_JOIN 6
 
 class Client;
+class Channel;
 class Server;
 
 class Join : public ACommand {
@@ -28,13 +29,19 @@ private:
 	~Join( void ) {}
 	
 	typedef struct	s_data {
-		Client*		client;
-		Channel*	targetChannel;
-		std::string	error;
+		Client*			client;
+		Channel*		targetChannel;
+		std::string		targetName;
+		std::string		targetKey;
+		std::string		error;
 	}	t_data;
 
 	void	checkRegistered(t_data& myData);
 	void	checkParams(t_data& myData);
+	void	checkChannelName(t_data& myData);
+	void	checkChannelKey(t_data& myData);
+	void	checkChannelInvite(t_data& myData);
+	void	checkChannelFilling(t_data& myData);
 
 	std::string const			_cmdName;
 	std::vector<std::string>	_targetChannels;
@@ -42,7 +49,7 @@ private:
 
 	static Server*	_server;
 	
-	static void(Join::*_method[NB_CHECK])(t_data&);
+	static void(Join::*_method[CHECK_JOIN])(t_data&);
 
 friend class Command;	
 };
