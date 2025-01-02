@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 00:10:09 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 15:42:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,15 @@ void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
 }
 
 void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
-	User*	newCommand = new User();
-	
-	newCommand->_username = splitedLine[idx];
+	int const	size = splitedLine.size(); 
+	User*		newCommand = new User();
+
+	newCommand->_username = splitedLine[idx++];
+	if (idx <= size)
+		newCommand->_mode = splitedLine[idx++];
+	idx++;
+	while (idx >= size)
+		newCommand->_realname += (splitedLine[idx++] + " ");
 	this->_command = newCommand;
 	return ;
 }
