@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 00:21:41 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:46:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,17 +97,17 @@ void	Server::runServer( void ) {
 				}
 			}
 			else {
-				this->_serverClient[events[nfd].data.fd]->action();
+				this->_serverClientId[events[nfd].data.fd]->action();
 			}
 		}
 	}
 }
 
 void	Server::LegacysendToServer(int const clientID, std::string token) {
-	std::string nickname = this->_serverClient[clientID]->_nickname + ": " + token;
+	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
 
 	std::cout << nickname << std::endl;
-	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
+	for (std::map<int const &, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 		int otherClient = it->second->_clientID;
 		send(otherClient, nickname.c_str(), nickname.size(), 0);
 	}
@@ -118,21 +118,18 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 
 	if (this->_serverChannel[channelName]->isOperator(clientID))
 		line += "@";
-	line += (this->_serverClient[clientID]->_nickname + ": " + token);
+	line += (this->_serverClientId[clientID]->_nickname + ": " + token);
 	this->_serverChannel[channelName]->sendToChannel(line);
 	return ;
 }
 
-void	Server::serverRequest(int clientID, std::string rawLine) {
-	Client	*currentClient = this->_serverClient[clientID];
-	if (!currentClient)
-		return ;// throw BIG ERROR, make non sense if this append
-	std::string	const	logLine = ":" + currentClient->_nickname + "!" + currentClient->_username + "@" + this->_serverName + " " + rawLine; 
+void	Server::serverRequest(Client& client, std::string rawLine) {
+	std::string	const	logLine = ":" + client._nickname + "!" + client._username + "@" + this->_serverName + " " + rawLine; 
 	
-	Send::ToConsole(clientID, logLine);
+	Send::ToConsole(client._clientID, logLine);
 	Command		myCommand(rawLine);
 	if (myCommand._command)
-		myCommand._command->execute(*currentClient); // have to do error return
+		myCommand._command->execute(client); // have to do error return
 	return ;
 }
 
@@ -164,13 +161,33 @@ void	Server::addClient() {
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
 	Client*	newClient = Factory::createClient(clientID);
-	this->_serverClient[clientID] = newClient;
+	this->_serverClientId[clientID] = newClient;
 }
 
-void	Server::eraseClient(int clientID) {
-	Factory::deleteClient(this->_serverClient[clientID]);
-	this->_serverClient.erase(clientID);
+void	Server::eraseClient(int const & clientID) {
+	this->_serverClientId.erase(clientID);
+	Factory::deleteClient(this->_serverClientId[clientID]);
 	return ;	
+}
+
+Client*	Server::findClientUsername(std::string const & username) {
+	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+		if (!it->second->_username.compare(username))
+			return it->second;
+	}
+	return NULL;
+}
+
+Client*	Server::findClientNickname(std::string const & nickname) {
+	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+		if (!it->second->_nickname.compare(nickname))
+			return it->second;
+	}
+	return NULL;
+}
+
+Client*	Server::findClientId(int const & id) {
+	return this->_serverClientId[id];
 }
 
 // SUBCLASS FACTORY //

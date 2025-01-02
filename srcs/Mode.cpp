@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 00:11:28 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 18:24:56 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,6 @@
 #include <cstdlib>
 
 Server* Mode::_server = Server::instantiate();
-
-Mode::Mode( void ) : _cmdName("MODE") {
-	return ;
-}
-
-Mode::~Mode( void ) {
-	return ;
-}
 
 void	Mode::execute(Client const & client) {
 	if (this->_targetChannels.empty() || this->_mode.empty()) {

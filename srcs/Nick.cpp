@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 22:43:58 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 00:13:50 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:50:36 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,11 @@
 
 Server*	Nick::_server = Server::instantiate();
 
-std::string(Nick::*Nick::_method[5])(t_data&) = {
+std::string(Nick::*Nick::_method[4])(t_data&) = {
 	&Nick::checkRegistered,
 	&Nick::checkParams,
 	&Nick::checkNicknameRestriction,
-	&Nick::checkNicknameExist,
-	&Nick::checkUsernameExist};
+	&Nick::checkNicknameExist};
 
 Nick::Nick( void ) : _cmdName("NICK") {
 	return ;
@@ -51,10 +50,10 @@ void	Nick::execute(Client& client) {
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClient, ""); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
+		Send::ToServer(this->_server->_serverClientId, ""); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
 	}
 	else
-		Send::ToServer(this->_server->_serverClient, client._prefix + " NICK " + this->_nickname);
+		Send::ToServer(this->_server->_serverClientId, client._prefix + " NICK " + this->_nickname);
 	// client.updatePrefix(); new method no done yet
 	return ;
 }
@@ -85,12 +84,6 @@ std::string	Nick::checkNicknameRestriction(t_data& myData) {
 }
 
 std::string	Nick::checkNicknameExist(t_data& myData) {
-	(void)myData;
-	//Have to add a wayto check that correctly in Server
-	return "";
-}
-
-std::string	Nick::checkUsernameExist(t_data& myData) {
 	(void)myData;
 	//Have to add a wayto check that correctly in Server
 	return "";

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 00:13:05 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:51:52 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	User::execute(Client& client) {
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClient, ""); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
+		Send::ToServer(this->_server->_serverClientId, ""); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
 	}
 	return ;
 }
