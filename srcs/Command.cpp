@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 15:42:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 17:01:02 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "Pass.class.hpp"
 #include "Nick.class.hpp"
 #include "User.class.hpp"
+#include "Join.class.hpp"
 
 
 #include <iostream>
@@ -42,7 +43,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["PASS"] = &Command::setPASS;
 	this->_cmdMethods["NICK"] = &Command::setNICK;
 	this->_cmdMethods["USER"] = &Command::setUSER;
-	// this->_cmdMethods["JOIN"] = &Command::setJOIN;
+	this->_cmdMethods["JOIN"] = &Command::setJOIN;
 	this->_cmdMethods["KICK"] = &Command::setKICK;
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
 	this->_cmdMethods["MODE"] = &Command::setMODE;
@@ -131,14 +132,14 @@ void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-// void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
-// 	int	const	size = splitedLine.size();
+void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
+	int	const	size = splitedLine.size();
 
-// 	this->_targetChannels.push_back(splitedLine[idx++]);
-// 	if (size > idx)
-// 		this->_password = splitedLine[idx];
-// 	return ;
-// }
+	this->_targetChannels.push_back(splitedLine[idx++]);
+	if (size > idx)
+		this->_password = splitedLine[idx];
+	return ;
+}
 
 void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
 	Kick*		newCommand = new Kick();

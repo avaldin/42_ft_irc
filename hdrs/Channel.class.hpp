@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:38:02 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 17:32:06 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ private:
 	std::map<int, Client const *>			_channelOperator;
 	std::map<int, Client const *>			_channelCreator;
 	std::map<int, Client const *>			_invitedClient;
+
+friend class Join;
 };
 
 #endif
