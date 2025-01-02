@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 17:53:20 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:53:23 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	Kick::execute(Client const & client) {
 	t_data		myData;
 
 	myData.client = &client;
-	for (int idx = 0; idx < 2, myData.error.empty(); idx++)
+	for (int idx = 0; idx < 2 && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	int const	sizeChannel = this->_targetChannels.size();
 	int const	sizeUser = this->_targetUsers.size();
@@ -81,7 +81,7 @@ void	Kick::checkChannelOperator(t_data& myData) {
 
 void	Kick::checkClientTargetExist(t_data& myData) {
 	myData.targetUser = this->_targetUsers[myData.idxUser];
-	myData.targetClient = this->_server->_serverNickname[myData.targetUser->targetNickname];
+	myData.targetClient = this->_server->findClientNickname(myData.targetUser->targetNickname);
 	if (!myData.targetClient || !myData.channel->isClient(myData.targetClient->_clientID))
 		myData.error =  ERR_USERNOTINCHANNEL(myData.targetUser->targetNickname, myData.channel->_channelName);
 }

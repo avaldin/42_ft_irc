@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 17:53:55 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:47:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	Invite::checkChannelOperator(t_data& myData) {
 
 void	Invite::checkTargetExist(t_data& myData) {
 	myData.targetUser = this->_targetUsers.front();
-	myData.targetClient = this->_server->_serverNickname[myData.targetUser->targetNickname];
+	myData.targetClient = this->_server->findClientNickname(myData.targetUser->targetNickname);
 
 	if (!myData.targetClient) 
 		myData.error = ERR_NOSUCHNICK(myData.targetUser->targetNickname);

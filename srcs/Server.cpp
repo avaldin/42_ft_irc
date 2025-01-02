@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 17:17:39 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:46:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,12 +165,29 @@ void	Server::addClient() {
 }
 
 void	Server::eraseClient(int const & clientID) {
-	Client*	client = this->_serverClientId[clientID];
-	this->_serverNickname.erase(client->_nickname);
-	this->_serverUsername.erase(client->_username);
 	this->_serverClientId.erase(clientID);
 	Factory::deleteClient(this->_serverClientId[clientID]);
 	return ;	
+}
+
+Client*	Server::findClientUsername(std::string const & username) {
+	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+		if (!it->second->_username.compare(username))
+			return it->second;
+	}
+	return NULL;
+}
+
+Client*	Server::findClientNickname(std::string const & nickname) {
+	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+		if (!it->second->_nickname.compare(nickname))
+			return it->second;
+	}
+	return NULL;
+}
+
+Client*	Server::findClientId(int const & id) {
+	return this->_serverClientId[id];
 }
 
 // SUBCLASS FACTORY //
