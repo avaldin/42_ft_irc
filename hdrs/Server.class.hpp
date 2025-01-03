@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 17:00:40 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/03 17:09:35 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <vector>
 # include <string>
 # include <sys/epoll.h>
+
+#include <stdio.h>
 
 struct	sockaddr_in;
 struct	epoll_event;
@@ -39,8 +41,8 @@ public:
 
 	void			serverRequest(Client& client, std::string rawLine);
 
-	void			LegacysendToChannel(std::string channelName, int clientID, std::string message);
-	void			LegacysendToServer(int clientID, std::string message);
+	// void			LegacysendToChannel(std::string channelName, int clientID, std::string message);
+	// void			LegacysendToServer(int clientID, std::string message);
 
 private:
 

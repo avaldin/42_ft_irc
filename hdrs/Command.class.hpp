@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 12:45:51 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/03 19:15:31 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ public:
 
 	std::string					getPrefix( void );
 	ACommand*							_command;
+	std::string							_cmdName;
 	ACommand*					getCommand( void );
 	// std::string					getPassword( void );
 	// std::string					getMessage( void );
@@ -46,6 +47,7 @@ private:
 	Command&	operator=(Command const & rhs);
 
 	void	parseRawline( void );
+	void	deleteNewline(std::string& line);
 	t_user*	parseUser(std::string user);
 	
 	void	setPASS(std::vector<std::string> splitedLine, int idx);
@@ -66,7 +68,7 @@ private:
 	std::string							_password;
 	std::string							_message;
 
-	std::map<std::string,void(Command::*)(std::vector<std::string> splitedLine, int idx)>	_cmdMethods;
+	std::map<std::string,void(Command::*)(std::vector<std::string>, int)>	_cmdMethods;
 };
 
 #endif

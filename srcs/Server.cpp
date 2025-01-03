@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 14:46:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/03 17:46:59 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,8 @@ void	Server::runServer( void ) {
 	int					nfds;
 	struct epoll_event	events[10];
 
-	std::cout << "server start running, my socket = " << this->_mySocket << std::endl;
 	while (true) {
 		nfds = epoll_wait(this->_epollfd, events, 10, -1);
-		std::cout << "epoll received something" << std::endl;
 		if (nfds == -1) 
 			throw EpollWaitException();
 		for (int nfd = 0; nfd < nfds; ++nfd) {
@@ -103,33 +101,35 @@ void	Server::runServer( void ) {
 	}
 }
 
-void	Server::LegacysendToServer(int const clientID, std::string token) {
-	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
+// void	Server::LegacysendToServer(int const clientID, std::string token) {
+// 	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
 
-	std::cout << nickname << std::endl;
-	for (std::map<int const &, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
-		int otherClient = it->second->_clientID;
-		send(otherClient, nickname.c_str(), nickname.size(), 0);
-	}
-}
+// 	std::cout << nickname << std::endl;
+// 	for (std::map<int const &, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+// 		int otherClient = it->second->_clientID;
+// 		send(otherClient, nickname.c_str(), nickname.size(), 0);
+// 	}
+// }
 
-void	Server::LegacysendToChannel(std::string const channelName, int const clientID, std::string token) {
-	std::string	line;
+// void	Server::LegacysendToChannel(std::string const channelName, int const clientID, std::string token) {
+// 	std::string	line;
 
-	if (this->_serverChannel[channelName]->isOperator(clientID))
-		line += "@";
-	line += (this->_serverClientId[clientID]->_nickname + ": " + token);
-	this->_serverChannel[channelName]->sendToChannel(line);
-	return ;
-}
+// 	if (this->_serverChannel[channelName]->isOperator(clientID))
+// 		line += "@";
+// 	line += (this->_serverClientId[clientID]->_nickname + ": " + token);
+// 	this->_serverChannel[channelName]->sendToChannel(line);
+// 	return ;
+// }
 
 void	Server::serverRequest(Client& client, std::string rawLine) {
 	std::string	const	logLine = ":" + client._nickname + "!" + client._username + "@" + this->_serverName + " " + rawLine; 
 	
-	Send::ToConsole(client._clientID, logLine);
+	// Send::ToConsole(client._clientID, logLine);
 	Command		myCommand(rawLine);
 	if (myCommand._command)
-		myCommand._command->execute(client); // have to do error return
+		myCommand._command->execute(client);
+	else
+		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(myCommand._cmdName));
 	return ;
 }
 
@@ -156,8 +156,7 @@ void	Server::addClient() {
 	if (clientID == -1)
 		throw AcceptException();
 	event.data.fd = clientID;
-	event.events = EPOLLIN | EPOLLPRI;             //jsp pk epollpri je l'ai pris sur internet
-	std::cout << "client accepted" << std::endl;
+	event.events = EPOLLIN | EPOLLPRI;      //jsp pk epollpri je l'ai pris sur internet
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
 	Client*	newClient = Factory::createClient(clientID);
