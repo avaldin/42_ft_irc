@@ -51,7 +51,7 @@ private:
 	void	setPASS(std::vector<std::string> splitedLine, int idx);
 	void	setNICK(std::vector<std::string> splitedLine, int idx);
 	void	setUSER(std::vector<std::string> splitedLine, int idx);
-	// void	setJOIN(std::vector<std::string> splitedLine, int idx);
+	void	setJOIN(std::vector<std::string> splitedLine, int idx);
 	void	setKICK(std::vector<std::string> splitedLine, int idx);
 	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
 	void	setMODE(std::vector<std::string> splitedLine, int idx);

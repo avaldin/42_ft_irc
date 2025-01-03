@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 13:25:34 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/02 19:38:49 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "Pass.class.hpp"
 #include "Nick.class.hpp"
 #include "User.class.hpp"
+#include "Join.class.hpp"
 #include "Ping.class.hpp"
 
 
@@ -43,7 +44,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["PASS"] = &Command::setPASS;
 	this->_cmdMethods["NICK"] = &Command::setNICK;
 	this->_cmdMethods["USER"] = &Command::setUSER;
-	// this->_cmdMethods["JOIN"] = &Command::setJOIN;
+	this->_cmdMethods["JOIN"] = &Command::setJOIN;
 	this->_cmdMethods["KICK"] = &Command::setKICK;
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
 	this->_cmdMethods["MODE"] = &Command::setMODE;
@@ -133,14 +134,20 @@ void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-// void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
-// 	int	const	size = splitedLine.size();
+void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
+	int	const			size = splitedLine.size();
+	Join*				newCommand = new Join();
+	std::string			parsed;
 
-// 	this->_targetChannels.push_back(splitedLine[idx++]);
-// 	if (size > idx)
-// 		this->_password = splitedLine[idx];
-// 	return ;
-// }
+	std::stringstream	channelSS(splitedLine[idx++]);
+	while(std::getline(channelSS, parsed, ','))
+		newCommand->_targetChannels.push_back(parsed);
+	parsed.clear();
+	std::stringstream	keySS(splitedLine[idx++]);
+	while(size > idx && std::getline(channelSS, parsed, ','))
+		newCommand->_targetKeys.push_back(parsed);
+	return ;
+}
 
 void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
 	Kick*		newCommand = new Kick();
