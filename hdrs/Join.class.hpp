@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 16:59:40 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 19:40:22 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/03 15:37:09 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ private:
 		std::string		targetName;
 		std::string		targetKey;
 		std::string		error;
+		int				sizeKey;
+		int				idxKey;
 	}	t_data;
 
 	void	checkRegistered(t_data& myData);
@@ -42,6 +44,9 @@ private:
 	void	checkChannelKey(t_data& myData);
 	void	checkChannelInvite(t_data& myData);
 	void	checkChannelFilling(t_data& myData);
+
+	void	createChannel(t_data& myData);
+	void	joinChannel(t_data& myData);
 
 	std::string const			_cmdName;
 	std::vector<std::string>	_targetChannels;

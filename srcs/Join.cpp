@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 19:40:45 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/03 15:43:05 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,31 +39,42 @@ void	Join::execute(Client& client) {
 	for (idx = 0; idx < 2 && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	int const sizeChannels = this->_targetChannels.size();
-	int const sizeKey = this->_targetKeys.size();
-	for (int idxChannel = 0, idxKey = 0; idxChannel < sizeChannels && myData.error.empty(); idxChannel++, idxKey++) {
+	myData.sizeKey = this->_targetKeys.size();
+	myData.idxKey = 0;
+	for (int idxChannel = 0; idxChannel < sizeChannels && myData.error.empty(); idxChannel++, myData.idxKey++) {
 		myData.targetName = this->_targetChannels[idxChannel];
 		(this->*_method[idx])(myData);
 		myData.targetChannel = this->_server->_serverChannel[myData.targetName];
-		if (myData.targetChannel) {
-			if (idxKey < sizeKey)
-				myData.targetKey = this->_targetKeys[idxKey];
-			for (idx = 2;idx < CHECK_JOIN && myData.error.empty(); idx++) {
-				(this->*_method[idx])(myData);
- 			}
-			myData.targetChannel->addClient(client._clientID, &client);
-		}
-		else {
-			myData.targetChannel = Channel::instantiateChannel(MODE, myData.targetName);
-			myData.targetChannel->addClient(client._clientID, &client);
-			myData.targetChannel->addOperator(client._clientID);
-			myData.targetChannel->_channelPassword.clear();
-		}
+		if (myData.targetChannel) 
+			joinChannel(myData);
+		else
+			createChannel(myData);
 		if (!myData.error.empty())
 			Send::ToClient(client._clientID, myData.error);
 		myData.error.clear();
 		myData.targetKey.clear();
 		myData.targetChannel = NULL;
 	}
+	return ;
+}
+
+void	Join::joinChannel(t_data& myData) {
+	if (myData.idxKey < myData.sizeKey)
+		myData.targetKey = this->_targetKeys[myData.idxKey];
+	for (int idx = 3;idx < CHECK_JOIN && myData.error.empty(); idx++)
+		(this->*_method[idx])(myData);
+	if (myData.error.empty())
+		return ;
+	myData.targetChannel->addClient(myData.client->_clientID, myData.client);
+	return ;
+}
+
+void	Join::createChannel(t_data& myData) {
+	this->_server->addChannel(MODE, myData.targetName);
+	myData.targetChannel = this->_server->_serverChannel[myData.targetName];
+	myData.targetChannel->addClient(myData.client->_clientID, myData.client);
+	myData.targetChannel->addOperator(myData.client->_clientID);
+	myData.targetChannel->_channelPassword.clear();
 	return ;
 }
 
