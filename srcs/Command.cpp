@@ -20,6 +20,7 @@
 #include "Pass.class.hpp"
 #include "Nick.class.hpp"
 #include "User.class.hpp"
+#include "Pong.class.hpp"
 
 
 #include <iostream>
@@ -48,6 +49,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["MODE"] = &Command::setMODE;
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
+	this->_cmdMethods["PONG"] = &Command::setPONG;
 	this->parseRawline();
 	return ;
 }
@@ -190,6 +192,15 @@ void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
 
 	newCommand->_targetUsers.push_back(parseUser(splitedLine[idx++]));
 	newCommand->_targetChannels.push_back(splitedLine[idx++]);
+	this->_command = newCommand;
+	return ;
+}
+
+void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
+	Pong*	newCommand = new Pong();
+
+	if (splitedLine.size() >= 2)
+		newCommand->_token = splitedLine[idx];
 	this->_command = newCommand;
 	return ;
 }
