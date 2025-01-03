@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 01:13:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 15:42:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@
 #include "Topic.class.hpp"
 #include "Invite.class.hpp"
 #include "Kick.class.hpp"
+#include "Pass.class.hpp"
+#include "Nick.class.hpp"
+#include "User.class.hpp"
+#include "Pong.class.hpp"
+
 
 #include <iostream>
 #include <sstream>
@@ -35,15 +40,16 @@ Command::~Command( void ) {
 
 Command::Command(std::string const & rawLine) {
 	this->_rawLine = rawLine;
-	// this->_cmdMethods["PASS"] = &Command::setPASS;
-	// this->_cmdMethods["NICK"] = &Command::setNICK;
-	// this->_cmdMethods["USER"] = &Command::setUSER;
+	this->_cmdMethods["PASS"] = &Command::setPASS;
+	this->_cmdMethods["NICK"] = &Command::setNICK;
+	this->_cmdMethods["USER"] = &Command::setUSER;
 	// this->_cmdMethods["JOIN"] = &Command::setJOIN;
 	this->_cmdMethods["KICK"] = &Command::setKICK;
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
 	this->_cmdMethods["MODE"] = &Command::setMODE;
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
+	this->_cmdMethods["PONG"] = &Command::setPONG;
 	this->parseRawline();
 	return ;
 }
@@ -97,24 +103,35 @@ t_user	*Command::parseUser(std::string user) {
 	return userStruct;
 }
 
-// void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
-// 	this->_password = splitedLine[idx];
-// 	return ;
-// }
+void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
+	Pass*	newCommand = new Pass();
+	
+	newCommand->_password = splitedLine[idx];
+	this->_command = newCommand;
+	return ;
+}
 
-// void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
-// 	t_user	*user = new t_user;
+void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
+	Nick*	newCommand = new Nick();
+	
+	newCommand->_nickname = splitedLine[idx];
+	this->_command = newCommand;
+	return ;
+}
 
-// 	user->targetNickname = splitedLine[idx];
-// 	return ;
-// }
+void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
+	int const	size = splitedLine.size(); 
+	User*		newCommand = new User();
 
-// void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
-// 	t_user	*user = new t_user;
-
-// 	user->targetUsername = splitedLine[idx];
-// 	return ;
-// }
+	newCommand->_username = splitedLine[idx++];
+	if (idx <= size)
+		newCommand->_mode = splitedLine[idx++];
+	idx++;
+	while (idx >= size)
+		newCommand->_realname += (splitedLine[idx++] + " ");
+	this->_command = newCommand;
+	return ;
+}
 
 // void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
 // 	int	const	size = splitedLine.size();
@@ -179,6 +196,15 @@ void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
+void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
+	Pong*	newCommand = new Pong();
+
+	if (splitedLine.size() >= 2)
+		newCommand->_token = splitedLine[idx];
+	this->_command = newCommand;
+	return ;
+}
+
 // void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
 // 	return ;
 // }
@@ -187,7 +213,7 @@ std::string 	Command::getPrefix( void ) {
 	return this->_prefix;
 }
 
-ICommand* 	Command::getCommand( void ) {
+ACommand* 	Command::getCommand( void ) {
 	return this->_command;
 }
 
