@@ -31,7 +31,7 @@ int	parsingArgs(int argc, char **argv)
 	}
 	ss.str(argv[2]);
 	if (ss.str().empty()) {
-		std::cerr << "Erorr: empty passord" << std::endl;
+		std::cerr << "Error: empty password" << std::endl;
 		return (-1);
 	}
 	return (port);

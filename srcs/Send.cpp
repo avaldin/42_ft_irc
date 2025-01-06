@@ -21,8 +21,8 @@ void	Send::ToConsole(int const & targetID, std::string const & message) {
 	return ;
 }
 
-void	Send::ToServer(std::map<int const &, Client*> & serverClient, std::string const & message) {
-	for (std::map<int const &, Client *>::iterator it = serverClient.begin(); it != serverClient.end(); it++) {
+void	Send::ToServer(std::map<int, Client*> & serverClient, std::string const & message) {
+	for (std::map<int, Client *>::iterator it = serverClient.begin(); it != serverClient.end(); it++) {
 		int otherClient = it->second->_clientID;
 		send(otherClient, message.c_str(), message.size(), 0);
 	}

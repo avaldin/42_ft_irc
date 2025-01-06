@@ -109,7 +109,7 @@ void	Server::LegacysendToServer(int const clientID, std::string token) {
 	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
 
 	std::cout << nickname << std::endl;
-	for (std::map<int const &, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+	for (std::map<int, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 		int otherClient = it->second->_clientID;
 		send(otherClient, nickname.c_str(), nickname.size(), 0);
 	}
@@ -173,7 +173,7 @@ void	Server::eraseClient(int const & clientID) {
 }
 
 Client*	Server::findClientUsername(std::string const & username) {
-	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+	for (std::map<int, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 		if (!it->second->_username.compare(username))
 			return it->second;
 	}
@@ -181,7 +181,7 @@ Client*	Server::findClientUsername(std::string const & username) {
 }
 
 Client*	Server::findClientNickname(std::string const & nickname) {
-	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+	for (std::map<int, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 		if (!it->second->_nickname.compare(nickname))
 			return it->second;
 	}
@@ -232,7 +232,7 @@ void Server::pingClient(void) {
 
 	if (this->_idPing.empty() && this->_lastPing + 60 < std::time(nullptr)) {
 		ss << std::time(nullptr);
-		for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin()
+		for (std::map<int, Client*>::iterator it = this->_serverClientId.begin()
 				; it != this->_serverClientId.end(); it++) {
 			Send::ToClient(it->first, "PING :" + ss.str());
 		}

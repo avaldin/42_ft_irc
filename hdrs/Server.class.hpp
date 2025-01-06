@@ -71,8 +71,8 @@ private:
 	std::list<int>						_idPing;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
-	std::map<int const &, Client*>		_serverClientId;
-	std::map<int const &, Client*>		_serverOperator;
+	std::map<int, Client*>		_serverClientId;
+	std::map<int, Client*>		_serverOperator;
 	std::map<std::string, Channel*>		_serverChannel;
 
 	class Factory : public Client, public Channel {

@@ -21,7 +21,7 @@ class Channel;
 
 namespace Send {
 	void	ToConsole(int const & targetID, std::string const & message);
-	void	ToServer(std::map<int const &, Client*>& serverClient, std::string const & message);
+	void	ToServer(std::map<int, Client*>& serverClient, std::string const & message);
 	void	ToChannel(Channel const & channel, std::string const & message);
 	void	ToClient(int const & targetID, std::string const & message);
 }
