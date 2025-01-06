@@ -34,6 +34,7 @@ public:
 
 	std::string					getPrefix( void );
 	ACommand*							_command;
+	std::string							_cmdName;
 	ACommand*					getCommand( void );
 	// std::string					getPassword( void );
 	// std::string					getMessage( void );
@@ -46,6 +47,7 @@ private:
 	Command&	operator=(Command const & rhs);
 
 	void	parseRawline( void );
+	void	deleteNewline(std::string& line);
 	t_user*	parseUser(std::string user);
 	
 	void	setPASS(std::vector<std::string> splitedLine, int idx);
@@ -66,7 +68,7 @@ private:
 	std::string							_password;
 	std::string							_message;
 
-	std::map<std::string,void(Command::*)(std::vector<std::string> splitedLine, int idx)>	_cmdMethods;
+	std::map<std::string,void(Command::*)(std::vector<std::string>, int)>	_cmdMethods;
 };
 
 #endif

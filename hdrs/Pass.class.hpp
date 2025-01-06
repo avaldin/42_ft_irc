@@ -22,23 +22,24 @@ public:
 	void	execute(Client& client);
 
 private:
-	Pass( void );
-	~Pass( void );
+	Pass( void ) : _cmdName("PASS") {}
+	~Pass( void ) {}
 
 	typedef struct	s_data {
-		Client*	client;
+		Client*		client;
+		std::string	error;
 	}	t_data;
 
-	std::string	checkRegistered(t_data& myData);
-	std::string checkParams(t_data& myData);
-	std::string	checkPassword(t_data& myData);
+	void	checkRegistered(t_data& myData);
+	void	checkParams(t_data& myData);
+	void	checkPassword(t_data& myData);
 	
 	std::string const	_cmdName;
 	std::string			_password;
 
 	static Server*	_server;
 	
-	static std::string(Pass::*_method[3])(t_data&);
+	static void(Pass::*_method[3])(t_data&);
 
 friend class Command;	
 };

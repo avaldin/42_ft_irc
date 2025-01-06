@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 15:42:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/03 20:14:37 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@
 #include "Ping.class.hpp"
 #include "Pong.class.hpp"
 
-
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include <iostream>
+
+#include <stdio.h>
 
 Command::Command( void ) {
 	return ;
@@ -42,6 +43,7 @@ Command::~Command( void ) {
 
 Command::Command(std::string const & rawLine) {
 	this->_rawLine = rawLine;
+	deleteNewline(this->_rawLine);
 	this->_cmdMethods["PASS"] = &Command::setPASS;
 	this->_cmdMethods["NICK"] = &Command::setNICK;
 	this->_cmdMethods["USER"] = &Command::setUSER;
@@ -53,6 +55,7 @@ Command::Command(std::string const & rawLine) {
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
 	this->_cmdMethods["PING"] = &Command::setPING;
 	this->_cmdMethods["PONG"] = &Command::setPONG;
+  this->_command = NULL;
 	this->parseRawline();
 	return ;
 }
@@ -79,13 +82,23 @@ void	 Command::parseRawline( void ) {
 	if (!size)
 		return ;
 	int	idx = 0;
-	if (splited[idx][0] == ':')
-		this->_prefix = splited[idx++];
-	void(Command::*func)(std::vector<std::string>, int) = _cmdMethods[splited[idx]];
+	// if (splited[idx][0] == ':')
+	// 	this->_prefix = splited[idx++];
+	this->_cmdName = splited[idx++];
+	void(Command::*func)(std::vector<std::string>, int) = NULL;
+	func = _cmdMethods[this->_cmdName];
 	if (!func)
 		return ;
 	(this->*func)(splited, idx);
 	return ;
+}
+
+void	Command::deleteNewline(std::string& line) {
+	int const size = line.size();
+
+	if (size && line[size - 1] == '\n')
+		line.resize(size - 1);
+	return ;	
 }
 
 t_user	*Command::parseUser(std::string user) {
@@ -107,9 +120,12 @@ t_user	*Command::parseUser(std::string user) {
 }
 
 void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
-	Pass*	newCommand = new Pass();
+	Pass*		newCommand = new Pass();
+	int const	size = splitedLine.size();
 	
-	newCommand->_password = splitedLine[idx];
+	std::cout << "in pass set" << std::endl;
+	if (idx < size)
+		newCommand->_password = splitedLine[idx];
 	this->_command = newCommand;
 	return ;
 }
