@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/06 12:43:59 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/06 15:59:00 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	Server::startServer(int port, const std::string& password) {
 	this->_console->_nickname = "CONSOLE";
 	this->_console->_username = "CONSOLE";
 	this->_serverPassword = password;
+	this->_lastPing = std::time(nullptr);
 	return ;
 }
 
