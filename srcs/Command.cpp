@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 19:38:49 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 15:42:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "User.class.hpp"
 #include "Join.class.hpp"
 #include "Ping.class.hpp"
+#include "Pong.class.hpp"
 
 
 #include <iostream>
@@ -51,6 +52,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
 	this->_cmdMethods["PING"] = &Command::setPING;
+	this->_cmdMethods["PONG"] = &Command::setPONG;
 	this->parseRawline();
 	return ;
 }
@@ -203,10 +205,6 @@ void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-// void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
-// 	return ;
-// }
-
 void	Command::setPING(std::vector<std::string> splitedLine, int idx) {
 	Ping*	newCommand = new Ping();
 	int 	size = splitedLine.size();
@@ -215,6 +213,19 @@ void	Command::setPING(std::vector<std::string> splitedLine, int idx) {
 		newCommand->_token = splitedLine[idx];
 	this->_command = newCommand;
 }
+
+void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
+	Pong*	newCommand = new Pong();
+
+	if (splitedLine.size() >= 2)
+		newCommand->_token = splitedLine[idx];
+	this->_command = newCommand;
+	return ;
+}
+
+// void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
+// 	return ;
+// }
 
 std::string 	Command::getPrefix( void ) {
 	return this->_prefix;
