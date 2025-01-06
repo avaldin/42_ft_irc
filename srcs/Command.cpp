@@ -22,6 +22,7 @@
 #include "User.class.hpp"
 #include "Join.class.hpp"
 #include "Ping.class.hpp"
+#include "Pong.class.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -53,7 +54,8 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
 	this->_cmdMethods["PING"] = &Command::setPING;
-	this->_command = NULL;
+	this->_cmdMethods["PONG"] = &Command::setPONG;
+  this->_command = NULL;
 	this->parseRawline();
 	return ;
 }
@@ -219,10 +221,6 @@ void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-// void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
-// 	return ;
-// }
-
 void	Command::setPING(std::vector<std::string> splitedLine, int idx) {
 	Ping*	newCommand = new Ping();
 	int 	size = splitedLine.size();
@@ -231,6 +229,19 @@ void	Command::setPING(std::vector<std::string> splitedLine, int idx) {
 		newCommand->_token = splitedLine[idx];
 	this->_command = newCommand;
 }
+
+void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
+	Pong*	newCommand = new Pong();
+
+	if (splitedLine.size() >= 2)
+		newCommand->_token = splitedLine[idx];
+	this->_command = newCommand;
+	return ;
+}
+
+// void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
+// 	return ;
+// }
 
 std::string 	Command::getPrefix( void ) {
 	return this->_prefix;

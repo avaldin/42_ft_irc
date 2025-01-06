@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
 /*   Updated: 2025/01/03 17:46:59 by tmouche          ###   ########.fr       */
@@ -23,11 +23,11 @@
 #include <sys/epoll.h>
 #include <string.h>
 #include <sstream>
+#include <ctime>
 
 Server*	Server::_me = nullptr;
 
 Server::Server( void ) : _serverName("irc.serv") {
-	this->_serverPassword = "tempo"; // a tej
 	return ;
 }
 
@@ -48,7 +48,7 @@ Server*	Server::instantiate( void ) {
 	return res;
 }
 
-void	Server::startServer(int port) {
+void	Server::startServer(int port, const std::string& password) {
 	static sockaddr_in	address;
 	
 	if (this->_mySocket != -1)
@@ -76,6 +76,8 @@ void	Server::startServer(int port) {
 	this->_console = Factory::createClient(1);
 	this->_console->_nickname = "CONSOLE";
 	this->_console->_username = "CONSOLE";
+	this->_serverPassword = password;
+	this->_lastPing = std::time(nullptr);
 	return ;
 }
 
@@ -84,6 +86,7 @@ void	Server::runServer( void ) {
 	struct epoll_event	events[10];
 
 	while (true) {
+		this->pingClient();
 		nfds = epoll_wait(this->_epollfd, events, 10, -1);
 		if (nfds == -1) 
 			throw EpollWaitException();
@@ -103,7 +106,6 @@ void	Server::runServer( void ) {
 
 // void	Server::LegacysendToServer(int const clientID, std::string token) {
 // 	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
-
 // 	std::cout << nickname << std::endl;
 // 	for (std::map<int const &, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 // 		int otherClient = it->second->_clientID;
@@ -170,7 +172,7 @@ void	Server::eraseClient(int const & clientID) {
 }
 
 Client*	Server::findClientUsername(std::string const & username) {
-	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+	for (std::map<int, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 		if (!it->second->_username.compare(username))
 			return it->second;
 	}
@@ -178,7 +180,7 @@ Client*	Server::findClientUsername(std::string const & username) {
 }
 
 Client*	Server::findClientNickname(std::string const & nickname) {
-	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+	for (std::map<int, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 		if (!it->second->_nickname.compare(nickname))
 			return it->second;
 	}
@@ -222,4 +224,23 @@ void	Server::sendError(int const clientId, std::string const & msgError)
 	if (send(clientId, msgError.c_str(), msgError.size(), 0) == -1)
 		throw SendException();
 	return ;
+}
+
+void Server::pingClient(void) {
+	std::stringstream	ss;
+
+	if (this->_idPing.empty() && this->_lastPing + 60 < std::time(nullptr)) {
+		ss << std::time(nullptr);
+		for (std::map<int, Client*>::iterator it = this->_serverClientId.begin()
+				; it != this->_serverClientId.end(); it++) {
+			Send::ToClient(it->first, "PING :" + ss.str());
+		}
+		this->_lastPing = std::time(nullptr);
+	}
+	else if (!this->_idPing.empty() && this->_lastPing + 30 < std::time(nullptr)) {
+		for (std::list<int>::iterator it = this->_idPing.begin(); it != this->_idPing.end(); it++) {
+			this->eraseClient(*it); // check if this function erase cleanly, if we erase client anywhere else, it could stay in _idPing
+			this->_idPing.erase(it);
+		}
+	}
 }

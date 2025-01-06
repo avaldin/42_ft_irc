@@ -18,7 +18,7 @@
 #include "Channel.class.hpp"
 
 # include <map>
-# include <vector>
+# include <list>
 # include <string>
 # include <sys/epoll.h>
 
@@ -35,7 +35,7 @@ public:
 	
 	static Server*	instantiate( void );
 
-	void			startServer(int port);
+	void			startServer(int port, const std::string& password);
 	void			runServer( void );
 	void			sendError(int const ClientId, std::string const & msgError);
 
@@ -57,6 +57,7 @@ private:
 	Client*		findClientNickname(std::string const & nickname);
 	Client*		findClientUsername(std::string const & username);
 	Client*		findClientId(int const & id);
+	void		pingClient( void );
 
 	std::string const					_serverName;
 	std::string							_serverPassword;
@@ -68,10 +69,12 @@ private:
 	int									_mySocket;
 	int									_epollfd;
 	unsigned int						_serverLen;
+	unsigned int						_lastPing; // a initialiser au start
+	std::list<int>						_idPing;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
-	std::map<int const &, Client*>		_serverClientId;
-	std::map<int const &, Client*>		_serverOperator;
+	std::map<int, Client*>		_serverClientId;
+	std::map<int, Client*>		_serverOperator;
 	std::map<std::string, Channel*>		_serverChannel;
 
 	class Factory : public Client, public Channel {
@@ -94,6 +97,8 @@ friend class Pass;
 friend class Nick;
 friend class User;
 friend class Join;
+friend class Ping;
+friend class Pong;
 };
 
 

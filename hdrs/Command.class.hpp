@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 19:15:31 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:18:19 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ private:
 	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
 	void	setMODE(std::vector<std::string> splitedLine, int idx);
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);
+	void	setPONG(std::vector<std::string> splitedLine, int idx);
 	// void	setQUIT(std::vector<std::string> splitedLine, int idx);
 	void	setPING(std::vector<std::string> splitedLine, int idx);
 
 
 	std::string							_rawLine;
-
 	std::string							_prefix;
 	std::string							_password;
 	std::string							_message;
