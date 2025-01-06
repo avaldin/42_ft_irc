@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 15:42:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/06 16:31:22 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["MODE"] = &Command::setMODE;
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
+	this->_cmdMethods["PRIVMSG"] = &Command::setPRIVMSG;
 	this->_cmdMethods["PING"] = &Command::setPING;
 	this->_cmdMethods["PONG"] = &Command::setPONG;
 	this->parseRawline();
@@ -215,6 +216,15 @@ void	Command::setPING(std::vector<std::string> splitedLine, int idx) {
 }
 
 void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
+	Pong*	newCommand = new Pong();
+
+	if (splitedLine.size() >= 2)
+		newCommand->_token = splitedLine[idx];
+	this->_command = newCommand;
+	return ;
+}
+
+void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 	Pong*	newCommand = new Pong();
 
 	if (splitedLine.size() >= 2)
