@@ -12,16 +12,39 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include <map>
+#include <sstream>
+
+int	parsingArgs(int argc, char **argv)
+{
+	int 				port;
+	std::stringstream 	ss;
+
+	if (argc != 3) {
+		std::cerr << "Error: bad arguments" << std::endl;
+		return (-1);
+	}
+	ss << argv[1];
+	ss >> port;
+	if (ss.fail()) {
+		std::cerr << "Error: Bad port" << std::endl;
+		return (-1);
+	}
+	ss.str(argv[2]);
+	if (ss.str().empty()) {
+		std::cerr << "Erorr: empty passord" << std::endl;
+		return (-1);
+	}
+	return (port);
+}
 
 int	main(int argc, char **argv)
 {
 	int					port;
 	Server*				ircServer = Server::instantiate();
 
-	if (argc != 2)
-		return (perror("bad arguments"), -1);
-	port = atoi(argv[1]);
-	try {ircServer->startServer(port);}
+	if ((port = parsingArgs(argc, argv)) == -1)
+		return (-1);
+	try {ircServer->startServer(port, argv[2]);}
 	catch (Exception& e) {
 		e.what();
 		return 1;

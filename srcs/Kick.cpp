@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/23 20:52:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:53:23 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,39 +20,32 @@
 
 Server*	Kick::_server = Server::instantiate();
 
-std::string(Kick::*Kick::_method[4])(t_data&) = {
+void(Kick::*Kick::_method[6])(t_data&) = {
+	&Kick::checkRegistered,
+	&Kick::checkParams,
 	&Kick::checkChannelExist, 
 	&Kick::checkChannelClient,
 	&Kick::checkChannelOperator,
 	&Kick::checkClientTargetExist};
 
-Kick::Kick( void ) : _cmdName("KICK") {
-	return ;
-}
-
-Kick::~Kick( void ) {
-	return ;
-}
-
 void	Kick::execute(Client const & client) {
 	t_data		myData;
-	std::string	error;
-	
-	if (this->_targetChannels.empty() || this->_targetUsers.empty())
-		error = ERR_NEEDMOREPARAMS(this->_cmdName);
+
 	myData.client = &client;
+	for (int idx = 0; idx < 2 && myData.error.empty(); idx++)
+		(this->*_method[idx])(myData);
 	int const	sizeChannel = this->_targetChannels.size();
 	int const	sizeUser = this->_targetUsers.size();
-	for (myData.idxChannel = 0, myData.idxUser = 0; myData.idxChannel < sizeChannel && error.empty(); myData.idxChannel++) {
-		for (int idx = 0; idx < 4 && error.empty(); idx++)
-			error = (this->*_method[idx])(myData);
-		if (!error.empty())
-			Send::ToClient(client._clientID, error);
+	for (myData.idxChannel = 0, myData.idxUser = 0; myData.idxChannel < sizeChannel && myData.error.empty(); myData.idxChannel++) {
+		for (int idx = 2; idx < 6 && myData.error.empty(); idx++)
+			(this->*_method[idx])(myData);
+		if (!myData.error.empty())
+			Send::ToClient(client._clientID, myData.error);
 		else {
-			myData.channel->deleteClient(myData.targetID);
+			myData.channel->deleteClient(myData.targetClient->_clientID);
 			std::string const	message = client._prefix + " KICK " + myData.channel->_channelName + " " + this->_message;
 			Send::ToChannel(*myData.channel, message);
-			Send::ToClient(myData.targetID, message);
+			Send::ToClient(myData.targetClient->_clientID, message);
 		}
 		if (myData.idxUser + 1 < sizeUser)
 			++myData.idxUser;
@@ -60,30 +53,35 @@ void	Kick::execute(Client const & client) {
 	return ;
 }
 
-std::string	Kick::checkChannelExist(t_data& myData) {
+void	Kick::checkRegistered(t_data& myData) {
+	if (myData.client->status != REGISTERED)
+		myData.error = ERR_NOTREGISTRATED;
+}
+
+void	Kick::checkParams(t_data& myData) {
+	if (this->_targetChannels.empty() || this->_targetUsers.empty())
+		myData.error =  ERR_NEEDMOREPARAMS(this->_cmdName);
+}
+
+void	Kick::checkChannelExist(t_data& myData) {
 	myData.channel = this->_server->_serverChannel[this->_targetChannels[myData.idxChannel]];
 	if (!myData.channel)
-		return ERR_NOSUCHCHANNEL(this->_targetChannels[myData.idxChannel]);
-	return "";
+		myData.error =  ERR_NOSUCHCHANNEL(this->_targetChannels[myData.idxChannel]);
 }
 
-std::string	Kick::checkChannelClient(t_data& myData) {
+void	Kick::checkChannelClient(t_data& myData) {
 	if (!myData.channel->isClient(myData.client->_clientID))
-		return ERR_NOTONCHANNEL(myData.channel->_channelName);
-	return "";
+		myData.error = ERR_NOTONCHANNEL(myData.channel->_channelName);
 }
 
-std::string	Kick::checkChannelOperator(t_data& myData) {
+void	Kick::checkChannelOperator(t_data& myData) {
 	if (!myData.channel->isOperator(myData.client->_clientID))
-		return ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
-	return "";
+		myData.error = ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
 }
 
-std::string	Kick::checkClientTargetExist(t_data& myData) {
+void	Kick::checkClientTargetExist(t_data& myData) {
 	myData.targetUser = this->_targetUsers[myData.idxUser];
-	myData.targetID = this->_server->_searchClientID[myData.targetUser->targetNickname];
-	myData.targetClient = this->_server->_serverClient[myData.targetID];
-	if (!myData.targetClient || !myData.channel->isClient(myData.targetID))
-		return ERR_USERNOTINCHANNEL(myData.targetUser->targetNickname, myData.channel->_channelName);
-	return "";
+	myData.targetClient = this->_server->findClientNickname(myData.targetUser->targetNickname);
+	if (!myData.targetClient || !myData.channel->isClient(myData.targetClient->_clientID))
+		myData.error =  ERR_USERNOTINCHANNEL(myData.targetUser->targetNickname, myData.channel->_channelName);
 }

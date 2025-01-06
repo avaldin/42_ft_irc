@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:55:20 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/17 17:57:30 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:51:12 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class Channel;
 
 namespace Send {
 	void	ToConsole(int const & targetID, std::string const & message);
-	void	ToServer(std::map<int, Client*>& serverClient, std::string const & message);
+	void	ToServer(std::map<int const &, Client*>& serverClient, std::string const & message);
 	void	ToChannel(Channel const & channel, std::string const & message);
 	void	ToClient(int const & targetID, std::string const & message);
 }

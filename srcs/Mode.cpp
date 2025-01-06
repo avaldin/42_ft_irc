@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:44:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 18:24:56 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,6 @@
 #include <cstdlib>
 
 Server* Mode::_server = Server::instantiate();
-
-Mode::Mode( void ) : _cmdName("MODE") {
-	return ;
-}
-
-Mode::~Mode( void ) {
-	return ;
-}
 
 void	Mode::execute(Client const & client) {
 	if (this->_targetChannels.empty() || this->_mode.empty()) {
@@ -135,4 +127,18 @@ void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int
 	std::string const	reply = "MODE " + currentChannel->_channelName + static_cast<char>(currentMode->sign) + "o " + currentMode->args;
 	Send::ToChannel(*currentChannel, reply);
 	return ; 
+}
+
+std::string	Mode::checkRegistered(t_data& myData) {
+	(void)myData;
+	if (myData.client->status != REGISTERED)
+		return ERR_NOTREGISTRATED;
+	return "";	
+}
+
+std::string	Mode::checkParams(t_data& myData) {
+	(void)myData;
+	if (this->_targetChannels.empty() || this->_mode.empty())
+		return ERR_NEEDMOREPARAMS(this->_cmdName);
+	return "";
 }

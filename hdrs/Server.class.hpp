@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 01:24:26 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:45:23 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "Channel.class.hpp"
 
 # include <map>
-# include <vector>
+# include <list>
 # include <string>
 # include <sys/epoll.h>
 
@@ -33,11 +33,11 @@ public:
 	
 	static Server*	instantiate( void );
 
-	void			startServer(int port);
+	void			startServer(int port, const std::string& password);
 	void			runServer( void );
 	void			sendError(int const ClientId, std::string const & msgError);
 
-	void			serverRequest(int clientID, std::string rawLine);
+	void			serverRequest(Client& client, std::string rawLine);
 
 	void			LegacysendToChannel(std::string channelName, int clientID, std::string message);
 	void			LegacysendToServer(int clientID, std::string message);
@@ -46,30 +46,34 @@ private:
 
 	Server( void );
 
-	void	processCommand(Command* command);
+	// void	processCommand(ACommand* command);
 
-	void	INVITE(Command* command, Client const & client);
+	void		addClient( void );
+	void		eraseClient(int const & clientID);
+	void		addChannel(t_channelType channelType, std::string channelName);
+	void		eraseChannel(std::string channelName);
+	Client*		findClientNickname(std::string const & nickname);
+	Client*		findClientUsername(std::string const & username);
+	Client*		findClientId(int const & id);
+	void		pingClient( void );
 
-	void	addClient( void );
-	void	eraseClient(int clientID);
-	void	addChannel(t_channelType channelType, std::string channelName);
-	void	eraseChannel(std::string channelName);
+	std::string const					_serverName;
+	std::string							_serverPassword;
 
-	std::string const	_serverName;
-
-	static Server*					_me;
-	Client*							_console;
-
-	int								_port;
-	int								_mySocket;
-	int								_epollfd;
-	unsigned int					_serverLen;
-	sockaddr_in*					_address;
-	epoll_event						_ev;
-	std::map<std::string, int>		_searchClientID;
-	std::map<int, Client*>			_serverClient;
-	std::map<int, Client*>			_serverOperator;
-	std::map<std::string, Channel*>	_serverChannel;
+	static Server*						_me;
+	Client*								_console;
+	
+	int									_port;
+	int									_mySocket;
+	int									_epollfd;
+	unsigned int						_serverLen;
+	unsigned int						_lastPing; // a initialiser au start
+	std::list<int>						_idPing;
+	sockaddr_in*						_address;
+	epoll_event							_ev;
+	std::map<int const &, Client*>		_serverClientId;
+	std::map<int const &, Client*>		_serverOperator;
+	std::map<std::string, Channel*>		_serverChannel;
 
 	class Factory : public Client, public Channel {
 	public:
@@ -87,6 +91,12 @@ friend class Mode;
 friend class Invite;
 friend class Topic;
 friend class Kick;
+friend class Pass;
+friend class Nick;
+friend class User;
+friend class Join;
+friend class Ping;
+friend class Pong;
 };
 
 

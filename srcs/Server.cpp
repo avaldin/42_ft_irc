@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 02:18:58 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/06 12:43:59 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <sys/epoll.h>
 #include <string.h>
 #include <sstream>
+#include <ctime>
 
 Server*	Server::_me = nullptr;
 
@@ -47,7 +48,7 @@ Server*	Server::instantiate( void ) {
 	return res;
 }
 
-void	Server::startServer(int port) {
+void	Server::startServer(int port, const std::string& password) {
 	static sockaddr_in	address;
 	
 	if (this->_mySocket != -1)
@@ -75,6 +76,7 @@ void	Server::startServer(int port) {
 	this->_console = Factory::createClient(1);
 	this->_console->_nickname = "CONSOLE";
 	this->_console->_username = "CONSOLE";
+	this->_serverPassword = password;
 	return ;
 }
 
@@ -84,6 +86,7 @@ void	Server::runServer( void ) {
 
 	std::cout << "server start running, my socket = " << this->_mySocket << std::endl;
 	while (true) {
+		this->pingClient();
 		nfds = epoll_wait(this->_epollfd, events, 10, -1);
 		std::cout << "epoll received something" << std::endl;
 		if (nfds == -1) 
@@ -96,17 +99,17 @@ void	Server::runServer( void ) {
 				}
 			}
 			else {
-				this->_serverClient[events[nfd].data.fd]->action();
+				this->_serverClientId[events[nfd].data.fd]->action();
 			}
 		}
 	}
 }
 
 void	Server::LegacysendToServer(int const clientID, std::string token) {
-	std::string nickname = this->_serverClient[clientID]->_nickname + ": " + token;
+	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
 
 	std::cout << nickname << std::endl;
-	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
+	for (std::map<int const &, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
 		int otherClient = it->second->_clientID;
 		send(otherClient, nickname.c_str(), nickname.size(), 0);
 	}
@@ -117,27 +120,25 @@ void	Server::LegacysendToChannel(std::string const channelName, int const client
 
 	if (this->_serverChannel[channelName]->isOperator(clientID))
 		line += "@";
-	line += (this->_serverClient[clientID]->_nickname + ": " + token);
+	line += (this->_serverClientId[clientID]->_nickname + ": " + token);
 	this->_serverChannel[channelName]->sendToChannel(line);
 	return ;
 }
 
-void	Server::serverRequest(int clientID, std::string rawLine) {
-	Client	*currentClient = this->_serverClient[clientID];
-	if (!currentClient)
-		return ;// throw BIG ERROR, make non sense if this append
-	std::string	const	logLine = ":" + currentClient->_nickname + "!" + currentClient->_username + "@" + this->_serverName + " " + rawLine; 
+void	Server::serverRequest(Client& client, std::string rawLine) {
+	std::string	const	logLine = ":" + client._nickname + "!" + client._username + "@" + this->_serverName + " " + rawLine; 
 	
-	Send::ToConsole(clientID, logLine);
+	Send::ToConsole(client._clientID, logLine);
 	Command		myCommand(rawLine);
-	processCommand(&myCommand);
+	if (myCommand._command)
+		myCommand._command->execute(client); // have to do error return
 	return ;
 }
 
-void	Server::processCommand(Command* command) {
-	(void)command;
-	return ;
-}
+// void	Server::processCommand(ACommand* command) {
+// 	command->execute();
+// 	return ;
+// }
 
 void	Server::addChannel(t_channelType channelType, std::string channelName) {
 	Channel*	newChannel = Factory::createChannel(channelType, channelName);
@@ -162,13 +163,33 @@ void	Server::addClient() {
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
 	Client*	newClient = Factory::createClient(clientID);
-	this->_serverClient[clientID] = newClient;
+	this->_serverClientId[clientID] = newClient;
 }
 
-void	Server::eraseClient(int clientID) {
-	Factory::deleteClient(this->_serverClient[clientID]);
-	this->_serverClient.erase(clientID);
+void	Server::eraseClient(int const & clientID) {
+	this->_serverClientId.erase(clientID);
+	Factory::deleteClient(this->_serverClientId[clientID]);
 	return ;	
+}
+
+Client*	Server::findClientUsername(std::string const & username) {
+	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+		if (!it->second->_username.compare(username))
+			return it->second;
+	}
+	return NULL;
+}
+
+Client*	Server::findClientNickname(std::string const & nickname) {
+	for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+		if (!it->second->_nickname.compare(nickname))
+			return it->second;
+	}
+	return NULL;
+}
+
+Client*	Server::findClientId(int const & id) {
+	return this->_serverClientId[id];
 }
 
 // SUBCLASS FACTORY //
@@ -204,4 +225,23 @@ void	Server::sendError(int const clientId, std::string const & msgError)
 	if (send(clientId, msgError.c_str(), msgError.size(), 0) == -1)
 		throw SendException();
 	return ;
+}
+
+void Server::pingClient(void) {
+	std::stringstream	ss;
+
+	if (this->_idPing.empty() && this->_lastPing + 60 < std::time(nullptr)) {
+		ss << std::time(nullptr);
+		for (std::map<int const &, Client*>::iterator it = this->_serverClientId.begin()
+				; it != this->_serverClientId.end(); it++) {
+			Send::ToClient(it->first, "PING :" + ss.str());
+		}
+		this->_lastPing = std::time(nullptr);
+	}
+	else if (!this->_idPing.empty() && this->_lastPing + 30 < std::time(nullptr)) {
+		for (std::list<int>::iterator it = this->_idPing.begin(); it != this->_idPing.end(); it++) {
+			this->eraseClient(*it); // check if this function erase cleanly, if we erase client anywhere else, it could stay in _idPing
+			this->_idPing.erase(it);
+		}
+	}
 }

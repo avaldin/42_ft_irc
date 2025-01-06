@@ -1,28 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ICommand.interface.hpp                             :+:      :+:    :+:   */
+/*   ACommand.class.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:29:24 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 00:58:02 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:08:26 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ICOMMAND_INTERFACE_HPP
-# define ICOMMAND_INTERFACE_HPP
+#ifndef ACOMMAND_CLASS_HPP
+# define ACOMMAND_CLASS_HPP
 # include <string>
 
 class Command;
 class Client;
+struct t_data;
 
-class ICommand {
+class ACommand {
 public:
-	virtual ~ICommand( void ) {};
-	virtual void	execute(Client const & client) = 0;
-protected:
-	std::string const	_cmdName;
+	ACommand ( void ) {};
+	virtual ~ACommand( void ) {};
+	
+	virtual void	execute(Client const &) {};
+	virtual void	execute(Client &) {};
+
+// private:
+// 	virtual std::string	checkRegistered(t_data& myData) {}
+// 	virtual std::string checkParams(t_data& myData) {}
 };
 
 #endif
