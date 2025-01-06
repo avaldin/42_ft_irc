@@ -56,14 +56,16 @@ private:
 	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
 	void	setMODE(std::vector<std::string> splitedLine, int idx);
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);
-	void	setPONG(std::vector<std::string> splitedLine, int idx);
 	// void	setQUIT(std::vector<std::string> splitedLine, int idx);
+	void	setPRIVMSG(std::vector<std::string> splitedLine, int idx);
 	void	setPING(std::vector<std::string> splitedLine, int idx);
+	void	setPONG(std::vector<std::string> splitedLine, int idx);
 
 
 	std::string							_rawLine;
 	std::string							_prefix;
 	std::string							_password;
+
 	std::string							_message;
 
 	std::map<std::string,void(Command::*)(std::vector<std::string> splitedLine, int idx)>	_cmdMethods;
