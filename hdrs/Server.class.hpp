@@ -33,7 +33,7 @@ public:
 	
 	static Server*	instantiate( void );
 
-	void			startServer(int port);
+	void			startServer(int port, const std::string& password);
 	void			runServer( void );
 	void			sendError(int const ClientId, std::string const & msgError);
 

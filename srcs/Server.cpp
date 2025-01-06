@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 17:20:56 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/06 12:43:59 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 Server*	Server::_me = nullptr;
 
 Server::Server( void ) : _serverName("irc.serv") {
-	this->_serverPassword = "tempo"; // a tej
 	return ;
 }
 
@@ -49,7 +48,7 @@ Server*	Server::instantiate( void ) {
 	return res;
 }
 
-void	Server::startServer(int port) {
+void	Server::startServer(int port, const std::string& password) {
 	static sockaddr_in	address;
 	
 	if (this->_mySocket != -1)
@@ -77,6 +76,7 @@ void	Server::startServer(int port) {
 	this->_console = Factory::createClient(1);
 	this->_console->_nickname = "CONSOLE";
 	this->_console->_username = "CONSOLE";
+	this->_serverPassword = password;
 	return ;
 }
 
