@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:04:44 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 17:52:59 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/23 20:55:55 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef KICK_CLASS_HPP
 # define KICK_CLASS_HPP
-# include "ACommand.class.hpp"
+# include "ICommand.interface.hpp"
 # include <vector>
 
 class Client;
@@ -20,13 +20,13 @@ class Channel;
 class Client;
 class Server;
 
-class Kick : public ACommand {
+class Kick : public ICommand {
 public:
 	void	execute(Client const & client);
 
 private:
-	Kick( void ) : _cmdName("KICK") {}
-	~Kick( void ) {}
+	Kick( void );
+	~Kick( void );
 
 	typedef struct	s_data {
 		Channel*		channel;
@@ -34,16 +34,14 @@ private:
 		int				idxChannel;
 		int				idxUser;
 		struct s_user*	targetUser;
+		int				targetID;
 		Client*			targetClient;
-		std::string		error;
 	}	t_data;
 	
-	void	checkRegistered(t_data& myData);
-	void	checkParams(t_data& myData);
-	void	checkChannelExist(t_data& myData);
-	void	checkClientTargetExist(t_data& myData);
-	void	checkChannelClient(t_data& myData);
-	void	checkChannelOperator(t_data& myData);
+	std::string	checkChannelExist(t_data& myData);
+	std::string checkClientTargetExist(t_data& myData);
+	std::string checkChannelClient(t_data& myData);
+	std::string	checkChannelOperator(t_data& myData);
 	
 	std::string const				_cmdName;
 	std::string						_message;
@@ -52,7 +50,7 @@ private:
 	
 	static Server*	_server;
 
-	static void(Kick::*_method[6])(t_data&);
+	static std::string(Kick::*_method[4])(t_data&);
 
 	
 friend class Command;

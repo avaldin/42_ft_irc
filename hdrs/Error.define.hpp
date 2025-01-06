@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:38:55 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 18:37:55 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/17 17:40:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,6 @@
 # define ERR_BANNEDFROMCHAN(channel) ("474 :" + (channel) + " :Cannot join channel (+b)\r\n")
 
 # define ERR_BADCHANNELKEY(channel) ("475 :" + (channel) + " :Cannot join channel (+k)\r\n")
-
-# define ERR_BADCHANMASK(channel) ("476 :" + (channel) + " :Bad Channel Mask\r\n")
 
 # define ERR_NOPRIVILEGES "481 :Permission Denied- You're not an IRC operator\r\n"
 // Any command requiring operator privileges to operate must return this

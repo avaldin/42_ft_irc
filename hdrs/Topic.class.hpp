@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.class.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:37:15 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 19:24:06 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/21 02:22:10 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOPIC_CLASS_HPP
 # define TOPIC_CLASS_HPP
-# include "ACommand.class.hpp"
+# include "ICommand.interface.hpp"
 # include <vector>
 
 class Client;
 class Channel;
 class Server;
 
-class Topic : public ACommand {
+class Topic : public ICommand {
 	public:
 		void	execute(Client const & client);
 
@@ -32,12 +32,10 @@ class Topic : public ACommand {
 			Client	const *	client;
 		}	t_data;
 		
-		std::string	checkRegistered(t_data& myData);
-		std::string	checkParams(t_data& myData);
-		std::string	checkChannelExist(t_data& myData);
-		std::string	checkCommandMessage(t_data& myData);
-		std::string	checkChannelClient(t_data& myData);
-		std::string	checkChannelOperator(t_data& myData);
+		std::string	checkChannelExist(t_data const & myData) const;
+		std::string	checkCommandMessage(t_data const & myData) const;
+		std::string	checkChannelClient(t_data const & myData) const;
+		std::string	checkChannelOperator(t_data const & myData) const;
 
 		std::string const			_cmdName;
 		std::string					_targetChannel;
@@ -45,7 +43,7 @@ class Topic : public ACommand {
 
 		static Server*	_server;
 
-		static std::string(Topic::*_method[6])(t_data&);
+		static std::string(Topic::*_method[4])(t_data const &) const;
 		
 	friend class Command;
 };
