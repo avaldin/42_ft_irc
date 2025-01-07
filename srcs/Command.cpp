@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 20:14:37 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/07 16:16:07 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
 	Pass*		newCommand = new Pass();
 	int const	size = splitedLine.size();
 	
-	std::cout << "in pass set" << std::endl;
 	if (idx < size)
 		newCommand->_password = splitedLine[idx];
 	this->_command = newCommand;
