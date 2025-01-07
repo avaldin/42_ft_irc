@@ -30,7 +30,6 @@ void	Pass::execute(Client& client) {
 	t_data		myData;
 
 	myData.client = &client;
-	std::cout << "in pass cmd" << std::endl;
 	for (int idx = 0; idx < 3 && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty()) {
