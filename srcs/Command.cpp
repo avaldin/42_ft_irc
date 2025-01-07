@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/07 16:16:07 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/07 19:31:42 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,9 +130,11 @@ void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
 }
 
 void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
-	Nick*	newCommand = new Nick();
+	int const	size = splitedLine.size();
+	Nick*		newCommand = new Nick();
 	
-	newCommand->_nickname = splitedLine[idx];
+	if (idx < size)
+		newCommand->_nickname = splitedLine[idx];
 	this->_command = newCommand;
 	return ;
 }

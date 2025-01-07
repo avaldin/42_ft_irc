@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 16:31:17 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/07 19:24:39 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	User::checkParams(t_data& myData) {
 	return ;
 }
 
-bool	checkCorpus(char c) {
+static bool	checkCorpus(char c) {
 	if ((c >= 'A' && c <= 'Z') || (c >= 'a' &&  c <= 'z') || (c >= '0' && c <= '9')
 		|| c == '-' || c == '.' || c == '_' || c == '~' || c == 0)
 		return true;

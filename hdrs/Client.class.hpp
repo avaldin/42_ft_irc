@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 15:47:02 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 14:00:02 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/07 16:40:55 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,12 @@ public:
 	std::string					_username;
 	std::string 				_nickname;
 	std::string					_prefix;
+	std::string					localHost;
 	t_registeredState			status;
 	unsigned int				_lastPing; //initialiser au prochain ping
 
 	void	addChannel(std::string newChannel);
+	void	updatePrefix( void );
 
 protected:
 	Client( void );
