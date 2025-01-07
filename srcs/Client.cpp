@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 16:49:38 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/07 16:41:42 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,10 @@ void	Client::action( void ) {
 
 void	Client::addChannel(std::string newChannel) {
 	this->_actualChannel.push_back(newChannel);
+	return ;
+}
+
+void	Client::updatePrefix( void ) {
+	this->_prefix = this->_nickname + "!" + this->_username + "@" + this->localHost;
 	return ;
 }

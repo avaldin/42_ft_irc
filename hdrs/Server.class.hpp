@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 17:09:35 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/07 19:51:29 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ private:
 	std::list<int>						_idPing;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
-	std::map<int, Client*>		_serverClientId;
-	std::map<int, Client*>		_serverOperator;
+	std::map<int, Client*>				_serverClientId;
+	std::map<int, Client*>				_serverOperator;
 	std::map<std::string, Channel*>		_serverChannel;
 
 	class Factory : public Client, public Channel {
