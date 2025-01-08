@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 22:43:58 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/07 19:53:06 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/08 18:07:33 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,22 +47,21 @@ void	Nick::execute(Client& client) {
 		return ;
 	}
 	client._nickname = this->_nickname;
+	client.updatePrefix();
 	if (!client._username.compare("*"))
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClientId, ""); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
+		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._prefix));
 	}
 	else
 		Send::ToServer(this->_server->_serverClientId, client._prefix + " NICK " + this->_nickname);
-	client.updatePrefix();
 	return ;
 }
 
 void	Nick::checkRegistered(t_data& myData) {
 	if (myData.client->status < ONGOING_REGISTERING)
 		myData.error = ERR_NOTREGISTRATED;
-	std::cout << "Error: " << myData.error << std::endl;
 	return ;
 }
 

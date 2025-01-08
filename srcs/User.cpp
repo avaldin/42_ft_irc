@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/07 19:24:39 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/08 18:07:42 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,12 @@ void	User::execute(Client& client) {
 		return ;
 	}
 	client._username = this->_username;
+	client.updatePrefix();
 	if (client._nickname.empty())
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClientId, ""); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
+		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._prefix)); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
 	}
 	return ;
 }

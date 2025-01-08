@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:23:27 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 16:11:43 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/08 18:05:37 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 #define RPL_NONE
 // 300 Dummy reply number. Not used.
+
+#define RPL_WELCOME(prefix) ("001 :Welcome to the Internet Relay Network " + (prefix) + "\r\n")
+// Message displayed to the client when he registered successfully
 
 #define RPL_AWAY(nick, awayMessage) ("301 :" + (nick) + " :" + (awayMessage) + "\r\n")
 
