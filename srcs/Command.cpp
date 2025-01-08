@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/07 19:31:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/08 18:01:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,11 +143,12 @@ void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
 	int const	size = splitedLine.size(); 
 	User*		newCommand = new User();
 
-	newCommand->_username = splitedLine[idx++];
-	if (idx <= size)
+	if (idx < size)
+		newCommand->_username = splitedLine[idx++];
+	if (idx < size)
 		newCommand->_mode = splitedLine[idx++];
-	idx++;
-	while (idx >= size)
+	idx++; // for the unused param
+	while (idx < size)
 		newCommand->_realname += (splitedLine[idx++] + " ");
 	this->_command = newCommand;
 	return ;
