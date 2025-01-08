@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 14:45:23 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:55:09 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ private:
 	int									_mySocket;
 	int									_epollfd;
 	unsigned int						_serverLen;
-	unsigned int						_lastPing; // a initialiser au start
+	unsigned int						_lastPing;
 	std::list<int>						_idPing;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
@@ -97,6 +97,7 @@ friend class User;
 friend class Join;
 friend class Ping;
 friend class Pong;
+friend class Privmsg;
 };
 
 

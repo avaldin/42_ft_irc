@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Reply.define.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:23:27 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/18 16:11:43 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/08 11:29:34 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,6 @@
 // Returned by the server to indicate that the
 // attempted INVITE message was successful and is
 // being passed onto the end client.
+
 
 #endif

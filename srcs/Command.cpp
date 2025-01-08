@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/06 16:31:22 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/08 10:23:45 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include "Join.class.hpp"
 #include "Ping.class.hpp"
 #include "Pong.class.hpp"
+#include "Privmsg.class.hpp"
 
 
 #include <iostream>
@@ -221,16 +222,17 @@ void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
 	if (splitedLine.size() >= 2)
 		newCommand->_token = splitedLine[idx];
 	this->_command = newCommand;
-	return ;
 }
 
 void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
-	Pong*	newCommand = new Pong();
+	Privmsg*	newCommand = new Privmsg();
 
-	if (splitedLine.size() >= 2)
-		newCommand->_token = splitedLine[idx];
+	if (splitedLine.size() >= 3)
+	{
+		newCommand->_receiver = splitedLine[idx++]; //mauvais parsing
+		newCommand->_message = splitedLine[idx];
+	}
 	this->_command = newCommand;
-	return ;
 }
 
 // void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
