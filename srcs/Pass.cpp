@@ -29,6 +29,7 @@ void(Pass::*Pass::_method[3])(t_data&) = {
 void	Pass::execute(Client& client) {
 	t_data		myData;
 
+	std::cout << this->_server->_serverPassword << " et " << this->_password << std::endl;
 	myData.client = &client;
 	for (int idx = 0; idx < 3 && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
@@ -36,6 +37,7 @@ void	Pass::execute(Client& client) {
 		Send::ToClient(client._clientID, myData.error);
 		return ;
 	}
+	std::cout << "pass status" << std::endl;
 	client.status = ONGOING_REGISTERING;
 	return ;
 }

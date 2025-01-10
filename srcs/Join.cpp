@@ -45,7 +45,7 @@ void	Join::execute(Client& client) {
 		myData.targetName = this->_targetChannels[idxChannel];
 		(this->*_method[idx])(myData);
 		myData.targetChannel = this->_server->_serverChannel[myData.targetName];
-		if (myData.targetChannel) 
+		if (myData.targetChannel)
 			joinChannel(myData);
 		else
 			createChannel(myData);

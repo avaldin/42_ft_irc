@@ -3,18 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/07 16:41:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/10 15:52:23 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.class.hpp"
 #include "Server.class.hpp"
 #include "utils.hpp"
+#include "Exception.class.hpp"
 
 #include <iostream>
+#include <sys/socket.h>
+#include <sstream>
 
 Client::Client( void ) : _clientID(0), _username("*"), status(NOT_REGISTERED) {
 	return ;
@@ -49,8 +52,16 @@ void	Client::uninstantiateClient(Client* oldClient) {
 }
 
 void	Client::action( void ) {
-	std::string message = my_recv(this->_clientID);
-	Server::instantiate()->serverRequest(*this, message);
+	std::string	message;
+	char		buff[513];
+	int 		bytesReceived;
+
+	bytesReceived = recv(this->_clientID, buff, 512, 0);
+	if (bytesReceived == -1)
+		throw RecvException(); // cas ou byteReceived = 0, utilisateur a quitte
+	std::stringstream ss(buff);
+	while (std::getline(ss, message, '\n'))
+		Server::instantiate()->serverRequest(*this, message);
 	return ;
 }
 
