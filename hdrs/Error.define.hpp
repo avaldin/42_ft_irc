@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Error.define.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:38:55 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 18:37:55 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/08 09:45:43 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,14 @@
 # define ERR_TOOMANYTARGETS(target) ("407 :" + (target) + " :Duplicate recipients. No message delivered\r\n")
 // Returned to a client which is attempting to send a PRIVMSG/NOTICE using the
 // user@host destination format and for a user@host which has several occurrences.
+
+# define ERR_NORECIPIENT(nickname, command) ("411 :" + (nickname) + " :No recipient given (" + (command) + ")\r\n")
+// Returned by the PRIVMSG command to indicate the message wasn’t delivered
+// because there was no recipient given.
+
+# define ERR_NOTEXTTOSEND(nickname) ("412 :" + (nickname) + " :No text to send\r\n")
+// Returned by the PRIVMSG command to indicate the message wasn’t delivered
+// because there was no text to send.
 
 # define ERR_UNKNOWNCOMMAND(command) ("421 :" + (command) + " :Unknown command\r\n")
 // Returned to a registered client to indicate that the command send unknown

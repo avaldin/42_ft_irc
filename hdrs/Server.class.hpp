@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/07 19:51:29 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:45:23 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ private:
 	int									_mySocket;
 	int									_epollfd;
 	unsigned int						_serverLen;
-	unsigned int						_lastPing; // a initialiser au start
+	unsigned int						_lastPing;
 	std::list<int>						_idPing;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
@@ -99,6 +99,7 @@ friend class User;
 friend class Join;
 friend class Ping;
 friend class Pong;
+friend class Privmsg;
 };
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:38:09 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/08 12:51:55 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,14 @@ void	Channel::sendToChannel(std::string const message) const {
 		send(it->second->_clientID, message.c_str(), message.size(), 0);
 	}
 	return ;
+}
+
+void Channel::privMsgToChannel(const std::string message, int clientID) const
+{
+	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
+		if (it->second->_clientID != clientID)
+			send(it->second->_clientID, message.c_str(), message.size(), 0);
+	}
 }
 
 void	Channel::addOperator(int const clientID) {

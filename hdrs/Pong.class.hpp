@@ -1,7 +1,3 @@
-//
-// Created by avaldin on 1/3/25.
-//
-
 #ifndef PONG_CLASS_HPP
 # define PONG_CLASS_HPP
 

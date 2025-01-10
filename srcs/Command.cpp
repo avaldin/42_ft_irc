@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/08 18:01:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/02 15:42:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include "Join.class.hpp"
 #include "Ping.class.hpp"
 #include "Pong.class.hpp"
+#include "Privmsg.class.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -53,6 +54,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["MODE"] = &Command::setMODE;
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
+	this->_cmdMethods["PRIVMSG"] = &Command::setPRIVMSG;
 	this->_cmdMethods["PING"] = &Command::setPING;
 	this->_cmdMethods["PONG"] = &Command::setPONG;
   this->_command = NULL;
@@ -98,7 +100,7 @@ void	Command::deleteNewline(std::string& line) {
 
 	if (size && line[size - 1] == '\n')
 		line.resize(size - 1);
-	return ;	
+	return ;
 }
 
 t_user	*Command::parseUser(std::string user) {
@@ -238,7 +240,22 @@ void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
 	if (splitedLine.size() >= 2)
 		newCommand->_token = splitedLine[idx];
 	this->_command = newCommand;
-	return ;
+}
+
+void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
+	Privmsg*	newCommand = new Privmsg();
+
+	if (splitedLine.size() >= 3) {
+		newCommand->_receiver = splitedLine[idx++];
+		if (splitedLine[idx][0] == ':') {
+			splitedLine[idx].erase(0);
+			for (std::vector<std::string>::iterator it = splitedLine.begin() + 1; it != splitedLine.end() ; ++it)
+				newCommand->_message += *it;
+		}
+		else
+			newCommand->_message = splitedLine[idx];
+	}
+	this->_command = newCommand;
 }
 
 // void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
