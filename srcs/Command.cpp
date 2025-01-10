@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/08 10:23:45 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/10 12:01:49 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,10 +227,15 @@ void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
 void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 	Privmsg*	newCommand = new Privmsg();
 
-	if (splitedLine.size() >= 3)
-	{
-		newCommand->_receiver = splitedLine[idx++]; //mauvais parsing
-		newCommand->_message = splitedLine[idx];
+	if (splitedLine.size() >= 3) {
+		newCommand->_receiver = splitedLine[idx++];
+		if (splitedLine[idx][0] == ':') {
+			splitedLine[idx].erase(0);
+			for (std::vector<std::string>::iterator it = splitedLine.begin() + 1; it != splitedLine.end() ; ++it)
+				newCommand->_message += *it;
+		}
+		else
+			newCommand->_message = splitedLine[idx];
 	}
 	this->_command = newCommand;
 }
