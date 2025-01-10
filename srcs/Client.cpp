@@ -24,7 +24,7 @@ Client::~Client( void ) {
 	return ;
 }
 
-Client::Client(int clientID) : _clientID(clientID), _username("*") {
+Client::Client(int clientID) : _clientID(clientID), _username("*"), status(NOT_REGISTERED) {
 	return ;
 }
 

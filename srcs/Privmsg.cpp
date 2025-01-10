@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Privmsg.class.hpp"
 #include "Server.class.hpp"
 #include "Send.namespace.hpp"
@@ -13,7 +14,6 @@ void(Privmsg::*Privmsg::_method[3])(t_data&) = {
 
 void	Privmsg::execute(Client &client) {
 	t_data		myData;
-	std::string	error;
 
 	myData.client = &client;
 	myData.target = _receiver;
@@ -25,10 +25,11 @@ void	Privmsg::execute(Client &client) {
 	}
 	else
 		myData.targetType = CLIENT;
-	for (int idx = 0; idx < 3 && !error.empty(); idx++)
+	for (int idx = 0; idx < 3 && myData.error.empty(); ++idx)
 		(this->*_method[idx])(myData);
-	if (!error.empty()) {
-		Send::ToClient(client._clientID, error);
+	std::cout << "err ->" << myData.error << std::endl;
+	if (!myData.error.empty()) {
+		Send::ToClient(client._clientID, myData.error);
 		return ;
 	}
 	std::string	toSend(":" + client._nickname + " PRIVMSG " + myData.target + " :" + _message);
