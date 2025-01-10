@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/06 16:16:01 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/10 13:11:52 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ std::string my_recv(int id)
 		ret.append(&buffer[0], bytesReceived);
 	}
 	while(ret.find('\n') == std::string::npos);
-	ret.erase(ret.find('\n'));
-	if (ret.find('\r') != std::string::npos)
-		ret.erase((ret.find('\r')));
 	return (ret);
 }
 
