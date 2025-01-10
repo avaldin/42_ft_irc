@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 15:43:05 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/10 21:10:08 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include "Server.class.hpp"
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
+
+#include <stdio.h>
 
 Server*	Join::_server = Server::instantiate();
 
@@ -38,6 +40,10 @@ void	Join::execute(Client& client) {
 	myData.client = &client;
 	for (idx = 0; idx < 2 && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
+	if (!myData.error.empty()) {
+		Send::ToClient(client._clientID, myData.error);
+		return ;
+	}
 	int const sizeChannels = this->_targetChannels.size();
 	myData.sizeKey = this->_targetKeys.size();
 	myData.idxKey = 0;
@@ -45,9 +51,9 @@ void	Join::execute(Client& client) {
 		myData.targetName = this->_targetChannels[idxChannel];
 		(this->*_method[idx])(myData);
 		myData.targetChannel = this->_server->_serverChannel[myData.targetName];
-		if (myData.targetChannel) 
+		if (myData.targetChannel && myData.error.empty()) 
 			joinChannel(myData);
-		else
+		else if (myData.error.empty())
 			createChannel(myData);
 		if (!myData.error.empty())
 			Send::ToClient(client._clientID, myData.error);
@@ -55,6 +61,7 @@ void	Join::execute(Client& client) {
 		myData.targetKey.clear();
 		myData.targetChannel = NULL;
 	}
+	this->_server->debugPrintServer();
 	return ;
 }
 
@@ -110,7 +117,7 @@ void	Join::checkChannelKey(t_data& myData) {
 }
 
 void	Join::checkChannelInvite(t_data& myData) {
-	if (!myData.targetChannel->_inviteOnlyMode && !myData.targetChannel->isInvited(myData.client->_clientID))
+	if (myData.targetChannel->_inviteOnlyMode && !myData.targetChannel->isInvited(myData.client->_clientID))
 		myData.error = ERR_INVITEONLYCHAN(myData.targetChannel->_channelName);
 	return ;
 }

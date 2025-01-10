@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/07 19:51:29 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/10 19:04:31 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ private:
 	Server( void );
 
 	// void	processCommand(ACommand* command);
+
+	void		debugPrintServer( void ) const;
 
 	void		addClient( void );
 	void		eraseClient(int const & clientID);

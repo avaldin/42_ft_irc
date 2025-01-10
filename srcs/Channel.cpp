@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:38:09 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/10 19:03:42 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,4 +115,13 @@ bool	Channel::isClient(int const clientID) {
 	if (this->_channelClient[clientID])
 		return true;
 	return false;
+}
+
+#include <iostream>
+
+void	Channel::debugPrintChannel( void ) const {
+	std::cout << "Channel: " << this->_channelName << std::endl;
+	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
+		std::cout << "   -" << it->second->_nickname << std::endl; 
+	}
 }
