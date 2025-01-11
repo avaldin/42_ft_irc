@@ -71,7 +71,7 @@ private:
 	int									_mySocket;
 	int									_epollfd;
 	unsigned int						_serverLen;
-	unsigned int						_lastPing; // a initialiser au start
+	unsigned int						_lastPing;
 	std::list<int>						_idPing;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
@@ -101,6 +101,7 @@ friend class User;
 friend class Join;
 friend class Ping;
 friend class Pong;
+friend class Privmsg;
 };
 
 
