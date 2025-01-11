@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 17:46:59 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/11 19:33:11 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,16 @@ void	Server::runServer( void ) {
 				this->_serverClientId[events[nfd].data.fd]->action();
 			}
 		}
+	}
+}
+
+void	Server::debugPrintServer( void ) const {
+	std::cout << "ENTER DEBUG PRINT" << std::endl;
+	if (this->_serverChannel.empty())
+		return ;
+	for (std::map<std::string, Channel*>::const_iterator it = this->_serverChannel.begin(); it != this->_serverChannel.end(); it++) {
+		if (it->second)
+			it->second->debugPrintChannel();
 	}
 }
 
