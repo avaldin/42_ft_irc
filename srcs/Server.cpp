@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/10 20:34:23 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/11 19:33:11 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,11 +105,9 @@ void	Server::runServer( void ) {
 }
 
 void	Server::debugPrintServer( void ) const {
-	int const size = this->_serverChannel.size();
 	std::cout << "ENTER DEBUG PRINT" << std::endl;
 	if (this->_serverChannel.empty())
 		return ;
-	printf("ok %d\n", size);
 	for (std::map<std::string, Channel*>::const_iterator it = this->_serverChannel.begin(); it != this->_serverChannel.end(); it++) {
 		if (it->second)
 			it->second->debugPrintChannel();

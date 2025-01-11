@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/10 19:34:38 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/11 20:16:36 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,18 +159,16 @@ void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
 	Join*				newCommand = new Join();
 	std::string			parsed;
 
-	printf("starting JOIN\n");
 	std::stringstream	channelSS(splitedLine[idx++]);
 	while(std::getline(channelSS, parsed, ','))
 		newCommand->_targetChannels.push_back(parsed);
 	parsed.clear();
 	if (idx < size) {
 		std::stringstream	keySS(splitedLine[idx++]);
-		while(size > idx && std::getline(channelSS, parsed, ','))
+		while(std::getline(keySS, parsed, ','))
 			newCommand->_targetKeys.push_back(parsed);
 	}
 	this->_command = newCommand;
-	printf("construction JOIN ok\n");
 	return ;
 }
 
