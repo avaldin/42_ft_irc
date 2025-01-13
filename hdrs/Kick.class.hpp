@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:04:44 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 17:52:59 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 20:00:00 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define KICK_CLASS_HPP
 # include "ACommand.class.hpp"
 # include <vector>
+# define CHECK_KICK 6
 
 class Client;
 class Channel;
@@ -22,7 +23,7 @@ class Server;
 
 class Kick : public ACommand {
 public:
-	void	execute(Client const & client);
+	void	execute(Client& client);
 
 private:
 	Kick( void ) : _cmdName("KICK") {}
@@ -52,7 +53,7 @@ private:
 	
 	static Server*	_server;
 
-	static void(Kick::*_method[6])(t_data&);
+	static void(Kick::*_method[CHECK_KICK])(t_data&);
 
 	
 friend class Command;

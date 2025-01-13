@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 18:48:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 19:49:13 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
 		newCommand->_targetUsers.push_back(parseUser(splitedLine[idx++]));
 	while (size < idx)
 		newCommand->_message += splitedLine[idx++];
+	this->_command = newCommand;
 	return ;
 }
 

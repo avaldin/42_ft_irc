@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 14:53:23 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 19:59:51 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void(Kick::*Kick::_method[6])(t_data&) = {
 	&Kick::checkChannelOperator,
 	&Kick::checkClientTargetExist};
 
-void	Kick::execute(Client const & client) {
+void	Kick::execute(Client& client) {
 	t_data		myData;
 
 	myData.client = &client;
@@ -37,7 +37,7 @@ void	Kick::execute(Client const & client) {
 	int const	sizeChannel = this->_targetChannels.size();
 	int const	sizeUser = this->_targetUsers.size();
 	for (myData.idxChannel = 0, myData.idxUser = 0; myData.idxChannel < sizeChannel && myData.error.empty(); myData.idxChannel++) {
-		for (int idx = 2; idx < 6 && myData.error.empty(); idx++)
+		for (int idx = 2; idx < CHECK_KICK && myData.error.empty(); idx++)
 			(this->*_method[idx])(myData);
 		if (!myData.error.empty())
 			Send::ToClient(client._clientID, myData.error);
@@ -64,9 +64,12 @@ void	Kick::checkParams(t_data& myData) {
 }
 
 void	Kick::checkChannelExist(t_data& myData) {
-	myData.channel = this->_server->_serverChannel[this->_targetChannels[myData.idxChannel]];
-	if (!myData.channel)
+	std::map<std::string, Channel*>::iterator it = this->_server->_serverChannel.find(this->_targetChannels[myData.idxChannel]);
+	
+	if (it == this->_server->_serverChannel.end())
 		myData.error =  ERR_NOSUCHCHANNEL(this->_targetChannels[myData.idxChannel]);
+	myData.channel = it->second;
+	return ;
 }
 
 void	Kick::checkChannelClient(t_data& myData) {
