@@ -15,6 +15,7 @@
 
 #include <string>
 
+void		signalHandler();
 std::string my_recv(int id);
 
 #endif

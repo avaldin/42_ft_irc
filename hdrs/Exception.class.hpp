@@ -47,6 +47,13 @@ class AcceptException : public Exception {
 		}
 };
 
+class setsockoptException : public Exception {
+public:
+	void	what() const throw() {
+		std::cerr << "Error: setsockopt failed" << std::endl;
+	}
+};
+
 class ServerStartException : public Exception {
 	public:
 		void	what() const throw() {

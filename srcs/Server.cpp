@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 17:46:59 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 13:26:59 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
-#include <string.h>
+#include <cstring>
 #include <sstream>
 #include <ctime>
 
@@ -56,6 +56,9 @@ void	Server::startServer(int port, const std::string& password) {
 	this->_mySocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_mySocket == -1)
 		throw SocketException();
+	int opt = 1;
+	if (setsockopt(this->_mySocket,SOL_SOCKET, SO_REUSEADDR, &opt,  sizeof(opt)) == -1)
+		throw setsockoptException();
 	this->_address = &address;
 	this->_port = port;
 	this->_address->sin_family = AF_INET;

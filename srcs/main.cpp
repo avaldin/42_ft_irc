@@ -1,21 +1,15 @@
 #include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/epoll.h>
-#include <cstdio>
-#include <cstdlib>
 #include <netinet/in.h>
-#include <csignal>
 #include <iostream>
-#include <cstring>
 #include "Server.class.hpp"
 #include "Exception.class.hpp"
-#include "Client.class.hpp"
-#include "Channel.class.hpp"
-#include <map>
 #include <sstream>
+#include <csignal>
+#include "utils.hpp"
 
-int	parsingArgs(int argc, char **argv)
-{
+
+
+int	parsingArgs(int argc, char **argv) {
 	int 				port;
 	std::stringstream 	ss;
 
@@ -44,6 +38,7 @@ int	main(int argc, char **argv)
 
 	if ((port = parsingArgs(argc, argv)) == -1)
 		return (-1);
+	signalHandler();
 	try {ircServer->startServer(port, argv[2]);}
 	catch (Exception& e) {
 		e.what();
