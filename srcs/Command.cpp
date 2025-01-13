@@ -21,8 +21,6 @@
 #include "Nick.class.hpp"
 #include "User.class.hpp"
 #include "Join.class.hpp"
-#include "Ping.class.hpp"
-#include "Pong.class.hpp"
 #include "Privmsg.class.hpp"
 
 #include <iostream>
@@ -55,8 +53,6 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
 	this->_cmdMethods["PRIVMSG"] = &Command::setPRIVMSG;
-	this->_cmdMethods["PING"] = &Command::setPING;
-	this->_cmdMethods["PONG"] = &Command::setPONG;
   this->_command = NULL;
 	this->parseRawline();
 	return ;
@@ -229,23 +225,6 @@ void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
 	newCommand->_targetChannels.push_back(splitedLine[idx++]);
 	this->_command = newCommand;
 	return ;
-}
-
-void	Command::setPING(std::vector<std::string> splitedLine, int idx) {
-	Ping*	newCommand = new Ping();
-	int 	size = splitedLine.size();
-
-	if (idx <= size)
-		newCommand->_token = splitedLine[idx];
-	this->_command = newCommand;
-}
-
-void	Command::setPONG(std::vector<std::string> splitedLine, int idx) {
-	Pong*	newCommand = new Pong();
-
-	if (splitedLine.size() >= 2)
-		newCommand->_token = splitedLine[idx];
-	this->_command = newCommand;
 }
 
 void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {

@@ -33,7 +33,6 @@ public:
 	std::string					_prefix;
 	std::string					localHost;
 	t_registeredState			status;
-	unsigned int				_lastPing; //initialiser au prochain ping
 
 	void	addChannel(std::string newChannel);
 	void	updatePrefix( void );

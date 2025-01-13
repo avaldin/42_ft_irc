@@ -81,7 +81,6 @@ void	Server::startServer(int port, const std::string& password) {
 	this->_console->_nickname = "CONSOLE";
 	this->_console->_username = "CONSOLE";
 	this->_serverPassword = password;
-	this->_lastPing = std::time(nullptr);
 	return ;
 }
 
@@ -90,7 +89,6 @@ void	Server::runServer( void ) {
 	struct epoll_event	events[10];
 
 	while (true) {
-		this->pingClient();
 		nfds = epoll_wait(this->_epollfd, events, 10, -1);
 		if (nfds == -1) 
 			throw EpollWaitException();
@@ -239,23 +237,4 @@ void	Server::sendError(int const clientId, std::string const & msgError)
 	if (send(clientId, msgError.c_str(), msgError.size(), 0) == -1)
 		throw SendException();
 	return ;
-}
-
-void Server::pingClient(void) {
-	std::stringstream	ss;
-
-	if (this->_idPing.empty() && this->_lastPing + 60 < std::time(nullptr)) {
-		ss << std::time(nullptr);
-		for (std::map<int, Client*>::iterator it = this->_serverClientId.begin()
-				; it != this->_serverClientId.end(); it++) {
-			Send::ToClient(it->first, "PING :" + ss.str());
-		}
-		this->_lastPing = std::time(nullptr);
-	}
-	else if (!this->_idPing.empty() && this->_lastPing + 30 < std::time(nullptr)) {
-		for (std::list<int>::iterator it = this->_idPing.begin(); it != this->_idPing.end(); it++) {
-			this->eraseClient(*it); // check if this function erase cleanly, if we erase client anywhere else, it could stay in _idPing
-			this->_idPing.erase(it);
-		}
-	}
 }

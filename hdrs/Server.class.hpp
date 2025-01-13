@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/10 19:04:31 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 18:14:40 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ private:
 	Client*		findClientNickname(std::string const & nickname);
 	Client*		findClientUsername(std::string const & username);
 	Client*		findClientId(int const & id);
-	void		pingClient( void );
 
 	std::string const					_serverName;
 	std::string							_serverPassword;
@@ -71,8 +70,6 @@ private:
 	int									_mySocket;
 	int									_epollfd;
 	unsigned int						_serverLen;
-	unsigned int						_lastPing;
-	std::list<int>						_idPing;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
 	std::map<int, Client*>				_serverClientId;
@@ -99,8 +96,6 @@ friend class Pass;
 friend class Nick;
 friend class User;
 friend class Join;
-friend class Ping;
-friend class Pong;
 friend class Privmsg;
 };
 

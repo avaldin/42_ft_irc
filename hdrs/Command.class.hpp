@@ -60,8 +60,7 @@ private:
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);
 	// void	setQUIT(std::vector<std::string> splitedLine, int idx);
 	void	setPRIVMSG(std::vector<std::string> splitedLine, int idx);
-	void	setPING(std::vector<std::string> splitedLine, int idx);
-	void	setPONG(std::vector<std::string> splitedLine, int idx);
+
 
 
 	std::string							_rawLine;
