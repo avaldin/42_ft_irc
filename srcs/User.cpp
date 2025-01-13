@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
 #include "User.class.hpp"
 #include "Error.define.hpp"
 #include "Reply.define.hpp"
@@ -46,6 +47,7 @@ void	User::execute(Client& client) {
 	}
 	client._username = this->_username;
 	client.updatePrefix();
+	std::cout << "bef nick status" << std::endl;
 	if (client._nickname.empty())
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {

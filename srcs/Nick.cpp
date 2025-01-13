@@ -48,6 +48,7 @@ void	Nick::execute(Client& client) {
 	}
 	client._nickname = this->_nickname;
 	client.updatePrefix();
+	std::cout << "bef nick status" << std::endl;
 	if (!client._username.compare("*"))
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {

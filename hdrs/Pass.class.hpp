@@ -12,6 +12,8 @@
 
 #ifndef Pass_CLASS_HPP
 # define Pass_CLASS_HPP
+
+#include <iostream>
 # include "ACommand.class.hpp"
 
 class Client;
@@ -28,6 +30,7 @@ private:
 	typedef struct	s_data {
 		Client*		client;
 		std::string	error;
+		std::string	password;
 	}	t_data;
 
 	void	checkRegistered(t_data& myData);

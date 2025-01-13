@@ -38,7 +38,6 @@ int	main(int argc, char **argv)
 
 	if ((port = parsingArgs(argc, argv)) == -1)
 		return (-1);
-	signalHandler();
 	try {ircServer->startServer(port, argv[2]);}
 	catch (Exception& e) {
 		e.what();
