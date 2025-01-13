@@ -29,8 +29,8 @@ void(Pass::*Pass::_method[3])(t_data&) = {
 void	Pass::execute(Client& client) {
 	t_data		myData;
 
-	std::cout << this->_server->_serverPassword << " et " << this->_password << std::endl;
 	myData.client = &client;
+	myData.password = this->_password;
 	for (int idx = 0; idx < 3 && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty()) {
@@ -53,6 +53,6 @@ void	Pass::checkParams(t_data& myData) {
 }
 
 void	Pass::checkPassword(t_data& myData) {
-	if (this->_password.compare(this->_server->_serverPassword))
+	if (myData.password.compare(this->_server->_serverPassword))
 		myData.error = ERR_PASSWDMISMATCH;
 }

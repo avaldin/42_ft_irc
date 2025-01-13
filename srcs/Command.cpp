@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/10 14:08:19 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/13 14:48:20 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	 Command::parseRawline( void ) {
 	std::stringstream			rawlineStringStream(this->_rawLine);
 	std::vector<std::string>	splited;
 	std::string					parsed;
-	
+
 	while(std::getline(rawlineStringStream, parsed, ' ')) {
 		splited.push_back(parsed);
 	}
@@ -97,9 +97,12 @@ void	 Command::parseRawline( void ) {
 
 void	Command::deleteNewline(std::string& line) {
 	int const size = line.size();
+	unsigned long	endTextPos;
 
 	if (size && line[size - 1] == '\n')
 		line.resize(size - 1);
+	if ((endTextPos = this->_rawLine.find('\r')) != std::string::npos)
+		this->_rawLine.erase(endTextPos, 1);
 	return ;
 }
 
