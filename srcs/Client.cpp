@@ -12,7 +12,6 @@
 
 #include "Client.class.hpp"
 #include "Server.class.hpp"
-#include "utils.hpp"
 #include "Exception.class.hpp"
 
 #include <iostream>
