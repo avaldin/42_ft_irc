@@ -37,7 +37,6 @@ void	Pass::execute(Client& client) {
 		Send::ToClient(client._clientID, myData.error);
 		return ;
 	}
-	std::cout << "pass status" << std::endl;
 	client.status = ONGOING_REGISTERING;
 	return ;
 }

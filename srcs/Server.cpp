@@ -92,7 +92,6 @@ void	Server::runServer( void ) {
 		nfds = epoll_wait(this->_epollfd, events, 10, -1);
 		if (nfds == -1) 
 			throw EpollWaitException();
-		std::cout << "epoll received" << std::endl;
 		for (int nfd = 0; nfd < nfds; ++nfd) {
 			if (events[nfd].data.fd == this->_mySocket) {
 				try {this->addClient();}

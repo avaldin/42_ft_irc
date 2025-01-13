@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/08 18:07:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 17:12:10 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	User::execute(Client& client) {
 	}
 	client._username = this->_username;
 	client.updatePrefix();
-	std::cout << "bef nick status" << std::endl;
 	if (client._nickname.empty())
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
