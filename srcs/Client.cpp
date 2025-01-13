@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/10 15:52:23 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/13 15:00:18 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	Client::action( void ) {
 	bytesReceived = recv(this->_clientID, buff, 512, 0);
 	if (bytesReceived == -1)
 		throw RecvException(); // cas ou byteReceived = 0, utilisateur a quitte
+	buff[bytesReceived] = '\0';
 	std::stringstream ss(buff);
 	while (std::getline(ss, message, '\n'))
 		Server::instantiate()->serverRequest(*this, message);
