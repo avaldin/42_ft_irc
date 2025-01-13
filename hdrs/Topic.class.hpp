@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:37:15 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/26 19:24:06 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 18:41:27 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define TOPIC_CLASS_HPP
 # include "ACommand.class.hpp"
 # include <vector>
+# define CHECK_TOPIC 6
 
 class Client;
 class Channel;
@@ -21,31 +22,32 @@ class Server;
 
 class Topic : public ACommand {
 	public:
-		void	execute(Client const & client);
+		void	execute(Client& client);
 
 	private:
 		Topic( void );
 		~Topic( void );
 		
 		typedef struct s_data {
-			Channel* channel;
+			std::string		error;
+			Channel* 		channel;
 			Client	const *	client;
 		}	t_data;
 		
-		std::string	checkRegistered(t_data& myData);
-		std::string	checkParams(t_data& myData);
-		std::string	checkChannelExist(t_data& myData);
-		std::string	checkCommandMessage(t_data& myData);
-		std::string	checkChannelClient(t_data& myData);
-		std::string	checkChannelOperator(t_data& myData);
+		void	checkRegistered(t_data& myData);
+		void	checkParams(t_data& myData);
+		void	checkChannelExist(t_data& myData);
+		void	checkCommandMessage(t_data& myData);
+		void	checkChannelClient(t_data& myData);
+		void	checkChannelOperator(t_data& myData);
 
-		std::string const			_cmdName;
-		std::string					_targetChannel;
-		std::string					_topic;
+		std::string const	_cmdName;
+		std::string			_targetChannel;
+		std::string			_topic;
 
 		static Server*	_server;
 
-		static std::string(Topic::*_method[6])(t_data&);
+		static void(Topic::*_method[CHECK_TOPIC])(t_data&);
 		
 	friend class Command;
 };
