@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/11 20:16:36 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 18:48:00 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,9 +190,10 @@ void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 	Topic*		newCommand = new Topic();
 	int const	size = splitedLine.size();
 	
-	newCommand->_targetChannel = splitedLine[idx++];
+	if (idx < size)
+		newCommand->_targetChannel = splitedLine[idx++];
 	while (idx < size)
-		newCommand->_topic += splitedLine[idx++];
+		newCommand->_topic += (splitedLine[idx++] + " ");
 	this->_command = newCommand;
 	return ;
 }
