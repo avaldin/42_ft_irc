@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/08 13:02:11 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/10 18:50:07 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ typedef enum	e_channelType {
 
 class Channel {
 public:
+
+	void			debugPrintChannel( void ) const;
 
 	void			sendToChannel(std::string const message) const;
 	void			privMsgToChannel(std::string const message, int clientID) const;

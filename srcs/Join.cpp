@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 15:43:05 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/11 20:23:38 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include "Server.class.hpp"
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
+
+#include <stdio.h>
 
 Server*	Join::_server = Server::instantiate();
 
@@ -38,6 +40,10 @@ void	Join::execute(Client& client) {
 	myData.client = &client;
 	for (idx = 0; idx < 2 && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
+	if (!myData.error.empty()) {
+		Send::ToClient(client._clientID, myData.error);
+		return ;
+	}
 	int const sizeChannels = this->_targetChannels.size();
 	myData.sizeKey = this->_targetKeys.size();
 	myData.idxKey = 0;
@@ -45,16 +51,19 @@ void	Join::execute(Client& client) {
 		myData.targetName = this->_targetChannels[idxChannel];
 		(this->*_method[idx])(myData);
 		myData.targetChannel = this->_server->_serverChannel[myData.targetName];
-		if (myData.targetChannel) 
+		if (myData.error.empty() && myData.targetChannel)
 			joinChannel(myData);
-		else
+		else if (myData.error.empty())
 			createChannel(myData);
 		if (!myData.error.empty())
 			Send::ToClient(client._clientID, myData.error);
+		else
+			Send::ToClient(client._clientID, RPL_TOPIC(myData.targetChannel->_channelName ,myData.targetChannel->_channelTopic));
 		myData.error.clear();
 		myData.targetKey.clear();
 		myData.targetChannel = NULL;
 	}
+	this->_server->debugPrintServer();
 	return ;
 }
 
@@ -63,7 +72,7 @@ void	Join::joinChannel(t_data& myData) {
 		myData.targetKey = this->_targetKeys[myData.idxKey];
 	for (int idx = 3;idx < CHECK_JOIN && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
-	if (myData.error.empty())
+	if (!myData.error.empty())
 		return ;
 	myData.targetChannel->addClient(myData.client->_clientID, myData.client);
 	return ;
@@ -74,7 +83,8 @@ void	Join::createChannel(t_data& myData) {
 	myData.targetChannel = this->_server->_serverChannel[myData.targetName];
 	myData.targetChannel->addClient(myData.client->_clientID, myData.client);
 	myData.targetChannel->addOperator(myData.client->_clientID);
-	myData.targetChannel->_channelPassword.clear();
+	if (myData.idxKey < myData.sizeKey)
+		myData.targetChannel->_channelPassword = this->_targetKeys[myData.idxKey];
 	return ;
 }
 
@@ -104,13 +114,17 @@ void	Join::checkChannelName(t_data& myData) {
 }
 
 void	Join::checkChannelKey(t_data& myData) {
-	if (!myData.targetKey.empty() && myData.targetKey.compare(myData.targetChannel->_channelPassword))
+	printf("User: %s\n", myData.targetKey.c_str());
+	printf("Channel: %s\n", myData.targetChannel->_channelPassword.c_str());
+	if (!myData.targetChannel->_channelPassword.empty() && myData.targetKey.compare(myData.targetChannel->_channelPassword)) {
+		printf("checkChannelKey\n");
 		myData.error = ERR_BADCHANNELKEY(myData.targetChannel->_channelName);
+	}
 	return ;
 }
 
 void	Join::checkChannelInvite(t_data& myData) {
-	if (!myData.targetChannel->_inviteOnlyMode && !myData.targetChannel->isInvited(myData.client->_clientID))
+	if (myData.targetChannel->_inviteOnlyMode && !myData.targetChannel->isInvited(myData.client->_clientID))
 		myData.error = ERR_INVITEONLYCHAN(myData.targetChannel->_channelName);
 	return ;
 }
