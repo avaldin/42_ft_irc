@@ -47,7 +47,7 @@
 # define ERR_ERRONEUSNICKNAME(nickname) ("432 :" + (nickname) + " :Erroneus nickname\r\n")
 // Returned after receiving a NICK message which contains characters which do
 // not fall in the defined set. See section x.x.x for details on valid nicknames.
-`
+
 # define ERR_NICKNAMEINUSE(nickname) ("433 :" + (nickname) + " :Nickname is already in use\r\n")
 // Returned when a NICK message is processed that results in an attempt to
 // change to a currently existing nickname.
