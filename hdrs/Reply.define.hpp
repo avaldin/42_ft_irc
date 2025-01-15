@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:23:27 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 13:56:53 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/15 13:58:11 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #define RPL_NONE
 // 300 Dummy reply number. Not used.
 
-#define RPL_WELCOME(prefix) ("IRC_serv 001 " + (target) + " :Welcome to the Internet Relay Network, " + (target))
+#define RPL_WELCOME(target) ("IRC_serv 001 " + (target) + " :Welcome to the Internet Relay Network, " + (target))
 // Message displayed to the client when he registered successfully
 
 #define RPL_AWAY(target, nick, awayMessage) ("IRC_serv 301 " + (target) + " " + (nick) + " :" + (away message))

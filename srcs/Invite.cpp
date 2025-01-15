@@ -39,7 +39,7 @@ void	Invite::execute(Client const & client) {
 		return ;
 	}
 	myData.channel->addInvited(myData.client->_clientID, myData.targetClient);
-	Send::ToClient(client._clientID, RPL_INVITING(myData.channel->_channelName, myData.targetClient->_nickname));
+	Send::ToClient(client._clientID, RPL_INVITING(client._nickname, myData.channel->_channelName, myData.targetClient->_nickname));
 	std::string const	reply = ":" + client._prefix + " " + "INVITE " + myData.targetClient->_nickname + " :" + myData.channel->_channelName;  
 	Send::ToClient(myData.client->_clientID, reply);
 	return ;

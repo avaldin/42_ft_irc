@@ -79,9 +79,9 @@ std::string	Topic::checkChannelExist(t_data& myData) {
 
 std::string	Topic::checkCommandMessage(t_data& myData) {
 	if (this->_topic.empty() && myData.channel->_channelTopic.empty())
-		return RPL_NOTOPIC(myData.channel->_channelName);
+		return RPL_NOTOPIC(myData.client->_nickname, myData.channel->_channelName);
 	else if (this->_topic.empty())
-		return RPL_TOPIC(myData.channel->_channelName, myData.channel->_channelTopic);
+		return RPL_TOPIC(myData.client->_nickname, myData.channel->_channelName, myData.channel->_channelTopic);
 	return "";
 }
 

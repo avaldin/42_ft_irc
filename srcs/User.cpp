@@ -51,7 +51,7 @@ void	User::execute(Client& client) {
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._prefix)); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
+		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._nickname)); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
 	}
 	return ;
 }

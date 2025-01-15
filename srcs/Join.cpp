@@ -58,7 +58,7 @@ void	Join::execute(Client& client) {
 		if (!myData.error.empty())
 			Send::ToClient(client._clientID, myData.error);
 		else
-			Send::ToClient(client._clientID, RPL_TOPIC(myData.targetChannel->_channelName ,myData.targetChannel->_channelTopic));
+			Send::ToClient(client._clientID, RPL_TOPIC(client._nickname, myData.targetChannel->_channelName ,myData.targetChannel->_channelTopic));
 		myData.error.clear();
 		myData.targetKey.clear();
 		myData.targetChannel = NULL;
