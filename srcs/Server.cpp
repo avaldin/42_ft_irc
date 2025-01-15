@@ -143,7 +143,7 @@ void	Server::serverRequest(Client& client, std::string rawLine) {
 	if (myCommand._command)
 		myCommand._command->execute(client);
 	else
-		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(myCommand._cmdName));
+		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(client._nickname, myCommand._cmdName));
 	return ;
 }
 

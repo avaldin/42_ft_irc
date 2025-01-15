@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 17:12:10 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 14:31:04 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,6 @@ void	User::checkUsernameRestriction(t_data& myData) {
 
 void	User::checkModeExist(t_data& myData) {
 	if (this->_mode.compare("0"))
-		myData.error = ERR_UMODEUNKNOWNFLAG(myData.client->_nickname, this->_mode);
+		myData.error = ERR_UMODEUNKNOWNFLAG(myData.client->_nickname, this->_mode); //idk if needed
 	return ;
 }

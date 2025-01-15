@@ -24,7 +24,6 @@ void	Privmsg::execute(Client &client) {
 		myData.targetType = CLIENT;
 	for (int idx = 0; idx < 3 && myData.error.empty(); ++idx)
 		(this->*_method[idx])(myData);
-	std::cout << "err ->" << myData.error << std::endl;
 	if (!myData.error.empty()) {
 		Send::ToClient(client._clientID, myData.error);
 		return ;

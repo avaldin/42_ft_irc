@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:23:27 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 13:58:11 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/15 16:46:40 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 #define RPL_NONE
 // 300 Dummy reply number. Not used.
 
-#define RPL_WELCOME(target) ("IRC_serv 001 " + (target) + " :Welcome to the Internet Relay Network, " + (target))
+#define RPL_WELCOME(target) (":IRC_serv 001 " + (target) + " :Welcome to the Internet Relay Network, " + (target))
 // Message displayed to the client when he registered successfully
 
-#define RPL_AWAY(target, nick, awayMessage) ("IRC_serv 301 " + (target) + " " + (nick) + " :" + (away message))
+#define RPL_AWAY(target, nick, awayMessage) (":IRC_serv 301 " + (target) + " " + (nick) + " :" + (away message))
 
 #define RPL_UNAWAY ":You are no longer marked as being away"
 
@@ -29,18 +29,18 @@
 // RPL_AWAY is only sent by the server to which the client is connected. Replies
 // RPL_UNAWAY and RPL_NOWAWAY are sent when the client removes and sets an AWAY message.
 
-#define RPL_WHOISUSER(target, nick, user, host, realName) ("IRC_serv 311 " + (target) + " " + (nick) + " " + (user) + " " + (host) + " * :" + (realname))
+#define RPL_WHOISUSER(target, nick, user, host, realName) (":IRC_serv 311 " + (target) + " " + (nick) + " " + (user) + " " + (host) + " * :" + (realname))
 
-#define RPL_WHOISSERVER(target, nick, server, serverInfo) ("IRC_serv 312 " + (target) + " " + (nick) + " " + (server) + " :" + (server info))
+#define RPL_WHOISSERVER(target, nick, server, serverInfo) (":IRC_serv 312 " + (target) + " " + (nick) + " " + (server) + " :" + (server info))
 
-#define RPL_WHOISOPERATOR(target, nick) ("IRC_serv 313 " + (target) + " " + (nick) + " :is an IRC Operator")
+#define RPL_WHOISOPERATOR(target, nick) (":IRC_serv 313 " + (target) + " " + (nick) + " :is an IRC Operator")
 
-// pas ok jsp ce qu'est ...time #define RPL_WHOISIDLE(nick, integer) ("IRC_serv 317 " + (target) + " " + (nick) + " <idle_time> <signon_time> :seconds idle, signon time")
+// pas ok jsp ce qu'est ...time #define RPL_WHOISIDLE(nick, integer) (":IRC_serv 317 " + (target) + " " + (nick) + " <idle_time> <signon_time> :seconds idle, signon time")
 
-// pqs ok jsp ce qu'est mask #define RPL_ENDOFWHOIS(nick) ("IRC_serv 318 " + (target) + " <mask> :End of /WHOIS list.")
+// pqs ok jsp ce qu'est mask #define RPL_ENDOFWHOIS(nick) (":IRC_serv 318 " + (target) + " <mask> :End of /WHOIS list.")
 
 
-#define RPL_WHOISCHANNELS(target, nick, channel) ("IRC_serv 319 " + (target) + " " + (nick) + " :" + (channels))
+#define RPL_WHOISCHANNELS(target, nick, channel) (":IRC_serv 319 " + (target) + " " + (nick) + " :" + (channels))
 //Info:
 //This is returned when using the WHOIS command
 //		<channels> is a space seperated list of one or more channels channels are listed from newest to oldest as received by the server (joined by the user or bursted) in that order each channel is formatted as [-][!][@|+|<]<channel>
@@ -62,17 +62,17 @@
 
 
 
-#define RPL_CHANNELMODEIS(target, channel, mode) ("IRC_serv 324 " + (target) + " " + (channel) + " +" + (mode))
+#define RPL_CHANNELMODEIS(target, channel, mode) (":IRC_serv 324 " + (target) + " " + (channel) + " +" + (mode))
 
-#define RPL_NOTOPIC(target, channel) ("IRC_serv 331 " + (target) + " " + (channel) + " :No topic is set.")
+#define RPL_NOTOPIC(target, channel) (":IRC_serv 331 " + (target) + " " + (channel) + " :No topic is set.")
 
-#define RPL_TOPIC(target, channel, topic) ("IRC_serv 332 " + (target) + " " + (channel) + " :" + (topic))
+#define RPL_TOPIC(target, channel, topic) (":IRC_serv 332 " + (target) + " " + (channel) + " :" + (topic))
 // When sending a TOPIC message to determine the
 // channel topic, one of two replies is sent.  If
 // the topic is set, RPL_TOPIC is sent back else
 // RPL_NOTOPIC.
 
-#define RPL_INVITING(target, channel, nick) ("IRC_serv 341 " + (target) + " " + (nick) + " " + (channel))
+#define RPL_INVITING(target, channel, nick) (":IRC_serv 341 " + (target) + " " + (nick) + " " + (channel))
 // Returned by the server to indicate that the
 // attempted INVITE message was successful and is
 // being passed onto the end client.

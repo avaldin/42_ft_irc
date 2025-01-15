@@ -113,7 +113,7 @@ void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int
 	}
 	int const	targetID = std::atoi(currentMode->args.c_str());
 	if (!currentChannel->isClient(targetID)) {
-		Send::ToClient(clientID, ERR_USERNOTINCHANNEL(currentMode->args, currentChannel->_channelName)); // FAIS CHIER
+		Send::ToClient(clientID, ERR_USERNOTINCHANNEL(currentMode->args, currentMode->args, currentChannel->_channelName)); // FAIS CHIER
 		return ;
 	}
 	if (currentMode->sign == '+')
