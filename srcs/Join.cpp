@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/11 20:23:38 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 13:09:48 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 
-#include <stdio.h>
+#include <cstdio>
 
 Server*	Join::_server = Server::instantiate();
 
@@ -90,13 +90,13 @@ void	Join::createChannel(t_data& myData) {
 
 void	Join::checkRegistered(t_data& myData) {
 	if (myData.client->status != REGISTERED)
-		myData.error = ERR_NOTREGISTRATED;
+		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);
 	return ;
 }
 
 void	Join::checkParams(t_data& myData) {
 	if (this->_targetChannels.empty())
-		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	return ;
 }
 
@@ -118,19 +118,19 @@ void	Join::checkChannelKey(t_data& myData) {
 	printf("Channel: %s\n", myData.targetChannel->_channelPassword.c_str());
 	if (!myData.targetChannel->_channelPassword.empty() && myData.targetKey.compare(myData.targetChannel->_channelPassword)) {
 		printf("checkChannelKey\n");
-		myData.error = ERR_BADCHANNELKEY(myData.targetChannel->_channelName);
+		myData.error = ERR_BADCHANNELKEY(myData.client->_nickname, myData.targetChannel->_channelName);
 	}
 	return ;
 }
 
 void	Join::checkChannelInvite(t_data& myData) {
 	if (myData.targetChannel->_inviteOnlyMode && !myData.targetChannel->isInvited(myData.client->_clientID))
-		myData.error = ERR_INVITEONLYCHAN(myData.targetChannel->_channelName);
+		myData.error = ERR_INVITEONLYCHAN(myData.client->_nickname, myData.targetChannel->_channelName);
 	return ;
 }
 
 void	Join::checkChannelFilling(t_data& myData) {
 	if (myData.targetChannel->_channelLimit > 0 && myData.targetChannel->_channelClient.size() == myData.targetChannel->_channelLimit)
-		myData.error = ERR_CHANNELISFULL(myData.targetChannel->_channelName);
+		myData.error = ERR_CHANNELISFULL(myData.client->_nickname, myData.targetChannel->_channelName);
 	return ;
 }

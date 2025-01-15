@@ -57,14 +57,14 @@ void	User::execute(Client& client) {
 }
 
 void	User::checkRegistered(t_data& myData) {
-	std::string	error[3] = {ERR_NOTREGISTRATED, "", ERR_ALREADYREGISTRED};
+	std::string	error[3] = {ERR_NOTREGISTRATED(myData.client->_nickname), "", ERR_ALREADYREGISTRED(myData.client->_nickname)};
 	myData.error = error[myData.client->status];
 	return ;
 }
 
 void	User::checkParams(t_data& myData) {
 	if (this->_username.empty() || this->_mode.empty() || this->_realname.empty())
-		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	return ;
 }
 
@@ -88,6 +88,6 @@ void	User::checkUsernameRestriction(t_data& myData) {
 
 void	User::checkModeExist(t_data& myData) {
 	if (this->_mode.compare("0"))
-		myData.error = ERR_UMODEUNKNOWNFLAG;
+		myData.error = ERR_UMODEUNKNOWNFLAG(myData.client->_nickname, this->_mode);
 	return ;
 }

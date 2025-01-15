@@ -17,24 +17,24 @@
 
 
 void	Send::ToConsole(int const & targetID, std::string const & message) {
-	send(targetID, message.c_str(), message.size(), 0);
+	send(targetID, (message + "\r\n").c_str(), message.size(), 0);
 	return ;
 }
 
 void	Send::ToServer(std::map<int, Client*> & serverClient, std::string const & message) {
 	for (std::map<int, Client *>::iterator it = serverClient.begin(); it != serverClient.end(); it++) {
 		int otherClient = it->second->_clientID;
-		send(otherClient, message.c_str(), message.size(), 0);
+		send(otherClient, (message + "\r\n").c_str(), message.size(), 0);
 	}
 	return ;
 }
 
 void	Send::ToChannel(Channel const & channel, std::string const & message) {
-	channel.sendToChannel(message);
+	channel.sendToChannel(message + "\r\n");
 	return ;
 }
 
 void	Send::ToClient(int const & targetID, std::string const & message) {
-	send(targetID, message.c_str(), message.size(), 0);
+	send(targetID, (message + "\r\n").c_str(), message.size(), 0);
 	return ;
 }

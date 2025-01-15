@@ -38,7 +38,7 @@ void	Privmsg::execute(Client &client) {
 
 void	Privmsg::checkRegistered(t_data& myData) {
 	if (myData.client->status < REGISTERED)
-		myData.error = ERR_NOTREGISTRATED;
+		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);
 }
 
 void	Privmsg::checkParams(t_data& myData) {
@@ -53,5 +53,5 @@ void	Privmsg::checkTargetExist(t_data& myData) {
 		myData.error = ERR_NOSUCHNICK(myData.client->_nickname, myData.target);
 	if (myData.targetType == CHANNEL
 			&& this->_server->_serverChannel.find(myData.target) == this->_server->_serverChannel.end())
-		myData.error = ERR_NOSUCHCHANNEL(myData.target);
+		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, myData.target);
 }

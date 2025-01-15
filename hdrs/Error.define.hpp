@@ -51,7 +51,7 @@
 // Returned when a NICK message is processed that results in an attempt to
 // change to a currently existing nickname.
 
-# define ERR_NICKCOLLISION(target, nick) ("	IRC_serv 436 " + (target) + " " + (nick) + " :Nickname collision KILL") //jsp pour le kill
+# define ERR_NICKCOLLISION(target, nick) ("IRC_serv 436 " + (target) + " " + (nick) + " :Nickname collision KILL") //jsp pour le kill
 // Returned by a server to a client when it detects a nickname collision
 // (registered of a NICK that already exists by another server).
 

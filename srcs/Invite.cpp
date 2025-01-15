@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 14:47:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/13 19:09:41 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,12 @@ void	Invite::execute(Client const & client) {
 
 void	Invite::checkRegistered(t_data& myData) {
 	if (myData.client->status != REGISTERED)
-		myData.error = ERR_NOTREGISTRATED;
+		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);
 }
 
 void	Invite::checkParams(t_data& myData) {
 	if (this->_targetChannels.empty() || this->_targetUsers.empty())
-		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 }
 
 void	Invite::checkChannelExist(t_data& myData) {
@@ -60,17 +60,17 @@ void	Invite::checkChannelExist(t_data& myData) {
 	myData.channel = this->_server->_serverChannel[myData.nameTargetChannel];
 
 	if (!myData.channel)
-		myData.error = ERR_NOSUCHCHANNEL(myData.nameTargetChannel);
+		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, myData.nameTargetChannel);
 }
 
 void	Invite::checkChannelClient(t_data& myData) {
 	if(!myData.channel->isClient(myData.client->_clientID))
-		myData.error = ERR_NOTONCHANNEL(myData.channel->_channelName);
+		myData.error = ERR_NOTONCHANNEL(myData.client->_nickname, myData.channel->_channelName);
 }
 
 void	Invite::checkChannelOperator(t_data& myData) {
 	if (!myData.channel->isOperator(myData.client->_clientID))
-		myData.error = ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
+		myData.error = ERR_CHANOPRIVSNEEDED(myData.client->_nickname, myData.channel->_channelName);
 }
 
 void	Invite::checkTargetExist(t_data& myData) {
@@ -78,10 +78,10 @@ void	Invite::checkTargetExist(t_data& myData) {
 	myData.targetClient = this->_server->findClientNickname(myData.targetUser->targetNickname);
 
 	if (!myData.targetClient) 
-		myData.error = ERR_NOSUCHNICK(myData.targetUser->targetNickname);
+		myData.error = ERR_NOSUCHNICK(myData.client->_nickname, myData.targetUser->targetNickname);
 }
 
 void	Invite::checkChannelTarget(t_data& myData) {
 	if (!myData.channel->isClient(myData.targetClient->_clientID)) 
-		myData.error =  ERR_USERONCHANNEL(myData.targetClient->_username, myData.channel->_channelName);
+		myData.error =  ERR_USERONCHANNEL(myData.client->_nickname, myData.targetClient->_username, myData.channel->_channelName);
 }

@@ -43,15 +43,15 @@ void	Pass::execute(Client& client) {
 
 void	Pass::checkRegistered(t_data& myData) {
 	if (myData.client->status > NOT_REGISTERED)
-		myData.error = ERR_ALREADYREGISTRED;
+		myData.error = ERR_ALREADYREGISTRED(myData.client->_nickname);
 }
 
 void	Pass::checkParams(t_data& myData) {
 	if (this->_password.empty())
-		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 }
 
 void	Pass::checkPassword(t_data& myData) {
 	if (myData.password.compare(this->_server->_serverPassword))
-		myData.error = ERR_PASSWDMISMATCH;
+		myData.error = ERR_PASSWDMISMATCH(myData.client->_nickname);
 }

@@ -58,14 +58,14 @@ void	Topic::execute(Client const & client) {
 std::string Topic::checkRegistered(t_data& myData) {
 	(void)myData;
 	if (myData.client->status != REGISTERED)
-		return ERR_NOTREGISTRATED;
+		return ERR_NOTREGISTRATED(myData.client->_nickname);
 	return "";
 }
 
 std::string	Topic::checkParams(t_data& myData) {
 	(void)myData;
 	if (this->_targetChannel.empty())
-		return ERR_NEEDMOREPARAMS(this->_cmdName);
+		return ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	return "";
 }
 
@@ -73,7 +73,7 @@ std::string	Topic::checkChannelExist(t_data& myData) {
 	myData.channel = this->_server->_serverChannel[this->_targetChannel];
 
 	if (!myData.channel)
-		return ERR_NOSUCHCHANNEL(this->_targetChannel);
+		return ERR_NOSUCHCHANNEL(myData.client->_nickname, this->_targetChannel);
 	return "";
 }
 
@@ -87,12 +87,12 @@ std::string	Topic::checkCommandMessage(t_data& myData) {
 
 std::string	Topic::checkChannelClient(t_data& myData) {
 	if (!myData.channel->isClient(myData.client->_clientID))
-		return ERR_NOTONCHANNEL(myData.channel->_channelName);
+		return ERR_NOTONCHANNEL(myData.client->_nickname, myData.channel->_channelName);
 	return "";
 }
 
 std::string	Topic::checkChannelOperator(t_data& myData) {
 	if (!myData.channel->isOperator(myData.client->_clientID))
-		return ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
+		return ERR_CHANOPRIVSNEEDED(myData.client->_nickname, myData.channel->_channelName);
 	return "";
 }
