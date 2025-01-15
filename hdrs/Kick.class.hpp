@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:04:44 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 20:00:00 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 17:09:33 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ private:
 		Client const *	client;
 		int				idxChannel;
 		int				idxUser;
-		struct s_user*	targetUser;
+		std::string		targetUser;
 		Client*			targetClient;
 		std::string		error;
 	}	t_data;
@@ -48,7 +48,7 @@ private:
 	
 	std::string const				_cmdName;
 	std::string						_message;
-	std::vector<struct s_user*>		_targetUsers;
+	std::vector<std::string>		_targetUsers;
 	std::vector<std::string>		_targetChannels;
 	
 	static Server*	_server;

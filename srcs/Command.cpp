@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 19:49:13 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 17:09:08 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
 	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
 	this->_cmdMethods["PRIVMSG"] = &Command::setPRIVMSG;
-  this->_command = NULL;
+	this->_command = NULL;
 	this->parseRawline();
 	return ;
 }
@@ -161,12 +161,12 @@ void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
 	std::string			parsed;
 
 	std::stringstream	channelSS(splitedLine[idx++]);
-	while(std::getline(channelSS, parsed, ','))
+	while (std::getline(channelSS, parsed, ','))
 		newCommand->_targetChannels.push_back(parsed);
 	parsed.clear();
 	if (idx < size) {
 		std::stringstream	keySS(splitedLine[idx++]);
-		while(std::getline(keySS, parsed, ','))
+		while (std::getline(keySS, parsed, ','))
 			newCommand->_targetKeys.push_back(parsed);
 	}
 	this->_command = newCommand;
@@ -174,15 +174,21 @@ void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
 }
 
 void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
-	Kick*		newCommand = new Kick();
 	int const	size = splitedLine.size();
-
-	while (size < idx && (splitedLine[idx][0] == '&' || splitedLine[idx][0] == '+' || splitedLine[idx][0] == '!'))
-		newCommand->_targetChannels.push_back(splitedLine[idx++]);
-	while (size < idx && splitedLine[idx][0] != ':')
-		newCommand->_targetUsers.push_back(parseUser(splitedLine[idx++]));
-	while (size < idx)
-		newCommand->_message += splitedLine[idx++];
+	Kick*		newCommand = new Kick();
+	std::string	parsed;
+	
+	std::stringstream	channelSS(splitedLine[idx++]);
+	while (std::getline(channelSS, parsed, ','))
+		newCommand->_targetChannels.push_back(parsed);
+	parsed.clear();
+	if (idx < size) {
+		std::stringstream	targetSS(splitedLine[idx++]);
+		while (std::getline(targetSS, parsed, ','))
+			newCommand->_targetUsers.push_back(parsed);
+		while (idx < size)
+			newCommand->_message += (splitedLine[idx++] + " ");
+	}
 	this->_command = newCommand;
 	return ;
 }

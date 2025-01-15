@@ -140,8 +140,10 @@ void	Server::serverRequest(Client& client, std::string rawLine) {
 	
 	// Send::ToConsole(client._clientID, logLine);
 	Command		myCommand(rawLine);
-	if (myCommand._command)
+	if (myCommand._command) {
 		myCommand._command->execute(client);
+		this->debugPrintServer();
+	}
 	else
 		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(myCommand._cmdName));
 	return ;
