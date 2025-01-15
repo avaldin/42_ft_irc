@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/10 19:03:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 20:10:20 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Channel::Channel(t_channelType channelType, std::string channelName) : _channelT
 	this->_channelPassword = "";
 	this->_channelTopic = "";
 	this->_topicMode = true;
-	this->_inviteOnlyMode = false;
+	this->_inviteOnlyMode = true;
 	return ;
 }
 Channel::Channel(Channel const & src) : _channelType(src._channelType), _channelName(src._channelName) {
@@ -130,6 +130,7 @@ bool	Channel::isClient(int const clientID) {
 void	Channel::debugPrintChannel( void ) const {
 	std::cout << "Channel: " << this->_channelName << std::endl;
 	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
-		std::cout << "   -" << it->second->_nickname << std::endl; 
+		if (it->second)
+			std::cout << "   -" << it->second->_nickname << std::endl; 
 	}
 }

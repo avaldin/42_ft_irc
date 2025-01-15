@@ -114,6 +114,7 @@ void	Server::debugPrintServer( void ) const {
 		if (it->second)
 			it->second->debugPrintChannel();
 	}
+	std::cout << "EXIT DEBUG PRINT" << std::endl;
 }
 
 // void	Server::LegacysendToServer(int const clientID, std::string token) {

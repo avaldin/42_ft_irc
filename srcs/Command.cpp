@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 17:09:08 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 19:53:03 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,10 +227,13 @@ void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
 }
 
 void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
+	int const	size = splitedLine.size();
 	Invite*	newCommand = new Invite();
-
-	newCommand->_targetUsers.push_back(parseUser(splitedLine[idx++]));
-	newCommand->_targetChannels.push_back(splitedLine[idx++]);
+	
+	if (idx < size)
+		newCommand->_targetUsers.push_back(splitedLine[idx++]);
+	if (idx < size)
+		newCommand->_targetChannels.push_back(splitedLine[idx++]);
 	this->_command = newCommand;
 	return ;
 }

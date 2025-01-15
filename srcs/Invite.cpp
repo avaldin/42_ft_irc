@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 14:47:14 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 20:08:01 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void(Invite::*Invite::_method[7])(t_data&) = {
 	&Invite::checkTargetExist,
 	&Invite::checkChannelTarget};
 
-void	Invite::execute(Client const & client) {
+void	Invite::execute(Client& client) {
 	t_data	myData;
 	
 	myData.client = &client;
@@ -38,10 +38,10 @@ void	Invite::execute(Client const & client) {
 		Send::ToClient(client._clientID, myData.error);
 		return ;
 	}
-	myData.channel->addInvited(myData.client->_clientID, myData.targetClient);
+	myData.channel->addInvited(myData.targetClient->_clientID, myData.targetClient);
 	Send::ToClient(client._clientID, RPL_INVITING(myData.channel->_channelName, myData.targetClient->_nickname));
 	std::string const	reply = ":" + client._prefix + " " + "INVITE " + myData.targetClient->_nickname + " :" + myData.channel->_channelName;  
-	Send::ToClient(myData.client->_clientID, reply);
+	Send::ToClient(myData.targetClient->_clientID, reply);
 	return ;
 }
 
@@ -75,13 +75,13 @@ void	Invite::checkChannelOperator(t_data& myData) {
 
 void	Invite::checkTargetExist(t_data& myData) {
 	myData.targetUser = this->_targetUsers.front();
-	myData.targetClient = this->_server->findClientNickname(myData.targetUser->targetNickname);
+	myData.targetClient = this->_server->findClientNickname(myData.targetUser);
 
 	if (!myData.targetClient) 
-		myData.error = ERR_NOSUCHNICK(myData.targetUser->targetNickname);
+		myData.error = ERR_NOSUCHNICK(myData.targetUser);
 }
 
 void	Invite::checkChannelTarget(t_data& myData) {
-	if (!myData.channel->isClient(myData.targetClient->_clientID)) 
+	if (myData.channel->isClient(myData.targetClient->_clientID)) 
 		myData.error =  ERR_USERONCHANNEL(myData.targetClient->_username, myData.channel->_channelName);
 }
