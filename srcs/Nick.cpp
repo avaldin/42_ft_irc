@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 22:43:58 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 17:19:50 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 14:31:04 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,6 @@ void	Nick::checkNicknameRestriction(t_data& myData) {
 
 void	Nick::checkNicknameExist(t_data& myData) {
 	if (this->_server->findClientNickname(this->_nickname))
-		myData.error = ERR_NICKCOLLISION(myData.client->_nickname, this->_nickname);
+		myData.error = ERR_NICKNAMEINUSE(myData.client->_nickname, this->_nickname);
 	return ;
 }
