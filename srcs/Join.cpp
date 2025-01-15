@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/11 20:23:38 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 14:56:07 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	Join::execute(Client& client) {
 		myData.targetKey.clear();
 		myData.targetChannel = NULL;
 	}
-	this->_server->debugPrintServer();
 	return ;
 }
 
