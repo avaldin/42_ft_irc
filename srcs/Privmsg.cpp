@@ -19,10 +19,7 @@ void	Privmsg::execute(Client &client) {
 	myData.target = _receiver;
 	myData.message = _message;
 	if (this->_receiver.find_first_of("#&+!") == 0)
-	{
 		myData.targetType = CHANNEL;
-		myData.target.erase(0);
-	}
 	else
 		myData.targetType = CLIENT;
 	for (int idx = 0; idx < 3 && myData.error.empty(); ++idx)
@@ -53,7 +50,7 @@ void	Privmsg::checkParams(t_data& myData) {
 
 void	Privmsg::checkTargetExist(t_data& myData) {
 	if (myData.targetType == CLIENT && !this->_server->findClientNickname(myData.target))
-		myData.error = ERR_NOSUCHNICK(myData.target);
+		myData.error = ERR_NOSUCHNICK(myData.client->_nickname, myData.target);
 	if (myData.targetType == CHANNEL
 			&& this->_server->_serverChannel.find(myData.target) == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(myData.target);
