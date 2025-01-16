@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 17:33:39 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/16 17:55:29 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 Server*	Kick::_server = Server::instantiate();
 
-void(Kick::*Kick::_method[6])(t_data&) = {
+void(Kick::*Kick::_method[CHECK_KICK])(t_data&) = {
 	&Kick::checkRegistered,
 	&Kick::checkParams,
 	&Kick::checkChannelExist, 
@@ -38,7 +38,6 @@ void	Kick::execute(Client& client) {
 		(this->*_method[idx])(myData);
 	int const	sizeChannel = this->_targetChannels.size();
 	int const	sizeUser = this->_targetUsers.size();
-	std::cout << "in KICK" << std::endl;
 	for (myData.idxChannel = 0, myData.idxUser = 0; myData.idxChannel < sizeChannel && myData.error.empty(); myData.idxChannel++) {
 		for (int idx = 2; idx < CHECK_KICK && myData.error.empty(); idx++)
 			(this->*_method[idx])(myData);

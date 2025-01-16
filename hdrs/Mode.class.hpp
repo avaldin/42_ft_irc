@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:03:19 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 18:24:49 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/16 20:32:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 # include "ACommand.class.hpp"
 
 # include <vector>
+# define CHECK_MODE 6
+# define NUM_MODE 5
 
 class Command;
 class Client;
@@ -29,7 +31,7 @@ typedef struct s_mode {
 
 class Mode : public ACommand {
 	public:
-		void	execute(Client const & client);
+		void	execute(Client& client);
 	
 	private:
 		Mode( void ) : _cmdName("MODE") {}
@@ -37,6 +39,8 @@ class Mode : public ACommand {
 		
 		typedef struct	s_data {
 			Client const *	client;
+			std::string		error;
+			Channel * const	channel;
 		}	t_data;
 	
 		void	tFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
@@ -45,14 +49,17 @@ class Mode : public ACommand {
 		void	kFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
 		void	oFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
 		
-		std::string	checkRegistered(t_data& myData);
-		std::string	checkParams(t_data& myData);
+		void	checkRegistered(t_data& myData);
+		void	checkParams(t_data& myData);
+		void	checkChannelExist(t_data& myData);
 	
-		std::string const			_cmdName;
-		std::vector<t_mode*>		_mode;
-		std::vector<std::string>	_targetChannels;
-
+		std::string const		_cmdName;
+		std::vector<t_mode*>	_mode;
+		std::string				_targetChannel;
+				
 		static Server*	_server;
+
+		static void(Mode::*_method[CHECK_MODE])(t_data&);
 	
 	friend class Command;
 };

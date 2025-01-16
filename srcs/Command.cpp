@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 19:53:03 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/16 18:13:34 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,6 +209,8 @@ void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
 	Mode*		newCommand = new Mode();
 	int const	size = splitedLine.size();
 
+	if (idx < size)
+		newCommand->_targetChannel = splitedLine[idx++];
 	for (;idx < size; idx++) {
 		if (splitedLine[idx][0] == '+' || splitedLine[idx][0] == '-') {
 			unsigned int	sign = splitedLine[idx][0]; 

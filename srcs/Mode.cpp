@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 18:24:56 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/16 20:34:13 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,32 +23,33 @@
 
 Server* Mode::_server = Server::instantiate();
 
-void	Mode::execute(Client const & client) {
-	if (this->_targetChannels.empty() || this->_mode.empty()) {
-		Send::ToClient(client._clientID, ERR_NEEDMOREPARAMS(this->_cmdName));
-		return ;	
-	}
-	Channel * const	currentChannel = this->_server->_serverChannel[this->_targetChannels.front()];
-	if (!currentChannel) {
-		Send::ToClient(client._clientID, ERR_NOSUCHCHANNEL(currentChannel->_channelName));
-		return ;
-	}
-	std::map<char,void(Mode::*)(t_mode const *, Channel * const , int const)> _modeCmd;
-	_modeCmd['t'] = &Mode::tFlag;
-	_modeCmd['i'] = &Mode::iFlag;
-	_modeCmd['l'] = &Mode::lFlag;
-	_modeCmd['k'] = &Mode::kFlag;
-	_modeCmd['o'] = &Mode::oFlag;
+void(Mode::*Mode::_method[CHECK_MODE])(t_data&) = {
+	&Mode::checkRegistered,
+	&Mode::checkParams,
+	&Mode::checkChannelExist,
+	
+};
+
+void	Mode::execute(Client& client) {
+	t_data	myData;
+
+	myData.client = &client;
+	for (int idx = 0; idx < 3; idx++)
+		(this->*_method[idx])(myData);
 	int const	size = this->_mode.size();
+	std::map<char, void(Mode::*)(t_mode const *, Channel * const, int const)>	_funcMode;
+	_funcMode['i'] = &Mode::iFlag;
+	_funcMode['k'] = &Mode::kFlag;
+	_funcMode['l'] = &Mode::lFlag;
+	_funcMode['o'] = &Mode::oFlag;
+	_funcMode['t'] = &Mode::tFlag;
 	for (int idx = 0; idx < size; idx++) {
 		t_mode*	currentMode = this->_mode[idx];
-		void (Mode::*func)(t_mode const *, Channel * const , int const) = _modeCmd[currentMode->mode];
-		if (func)
-			(this->*func)(currentMode, currentChannel, client._clientID);
+		int const modeNum = static_cast<int>(currentMode->mode);
+		if (modeNum < 5)
+			(this->*_funcMode[modeNum])(currentMode, myData.channel, client._clientID);
 		else {
-			std::string error;
-			error[0] = currentMode->mode;
-			Send::ToClient(client._clientID, ERR_UNKNOWNMODE(error));
+			Send::ToClient(client._clientID, ERR_UNKNOWNMODE(static_cast<std::string>(&currentMode->mode)));
 		}
 	}
 	return ;
@@ -129,16 +130,20 @@ void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int
 	return ; 
 }
 
-std::string	Mode::checkRegistered(t_data& myData) {
-	(void)myData;
+void	Mode::checkRegistered(t_data& myData) {
 	if (myData.client->status != REGISTERED)
-		return ERR_NOTREGISTRATED;
-	return "";	
+		myData.error = ERR_NOTREGISTRATED;
 }
 
-std::string	Mode::checkParams(t_data& myData) {
-	(void)myData;
-	if (this->_targetChannels.empty() || this->_mode.empty())
-		return ERR_NEEDMOREPARAMS(this->_cmdName);
-	return "";
+void	Mode::checkParams(t_data& myData) {
+	if (this->_targetChannel.empty() || this->_mode.empty())
+		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+}
+
+void	Mode::checkChannelExist(t_data& myData) {
+	std::map<std::string, Channel*>::iterator	it = this->_server->_serverChannel.find(this->_targetChannel);
+	
+	if (it == this->_server->_serverChannel.end())
+		myData.error = ERR_NOSUCHCHANNEL(this->_targetChannel);
+	myData.channel = it->second;
 }

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 20:10:20 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/16 17:13:38 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Channel::Channel(t_channelType channelType, std::string channelName) : _channelT
 	this->_channelPassword = "";
 	this->_channelTopic = "";
 	this->_topicMode = true;
-	this->_inviteOnlyMode = true;
+	this->_inviteOnlyMode = false;
 	return ;
 }
 Channel::Channel(Channel const & src) : _channelType(src._channelType), _channelName(src._channelName) {
