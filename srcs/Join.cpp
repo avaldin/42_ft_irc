@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 14:56:07 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 20:12:09 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@
 #include "Server.class.hpp"
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
-
-#include <stdio.h>
 
 Server*	Join::_server = Server::instantiate();
 
@@ -113,10 +111,7 @@ void	Join::checkChannelName(t_data& myData) {
 }
 
 void	Join::checkChannelKey(t_data& myData) {
-	printf("User: %s\n", myData.targetKey.c_str());
-	printf("Channel: %s\n", myData.targetChannel->_channelPassword.c_str());
 	if (!myData.targetChannel->_channelPassword.empty() && myData.targetKey.compare(myData.targetChannel->_channelPassword)) {
-		printf("checkChannelKey\n");
 		myData.error = ERR_BADCHANNELKEY(myData.targetChannel->_channelName);
 	}
 	return ;
