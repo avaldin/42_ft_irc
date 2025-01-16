@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/16 20:34:13 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/16 21:02:17 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,17 @@
 
 #include "Mode.class.hpp"
 #include <cstdlib>
+#include <cmath>
 
 Server* Mode::_server = Server::instantiate();
+
+void(Mode::*Mode::_funcMode[NUM_MODE])(t_mode const *, Channel * const, int const) = {
+	&Mode::iFlag,
+	&Mode::kFlag,
+	&Mode::lFlag,
+	&Mode::oFlag,
+	&Mode::tFlag
+};
 
 void(Mode::*Mode::_method[CHECK_MODE])(t_data&) = {
 	&Mode::checkRegistered,
@@ -37,15 +46,9 @@ void	Mode::execute(Client& client) {
 	for (int idx = 0; idx < 3; idx++)
 		(this->*_method[idx])(myData);
 	int const	size = this->_mode.size();
-	std::map<char, void(Mode::*)(t_mode const *, Channel * const, int const)>	_funcMode;
-	_funcMode['i'] = &Mode::iFlag;
-	_funcMode['k'] = &Mode::kFlag;
-	_funcMode['l'] = &Mode::lFlag;
-	_funcMode['o'] = &Mode::oFlag;
-	_funcMode['t'] = &Mode::tFlag;
 	for (int idx = 0; idx < size; idx++) {
 		t_mode*	currentMode = this->_mode[idx];
-		int const modeNum = static_cast<int>(currentMode->mode);
+		int const modeNum = round(((static_cast<int>(currentMode->mode)-(float)105)*4)/11);
 		if (modeNum < 5)
 			(this->*_funcMode[modeNum])(currentMode, myData.channel, client._clientID);
 		else {

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:03:19 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/16 20:32:18 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/16 20:37:20 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ class Mode : public ACommand {
 				
 		static Server*	_server;
 
+		static void(Mode::*_funcMode[NUM_MODE])(t_mode const *, Channel * const, int const);
 		static void(Mode::*_method[CHECK_MODE])(t_data&);
 	
 	friend class Command;
