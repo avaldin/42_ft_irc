@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 20:08:01 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/16 16:43:13 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,11 @@ void	Invite::checkParams(t_data& myData) {
 
 void	Invite::checkChannelExist(t_data& myData) {
 	myData.nameTargetChannel = this->_targetChannels.front();
-	myData.channel = this->_server->_serverChannel[myData.nameTargetChannel];
+	std::map<std::string, Channel*>::iterator it = this->_server->_serverChannel.find(myData.nameTargetChannel);
 
-	if (!myData.channel)
+	if (it == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(myData.nameTargetChannel);
+	myData.channel = it->second;
 }
 
 void	Invite::checkChannelClient(t_data& myData) {
