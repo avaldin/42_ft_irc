@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 12:40:07 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/17 12:41:13 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
 	this->_cmdMethods["MODE"] = &Command::setMODE;
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
-	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
+	this->_cmdMethods["QUIT"] = &Command::setQUIT;
 	this->_cmdMethods["PRIVMSG"] = &Command::setPRIVMSG;
 	this->_command = NULL;
 	this->parseRawline();
