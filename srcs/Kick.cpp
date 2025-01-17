@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/02 14:53:23 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/17 09:12:53 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,5 @@ void	Kick::checkClientTargetExist(t_data& myData) {
 	myData.targetUser = this->_targetUsers[myData.idxUser];
 	myData.targetClient = this->_server->findClientNickname(myData.targetUser);
 	if (!myData.targetClient || !myData.channel->isClient(myData.targetClient->_clientID))
-		myData.error =  ERR_USERNOTINCHANNEL(myData.client->_nickname, myData.targetUser->targetNickname, myData.channel->_channelName);
+		myData.error =  ERR_USERNOTINCHANNEL(myData.client->_nickname, myData.targetUser, myData.channel->_channelName);
 }
