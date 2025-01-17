@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 11:54:26 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/17 11:56:00 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	User::execute(Client& client) {
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._nickname)); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
+		Send::ToClient(client._clientID, RPL_WELCOME(client._nickname));
 	}
 	return ;
 }
