@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:23:27 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 16:46:40 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/17 11:35:22 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,8 @@
 // Returned by the server to indicate that the
 // attempted INVITE message was successful and is
 // being passed onto the end client.
+
+#define RPL_NAMERPLY(target, channel, names) (":IRC_serv 353 " + (target) + " = " + (channel) + " :" + (names))
+#define RPL_ENDOFNAMES(target, channel) (":IRC_serv 366 " + (target) + " " + (channel) + " :End of NAMES list")
 
 #endif

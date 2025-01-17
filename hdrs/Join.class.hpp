@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 16:59:40 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/03 15:37:09 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/17 11:26:29 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ private:
 	void	createChannel(t_data& myData);
 	void	joinChannel(t_data& myData);
 
+	void	RPL_join(t_data& myData);
+
 	std::string const			_cmdName;
 	std::vector<std::string>	_targetChannels;
 	std::vector<std::string>	_targetKeys;
@@ -56,7 +58,7 @@ private:
 	
 	static void(Join::*_method[CHECK_JOIN])(t_data&);
 
-friend class Command;	
+friend class Command;
 };
 
 #endif
