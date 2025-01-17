@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 12:40:07 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/17 16:00:54 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ void	 Command::parseRawline( void ) {
 	std::string					parsed;
 
 	while(std::getline(rawlineStringStream, parsed, ' ')) {
-		splited.push_back(parsed);
+		if (parsed.size())
+			splited.push_back(parsed);
 	}
 	int const size = splited.size();
 	if (!size)
@@ -251,7 +252,6 @@ void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 					newCommand->_message += " ";
 				newCommand->_message += splitedLine[i];
 			}
-			std::cout << "->" << newCommand->_message << std::endl;
 		}
 		else
 			newCommand->_message = splitedLine[idx];
