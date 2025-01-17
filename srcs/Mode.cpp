@@ -25,12 +25,12 @@ Server* Mode::_server = Server::instantiate();
 
 void	Mode::execute(Client const & client) {
 	if (this->_targetChannels.empty() || this->_mode.empty()) {
-		Send::ToClient(client._clientID, ERR_NEEDMOREPARAMS(this->_cmdName));
+		Send::ToClient(client._clientID, ERR_NEEDMOREPARAMS(client._nickname, this->_cmdName));
 		return ;	
 	}
 	Channel * const	currentChannel = this->_server->_serverChannel[this->_targetChannels.front()];
 	if (!currentChannel) {
-		Send::ToClient(client._clientID, ERR_NOSUCHCHANNEL(currentChannel->_channelName));
+		Send::ToClient(client._clientID, ERR_NOSUCHCHANNEL(client._nickname, currentChannel->_channelName));
 		return ;
 	}
 	std::map<char,void(Mode::*)(t_mode const *, Channel * const , int const)> _modeCmd;
@@ -48,7 +48,7 @@ void	Mode::execute(Client const & client) {
 		else {
 			std::string error;
 			error[0] = currentMode->mode;
-			Send::ToClient(client._clientID, ERR_UNKNOWNMODE(error));
+			Send::ToClient(client._clientID, ERR_UNKNOWNMODE(client._nickname, error));
 		}
 	}
 	return ;
@@ -56,7 +56,7 @@ void	Mode::execute(Client const & client) {
 
 void	Mode::tFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
+		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(this->_server->_serverClientId.find(clientID)->second->_nickname, currentChannel->_channelName));
 		return ;
 	}
 	currentChannel->_topicMode = currentMode->sign % 5 % 2;
@@ -67,7 +67,7 @@ void	Mode::tFlag(t_mode const * currentMode, Channel * const currentChannel, int
 
 void	Mode::iFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
+		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(this->_server->_serverClientId.find(clientID)->second->_nickname, currentChannel->_channelName));
 		return ;
 	}
 	currentChannel->_inviteOnlyMode = currentMode->sign % 5 % 2;
@@ -78,7 +78,7 @@ void	Mode::iFlag(t_mode const * currentMode, Channel * const currentChannel, int
 
 void	Mode::lFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
+		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(this->_server->_serverClientId.find(clientID)->second->_nickname, currentChannel->_channelName));
 		return ;
 	}
 	std::string reply = "MODE " + currentChannel->_channelName + static_cast<char>(currentMode->sign) + "l";
@@ -94,7 +94,7 @@ void	Mode::lFlag(t_mode const * currentMode, Channel * const currentChannel, int
 
 void	Mode::kFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
+		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(this->_server->_serverClientId.find(clientID)->second->_nickname, currentChannel->_channelName));
 		return ;
 	}
 	if (currentMode->sign == '+')
@@ -108,12 +108,12 @@ void	Mode::kFlag(t_mode const * currentMode, Channel * const currentChannel, int
 
 void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
 	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
+		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(this->_server->_serverClientId.find(clientID)->second->_nickname, currentChannel->_channelName));
 		return ;
 	}
 	int const	targetID = std::atoi(currentMode->args.c_str());
 	if (!currentChannel->isClient(targetID)) {
-		Send::ToClient(clientID, ERR_USERNOTINCHANNEL(currentMode->args, currentChannel->_channelName));
+		Send::ToClient(clientID, ERR_USERNOTINCHANNEL(currentMode->args, currentMode->args, currentChannel->_channelName)); // FAIS CHIER
 		return ;
 	}
 	if (currentMode->sign == '+')
@@ -132,13 +132,13 @@ void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int
 std::string	Mode::checkRegistered(t_data& myData) {
 	(void)myData;
 	if (myData.client->status != REGISTERED)
-		return ERR_NOTREGISTRATED;
+		return ERR_NOTREGISTRATED(myData.client->_nickname);
 	return "";	
 }
 
 std::string	Mode::checkParams(t_data& myData) {
 	(void)myData;
 	if (this->_targetChannels.empty() || this->_mode.empty())
-		return ERR_NEEDMOREPARAMS(this->_cmdName);
+		return ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	return "";
 }

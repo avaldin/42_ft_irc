@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 22:43:58 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 17:19:50 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 15:50:34 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	Nick::execute(Client& client) {
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._prefix));
+		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._nickname));
 	}
 	else
 		Send::ToServer(this->_server->_serverClientId, client._prefix + " NICK " + this->_nickname);
@@ -61,13 +61,13 @@ void	Nick::execute(Client& client) {
 
 void	Nick::checkRegistered(t_data& myData) {
 	if (myData.client->status < ONGOING_REGISTERING)
-		myData.error = ERR_NOTREGISTRATED;
+		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);
 	return ;
 }
 
 void	Nick::checkParams(t_data& myData) {
 	if (this->_nickname.empty())
-		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	return ;
 }
 
@@ -88,16 +88,16 @@ void	Nick::checkNicknameRestriction(t_data& myData) {
 
 	if (size > 9 || size == 0 || !((this->_nickname[0] >= 'A' && this->_nickname[0] <= 'Z') 
 								|| (this->_nickname[0] >= 'a' &&  this->_nickname[0] <= 'z')))
-		myData.error = ERR_ERRONEUSNICKNAME(this->_nickname);
+		myData.error = ERR_ERRONEUSNICKNAME(myData.client->_nickname, this->_nickname);
 	for (int idx = 0; idx < size; idx++) {
 		if (!checkCorpus(this->_nickname[idx]))
-			myData.error = ERR_ERRONEUSNICKNAME(this->_nickname);
+			myData.error = ERR_ERRONEUSNICKNAME(myData.client->_nickname, this->_nickname);
 	}
 	return ;
 }
 
 void	Nick::checkNicknameExist(t_data& myData) {
 	if (this->_server->findClientNickname(this->_nickname))
-		myData.error = ERR_NICKCOLLISION(this->_nickname);
+		myData.error = ERR_NICKNAMEINUSE(myData.client->_nickname, this->_nickname);
 	return ;
 }

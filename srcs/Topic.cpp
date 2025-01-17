@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:01:51 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 18:59:27 by tmouche          ###   ########.fr       */
+/*   Updated: 2024/12/30 00:11:49 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,41 +56,39 @@ void	Topic::execute(Client& client) {
 
 void	Topic::checkRegistered(t_data& myData) {
 	if (myData.client->status != REGISTERED)
-		myData.error = ERR_NOTREGISTRATED;
-	return ;
+		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);
 }
 
 void	Topic::checkParams(t_data& myData) {
 	if (this->_targetChannel.empty())
-		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
-	return ;
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 }
 
 void	Topic::checkChannelExist(t_data& myData) {
 	std::map<std::string, Channel*>::iterator it = this->_server->_serverChannel.find(this->_targetChannel);
 
 	if (it == this->_server->_serverChannel.end())
-		myData.error = ERR_NOSUCHCHANNEL(this->_targetChannel);
+		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, this->_targetChannel);
 	myData.channel = it->second;
 	return ;
 }
 
 void	Topic::checkCommandMessage(t_data& myData) {
 	if (this->_topic.empty() && myData.channel->_channelTopic.empty())
-		myData.error = RPL_NOTOPIC(myData.channel->_channelName);
+		myData.error = RPL_NOTOPIC(myData.client->_nickname, myData.channel->_channelName);
 	else if (this->_topic.empty())
-		myData.error = RPL_TOPIC(myData.channel->_channelName, myData.channel->_channelTopic);
+		myData.error = RPL_TOPIC(myData.client->_nickname, myData.channel->_channelName, myData.channel->_channelTopic);
 	return ;
 }
 
 void	Topic::checkChannelClient(t_data& myData) {
 	if (!myData.channel->isClient(myData.client->_clientID))
-		myData.error =  ERR_NOTONCHANNEL(myData.channel->_channelName);
+		myData.error =  ERR_NOTONCHANNEL(myData.client->_nickname, myData.channel->_channelName);
 	return ;
 }
 
 void	Topic::checkChannelOperator(t_data& myData) {
 	if (!myData.channel->isOperator(myData.client->_clientID))
-		myData.error = ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
+		myData.error = ERR_CHANOPRIVSNEEDED(myData.client->_nickname, myData.channel->_channelName);
 	return ;
 }
