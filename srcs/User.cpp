@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 14:31:04 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/17 11:56:00 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	User::execute(Client& client) {
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._nickname)); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
+		Send::ToClient(client._clientID, RPL_WELCOME(client._nickname));
 	}
 	return ;
 }
@@ -78,8 +78,9 @@ static bool	checkCorpus(char c) {
 void	User::checkUsernameRestriction(t_data& myData) {
 	(void)myData;
 
-	this->_username.resize(10);
-	for (int idx= 0; idx < 10; idx++) {
+	if (this->_username.length() > 10)
+		this->_username.resize(10);
+	for (unsigned long idx= 0; idx < this->_username.length(); idx++) {
 		if (!checkCorpus(this->_username[idx]))
 			this->_username[idx] = 'A';
 	}

@@ -25,6 +25,7 @@
 #include <cstring>
 #include <sstream>
 #include <ctime>
+#include <arpa/inet.h>
 
 Server*	Server::_me = nullptr;
 
@@ -177,6 +178,7 @@ void	Server::addClient() {
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
 	Client*	newClient = Factory::createClient(clientID);
+	newClient->localHost = inet_ntoa(this->_address->sin_addr);
 	this->_serverClientId[clientID] = newClient;
 }
 

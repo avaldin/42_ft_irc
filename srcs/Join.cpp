@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/11 20:23:38 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/17 11:48:25 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "Channel.class.hpp"
 
 #include <cstdio>
+#include <iostream>
 
 Server*	Join::_server = Server::instantiate();
 
@@ -58,12 +59,29 @@ void	Join::execute(Client& client) {
 		if (!myData.error.empty())
 			Send::ToClient(client._clientID, myData.error);
 		else
-			Send::ToClient(client._clientID, RPL_TOPIC(client._nickname, myData.targetChannel->_channelName ,myData.targetChannel->_channelTopic));
+			RPL_join(myData);
 		myData.error.clear();
 		myData.targetKey.clear();
 		myData.targetChannel = NULL;
 	}
 	return ;
+}
+
+void	Join::RPL_join(t_data& myData) {
+	Send::ToChannel(*myData.targetChannel, ":" + myData.client->_nickname + "!" + myData.client->_username + "@" + myData.client->localHost + " JOIN :" + myData.targetChannel->_channelName);
+	if (!myData.targetChannel->_channelTopic.empty())
+		Send::ToClient(myData.client->_clientID, RPL_TOPIC(myData.client->_nickname, myData.targetChannel->_channelName ,myData.targetChannel->_channelTopic));
+	else
+		Send::ToClient(myData.client->_clientID, RPL_NOTOPIC(myData.client->_nickname, myData.targetChannel->_channelName));
+	std::string					names;
+	for (std::map<int, Client const *>::iterator it = myData.targetChannel->_channelOperator.begin(); it != myData.targetChannel->_channelOperator.end() ; ++it)
+		names += "@" + it->second->_nickname + " ";
+	for (std::map<int, Client const *>::iterator it = myData.targetChannel->_channelClient.begin(); it != myData.targetChannel->_channelClient.end() ; ++it)
+		if (myData.targetChannel->_channelOperator.find(it->first) == myData.targetChannel->_channelOperator.end())
+			names += it->second->_nickname + " ";
+	names.erase(names.size() - 1);
+	Send::ToClient(myData.client->_clientID, RPL_NAMERPLY(myData.client->_nickname, myData.targetChannel->_channelName, names));
+	Send::ToClient(myData.client->_clientID, RPL_ENDOFNAMES(myData.client->_nickname, myData.targetChannel->_channelName));
 }
 
 void	Join::joinChannel(t_data& myData) {

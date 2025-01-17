@@ -52,7 +52,7 @@ void	Nick::execute(Client& client) {
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._nickname));
+		Send::ToClient(client._clientID , RPL_WELCOME(client._nickname));
 	}
 	else
 		Send::ToServer(this->_server->_serverClientId, client._prefix + " NICK " + this->_nickname);
