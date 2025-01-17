@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 17:12:10 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/17 11:56:00 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,20 @@ void	User::execute(Client& client) {
 		return ;
 	else if (client.status == ONGOING_REGISTERING) {
 		client.status = REGISTERED;
-		Send::ToServer(this->_server->_serverClientId, RPL_WELCOME(client._prefix)); // Shity line idk this take the whole serv as argument and need to add RPL_WELCOME
+		Send::ToClient(client._clientID, RPL_WELCOME(client._nickname));
 	}
 	return ;
 }
 
 void	User::checkRegistered(t_data& myData) {
-	std::string	error[3] = {ERR_NOTREGISTRATED, "", ERR_ALREADYREGISTRED};
+	std::string	error[3] = {ERR_NOTREGISTRATED(myData.client->_nickname), "", ERR_ALREADYREGISTRED(myData.client->_nickname)};
 	myData.error = error[myData.client->status];
 	return ;
 }
 
 void	User::checkParams(t_data& myData) {
 	if (this->_username.empty() || this->_mode.empty() || this->_realname.empty())
-		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	return ;
 }
 
@@ -78,8 +78,9 @@ static bool	checkCorpus(char c) {
 void	User::checkUsernameRestriction(t_data& myData) {
 	(void)myData;
 
-	this->_username.resize(10);
-	for (int idx= 0; idx < 10; idx++) {
+	if (this->_username.length() > 10)
+		this->_username.resize(10);
+	for (unsigned long idx= 0; idx < this->_username.length(); idx++) {
 		if (!checkCorpus(this->_username[idx]))
 			this->_username[idx] = 'A';
 	}
@@ -88,6 +89,6 @@ void	User::checkUsernameRestriction(t_data& myData) {
 
 void	User::checkModeExist(t_data& myData) {
 	if (this->_mode.compare("0"))
-		myData.error = ERR_UMODEUNKNOWNFLAG;
+		myData.error = ERR_UMODEUNKNOWNFLAG(myData.client->_nickname, this->_mode); //idk if needed
 	return ;
 }

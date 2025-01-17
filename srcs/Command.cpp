@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
 /*   Updated: 2025/01/17 20:19:47 by tmouche          ###   ########.fr       */
@@ -74,7 +74,8 @@ void	 Command::parseRawline( void ) {
 	std::string					parsed;
 
 	while(std::getline(rawlineStringStream, parsed, ' ')) {
-		splited.push_back(parsed);
+		if (parsed.size())
+			splited.push_back(parsed);
 	}
 	int const size = splited.size();
 	if (!size)
@@ -246,9 +247,13 @@ void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 	if (splitedLine.size() >= 3) {
 		newCommand->_receiver = splitedLine[idx++];
 		if (splitedLine[idx][0] == ':') {
-			splitedLine[idx].erase(0);
-			for (std::vector<std::string>::iterator it = splitedLine.begin() + 1; it != splitedLine.end() ; ++it)
-				newCommand->_message += *it;
+			splitedLine[idx].erase(0, 1);
+			for (unsigned long i = idx; i < splitedLine.size(); i++)
+			{
+				if (!newCommand->_message.empty())
+					newCommand->_message += " ";
+				newCommand->_message += splitedLine[i];
+			}
 		}
 		else
 			newCommand->_message = splitedLine[idx];

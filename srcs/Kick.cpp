@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
 /*   Updated: 2025/01/16 17:55:29 by tmouche          ###   ########.fr       */
@@ -57,37 +57,35 @@ void	Kick::execute(Client& client) {
 
 void	Kick::checkRegistered(t_data& myData) {
 	if (myData.client->status != REGISTERED)
-		myData.error = ERR_NOTREGISTRATED;
+		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);
 }
 
 void	Kick::checkParams(t_data& myData) {
 	if (this->_targetChannels.empty() || this->_targetUsers.empty())
-		myData.error =  ERR_NEEDMOREPARAMS(this->_cmdName);
+		myData.error =  ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 }
 
 void	Kick::checkChannelExist(t_data& myData) {
 	std::map<std::string, Channel*>::iterator it = this->_server->_serverChannel.find(this->_targetChannels[myData.idxChannel]);
-	
+
 	if (it == this->_server->_serverChannel.end())
-		myData.error =  ERR_NOSUCHCHANNEL(this->_targetChannels[myData.idxChannel]);
+		myData.error =  ERR_NOSUCHCHANNEL(myData.client->_nickname, this->_targetChannels[myData.idxChannel]);
 	myData.channel = it->second;
-	return ;
 }
 
 void	Kick::checkChannelClient(t_data& myData) {
 	if (!myData.channel->isClient(myData.client->_clientID))
-		myData.error = ERR_NOTONCHANNEL(myData.channel->_channelName);
+		myData.error = ERR_NOTONCHANNEL(myData.client->_nickname, myData.channel->_channelName);
 }
 
 void	Kick::checkChannelOperator(t_data& myData) {
 	if (!myData.channel->isOperator(myData.client->_clientID))
-		myData.error = ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
+		myData.error = ERR_CHANOPRIVSNEEDED(myData.client->_nickname, myData.channel->_channelName);
 }
 
 void	Kick::checkClientTargetExist(t_data& myData) {
 	myData.targetUser = this->_targetUsers[myData.idxUser];
 	myData.targetClient = this->_server->findClientNickname(myData.targetUser);
 	if (!myData.targetClient || !myData.channel->isClient(myData.targetClient->_clientID))
-		myData.error =  ERR_USERNOTINCHANNEL(myData.targetUser, myData.channel->_channelName);
+		myData.error =  ERR_USERNOTINCHANNEL(myData.client->_nickname, myData.targetUser, myData.channel->_channelName);
 }
- 

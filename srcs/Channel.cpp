@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
 /*   Updated: 2025/01/16 17:13:38 by tmouche          ###   ########.fr       */
@@ -15,7 +15,7 @@
 
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <string.h>
+#include <iostream>
 
 Channel::Channel( void ) : _channelType(MODE), _channelName("") {
 	return ;
@@ -73,7 +73,7 @@ void Channel::privMsgToChannel(const std::string message, int clientID) const
 {
 	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
 		if (it->second->_clientID != clientID)
-			send(it->second->_clientID, message.c_str(), message.size(), 0);
+			send(it->second->_clientID, (message + "\r\n").c_str(), message.size() + 2, 0);
 	}
 }
 
