@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
 /*   Updated: 2025/01/17 11:48:25 by avaldin          ###   ########.fr       */
@@ -64,7 +64,6 @@ void	Join::execute(Client& client) {
 		myData.targetKey.clear();
 		myData.targetChannel = NULL;
 	}
-	this->_server->debugPrintServer();
 	return ;
 }
 
@@ -132,10 +131,7 @@ void	Join::checkChannelName(t_data& myData) {
 }
 
 void	Join::checkChannelKey(t_data& myData) {
-	printf("User: %s\n", myData.targetKey.c_str());
-	printf("Channel: %s\n", myData.targetChannel->_channelPassword.c_str());
 	if (!myData.targetChannel->_channelPassword.empty() && myData.targetKey.compare(myData.targetChannel->_channelPassword)) {
-		printf("checkChannelKey\n");
 		myData.error = ERR_BADCHANNELKEY(myData.client->_nickname, myData.targetChannel->_channelName);
 	}
 	return ;

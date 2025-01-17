@@ -115,6 +115,7 @@ void	Server::debugPrintServer( void ) const {
 		if (it->second)
 			it->second->debugPrintChannel();
 	}
+	std::cout << "EXIT DEBUG PRINT" << std::endl;
 }
 
 // void	Server::LegacysendToServer(int const clientID, std::string token) {
@@ -141,8 +142,10 @@ void	Server::serverRequest(Client& client, std::string rawLine) {
 	
 	// Send::ToConsole(client._clientID, logLine);
 	Command		myCommand(rawLine);
-	if (myCommand._command)
+	if (myCommand._command) {
 		myCommand._command->execute(client);
+		//this->debugPrintServer();
+	}
 	else
 		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(client._nickname, myCommand._cmdName));
 	return ;

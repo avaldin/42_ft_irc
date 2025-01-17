@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 19:09:41 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/02 14:47:14 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void(Invite::*Invite::_method[7])(t_data&) = {
 	&Invite::checkTargetExist,
 	&Invite::checkChannelTarget};
 
-void	Invite::execute(Client const & client) {
+void	Invite::execute(Client& client) {
 	t_data	myData;
 	
 	myData.client = &client;
@@ -38,10 +38,10 @@ void	Invite::execute(Client const & client) {
 		Send::ToClient(client._clientID, myData.error);
 		return ;
 	}
-	myData.channel->addInvited(myData.client->_clientID, myData.targetClient);
+	myData.channel->addInvited(myData.targetClient->_clientID, myData.targetClient);
 	Send::ToClient(client._clientID, RPL_INVITING(client._nickname, myData.channel->_channelName, myData.targetClient->_nickname));
 	std::string const	reply = ":" + client._prefix + " " + "INVITE " + myData.targetClient->_nickname + " :" + myData.channel->_channelName;  
-	Send::ToClient(myData.client->_clientID, reply);
+	Send::ToClient(myData.targetClient->_clientID, reply);
 	return ;
 }
 
@@ -57,10 +57,11 @@ void	Invite::checkParams(t_data& myData) {
 
 void	Invite::checkChannelExist(t_data& myData) {
 	myData.nameTargetChannel = this->_targetChannels.front();
-	myData.channel = this->_server->_serverChannel[myData.nameTargetChannel];
+	std::map<std::string, Channel*>::iterator it = this->_server->_serverChannel.find(myData.nameTargetChannel);
 
-	if (!myData.channel)
+	if (it == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, myData.nameTargetChannel);
+	myData.channel = it->second;
 }
 
 void	Invite::checkChannelClient(t_data& myData) {
@@ -75,13 +76,13 @@ void	Invite::checkChannelOperator(t_data& myData) {
 
 void	Invite::checkTargetExist(t_data& myData) {
 	myData.targetUser = this->_targetUsers.front();
-	myData.targetClient = this->_server->findClientNickname(myData.targetUser->targetNickname);
+	myData.targetClient = this->_server->findClientNickname(myData.targetUser);
 
 	if (!myData.targetClient) 
-		myData.error = ERR_NOSUCHNICK(myData.client->_nickname, myData.targetUser->targetNickname);
+		myData.error = ERR_NOSUCHNICK(myData.client->_nickname, myData.targetUser);
 }
 
 void	Invite::checkChannelTarget(t_data& myData) {
-	if (!myData.channel->isClient(myData.targetClient->_clientID)) 
+	if (myData.channel->isClient(myData.targetClient->_clientID))
 		myData.error =  ERR_USERONCHANNEL(myData.client->_nickname, myData.targetClient->_username, myData.channel->_channelName);
 }

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 17:01:59 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 17:54:03 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/15 19:50:25 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ class Channel;
 
 class Invite : public ACommand {
 	public:
-		void	execute(Client const & client);
+		void	execute(Client& client);
 	
 	private:
 		Invite( void ) : _cmdName("INVITE") {}
 		~Invite( void ) {}
 
 		typedef struct s_data {
-			t_user*			targetUser;
+			std::string		targetUser;
 			Client const *	targetClient;
 			std::string		nameTargetChannel;
 			Channel*		channel;
@@ -46,7 +46,7 @@ class Invite : public ACommand {
 		void	checkChannelTarget(t_data& myData);
 		
 		std::string const			_cmdName;
-		std::vector<t_user*>		_targetUsers;
+		std::vector<std::string>	_targetUsers;
 		std::vector<std::string>	_targetChannels;
 		
 		static Server*	_server;
