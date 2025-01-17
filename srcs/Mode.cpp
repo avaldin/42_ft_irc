@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/16 21:02:17 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/17 21:04:57 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,128 +19,134 @@
 #include "Send.namespace.hpp"
 
 #include "Mode.class.hpp"
-#include <cstdlib>
 #include <cmath>
+#include <sstream>
+
+#include <stdio.h>
 
 Server* Mode::_server = Server::instantiate();
 
-void(Mode::*Mode::_funcMode[NUM_MODE])(t_mode const *, Channel * const, int const) = {
+void(Mode::*Mode::_funcMode[NUM_MODE])(t_mode const *, t_data& myData) = {
 	&Mode::iFlag,
 	&Mode::kFlag,
 	&Mode::lFlag,
 	&Mode::oFlag,
-	&Mode::tFlag
+	&Mode::tFlag,
+	&Mode::unknownFlag,
 };
 
 void(Mode::*Mode::_method[CHECK_MODE])(t_data&) = {
 	&Mode::checkRegistered,
 	&Mode::checkParams,
 	&Mode::checkChannelExist,
-	
+	&Mode::checkChannelOperator,
+	&Mode::checkClientTarget,
 };
 
 void	Mode::execute(Client& client) {
 	t_data	myData;
 
 	myData.client = &client;
-	for (int idx = 0; idx < 3; idx++)
-		(this->*_method[idx])(myData);
+	for (myData.idxCheck = 0; myData.idxCheck < 4 && myData.error.empty(); myData.idxCheck++)
+		(this->*_method[myData.idxCheck])(myData);
+	if (!myData.error.empty()) {
+		Send::ToClient(client._clientID, myData.error);
+		return ;
+	}
 	int const	size = this->_mode.size();
 	for (int idx = 0; idx < size; idx++) {
-		t_mode*	currentMode = this->_mode[idx];
-		int const modeNum = round(((static_cast<int>(currentMode->mode)-(float)105)*4)/11);
-		if (modeNum < 5)
-			(this->*_funcMode[modeNum])(currentMode, myData.channel, client._clientID);
-		else {
-			Send::ToClient(client._clientID, ERR_UNKNOWNMODE(static_cast<std::string>(&currentMode->mode)));
+		myData.mode = this->_mode[idx];
+		(this->*_funcMode[idxFuncMode(myData.mode->mode)])(myData.mode, myData);
+		if (myData.error.empty()) {
+			std::string const	reply = "MODE " + myData.channel->_channelName + static_cast<char>(myData.mode->sign) + myData.mode->mode + " " + myData.mode->args;
+			Send::ToChannel(*myData.channel, reply);
 		}
+		else
+			Send::ToClient(client._clientID, myData.error);
 	}
 	return ;
 }
 
-void	Mode::tFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
-	}
-	currentChannel->_topicMode = currentMode->sign % 5 % 2;
-	std::string const	reply = "MODE " + currentChannel->_channelName + static_cast<char>(currentMode->sign) + "t";
-	Send::ToChannel(*currentChannel, reply);
+void	Mode::tFlag(t_mode const * currentMode, t_data& myData) {
+	myData.channel->_topicMode = currentMode->sign % 5 % 2;
 	return ;
 }
 
-void	Mode::iFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
-	}
-	currentChannel->_inviteOnlyMode = currentMode->sign % 5 % 2;
-	std::string const	reply = "MODE " + currentChannel->_channelName + static_cast<char>(currentMode->sign) + "i";
-	Send::ToChannel(*currentChannel, reply);
+void	Mode::iFlag(t_mode const * currentMode, t_data& myData) {
+	myData.channel->_inviteOnlyMode = currentMode->sign % 5 % 2;
 	return ;
 }
 
-void	Mode::lFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
-	}
-	std::string reply = "MODE " + currentChannel->_channelName + static_cast<char>(currentMode->sign) + "l";
+void	Mode::lFlag(t_mode const * currentMode, t_data& myData) {
 	if (currentMode->sign == '+') {
-		currentChannel->_channelLimit = std::atoi(currentMode->args.c_str());
-		reply += (" " + currentMode->args);
+		if (!currentMode->args.empty()) {
+			std::stringstream	limitSS;
+			limitSS << currentMode->args;
+			limitSS >> myData.channel->_channelLimit;
+		}
+		else
+			myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
 	}
 	else if (currentMode->sign == '-')
-		currentChannel->_channelLimit = -1;
-	Send::ToChannel(*currentChannel, reply);
+		myData.channel->_channelLimit = -1;
 	return ;
 }
 
-void	Mode::kFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
-		return ;
+void	Mode::kFlag(t_mode const * currentMode, t_data& myData) {
+	if (currentMode->sign == '+') {
+		if (!currentMode->args.empty())
+			myData.channel->_channelPassword = currentMode->args;
+		else
+			myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
 	}
-	if (currentMode->sign == '+')
-		currentChannel->_channelPassword = currentMode->args;
 	else if (currentMode->sign == '-')
-		currentChannel->_channelPassword = "";
-	std::string const	reply = "MODE " + currentChannel->_channelName + static_cast<char>(currentMode->sign) + "k";
-	Send::ToChannel(*currentChannel, reply);
+		myData.channel->_channelPassword = "";
 	return ;
 }
 
-void	Mode::oFlag(t_mode const * currentMode, Channel * const currentChannel, int const clientID) {
-	if (!currentChannel->isOperator(clientID)) {
-		Send::ToClient(clientID, ERR_CHANOPRIVSNEEDED(currentChannel->_channelName));
+void	Mode::oFlag(t_mode const * currentMode, t_data& myData) {
+	myData.target = this->_server->findClientNickname(currentMode->args);
+	
+	(this->*_method[myData.idxCheck])(myData);
+	if (!myData.error.empty())
 		return ;
-	}
-	int const	targetID = std::atoi(currentMode->args.c_str());
-	if (!currentChannel->isClient(targetID)) {
-		Send::ToClient(clientID, ERR_USERNOTINCHANNEL(currentMode->args, currentChannel->_channelName));
-		return ;
-	}
 	if (currentMode->sign == '+')
-		currentChannel->addOperator(targetID);
+		myData.channel->addOperator(myData.target->_clientID);
 	else if (currentMode->sign == '-') {
-		if (currentChannel->isOperator(targetID))
-			currentChannel->deleteOperator(targetID);
+		if (myData.channel->isOperator(myData.target->_clientID))
+			myData.channel->deleteOperator(myData.target->_clientID);
 		else
 			return ;
 	}
-	std::string const	reply = "MODE " + currentChannel->_channelName + static_cast<char>(currentMode->sign) + "o " + currentMode->args;
-	Send::ToChannel(*currentChannel, reply);
 	return ; 
+}
+
+void	Mode::unknownFlag(t_mode const * currentMode, t_data& myData) {
+	myData.error = ERR_UNKNOWNMODE(static_cast<std::string>(&currentMode->mode));
+	return ;
+}
+
+unsigned int	Mode::idxFuncMode(unsigned int const mode) {
+	static unsigned int const	tab[5] = {0,2,3,6,11};
+	int							idx;
+	
+	for (idx = 0;idx < 5;idx++) {
+		if (tab[idx] == (mode - LOWEST_MODE))
+			break ;
+	}
+	return idx;
 }
 
 void	Mode::checkRegistered(t_data& myData) {
 	if (myData.client->status != REGISTERED)
 		myData.error = ERR_NOTREGISTRATED;
+	return ;
 }
 
 void	Mode::checkParams(t_data& myData) {
 	if (this->_targetChannel.empty() || this->_mode.empty())
 		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+	return ;
 }
 
 void	Mode::checkChannelExist(t_data& myData) {
@@ -149,4 +155,17 @@ void	Mode::checkChannelExist(t_data& myData) {
 	if (it == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(this->_targetChannel);
 	myData.channel = it->second;
+	return ;
+}
+
+void	Mode::checkChannelOperator(t_data& myData) {
+	if (!myData.channel->isOperator(myData.client->_clientID))
+		myData.error = ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
+	return ;
+}
+
+void	Mode::checkClientTarget(t_data& myData) {
+	if (!myData.channel->isClient(myData.target->_clientID)) 
+		myData.error = ERR_USERNOTINCHANNEL(myData.mode->args, myData.channel->_channelName);
+	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 20:12:09 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/17 20:53:57 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,8 @@ void	Join::checkChannelInvite(t_data& myData) {
 }
 
 void	Join::checkChannelFilling(t_data& myData) {
-	if (myData.targetChannel->_channelLimit > 0 && myData.targetChannel->_channelClient.size() == myData.targetChannel->_channelLimit)
+	if (myData.targetChannel->_channelLimit > 0 && myData.targetChannel->_channelClient.size() >= myData.targetChannel->_channelLimit) {
 		myData.error = ERR_CHANNELISFULL(myData.targetChannel->_channelName);
+	}
 	return ;
 }

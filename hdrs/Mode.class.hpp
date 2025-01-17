@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:03:19 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/16 20:37:20 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/17 19:01:42 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 
 # include <vector>
 # define CHECK_MODE 6
-# define NUM_MODE 5
+# define NUM_MODE 6
+# define LOWEST_MODE 105
 
 class Command;
 class Client;
@@ -39,19 +40,27 @@ class Mode : public ACommand {
 		
 		typedef struct	s_data {
 			Client const *	client;
+			Client const *	target;
+			Channel*		channel;
+			t_mode*			mode;
+			int				idxCheck;
 			std::string		error;
-			Channel * const	channel;
 		}	t_data;
 	
-		void	tFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		void	iFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		void	lFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		void	kFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
-		void	oFlag(struct s_mode const * currentMode, Channel * const currentChannel, int const clientID);
+		void	tFlag(struct s_mode const * currentMode, t_data& myData);
+		void	iFlag(struct s_mode const * currentMode, t_data& myData);
+		void	lFlag(struct s_mode const * currentMode, t_data& myData);
+		void	kFlag(struct s_mode const * currentMode, t_data& myData);
+		void	oFlag(struct s_mode const * currentMode, t_data& myData);
+		void	unknownFlag(struct s_mode const * currentMode, t_data& myData);
 		
 		void	checkRegistered(t_data& myData);
 		void	checkParams(t_data& myData);
 		void	checkChannelExist(t_data& myData);
+		void	checkChannelOperator(t_data& myData);
+		void	checkClientTarget(t_data& myData);
+		
+		unsigned int	idxFuncMode(unsigned int const mode);
 	
 		std::string const		_cmdName;
 		std::vector<t_mode*>	_mode;
@@ -59,7 +68,7 @@ class Mode : public ACommand {
 				
 		static Server*	_server;
 
-		static void(Mode::*_funcMode[NUM_MODE])(t_mode const *, Channel * const, int const);
+		static void(Mode::*_funcMode[NUM_MODE])(t_mode const *, t_data& myData);
 		static void(Mode::*_method[CHECK_MODE])(t_data&);
 	
 	friend class Command;
