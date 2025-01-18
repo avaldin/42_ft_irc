@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 09:12:53 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/16 17:55:29 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 Server*	Kick::_server = Server::instantiate();
 
-void(Kick::*Kick::_method[6])(t_data&) = {
+void(Kick::*Kick::_method[CHECK_KICK])(t_data&) = {
 	&Kick::checkRegistered,
 	&Kick::checkParams,
 	&Kick::checkChannelExist, 

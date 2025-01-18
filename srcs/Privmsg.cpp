@@ -32,7 +32,7 @@ void	Privmsg::execute(Client &client) {
 	if (myData.targetType == CLIENT)
 		Send::ToClient(this->_server->findClientNickname(_receiver)->_clientID, toSend);
 	else if (myData.targetType == CHANNEL)
-		this->_server->_serverChannel[myData.target]->privMsgToChannel(_message, client._clientID);
+		this->_server->_serverChannel[myData.target]->privMsgToChannel(toSend, client._clientID);
 }
 
 void	Privmsg::checkRegistered(t_data& myData) {

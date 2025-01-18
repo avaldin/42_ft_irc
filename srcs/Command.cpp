@@ -75,7 +75,8 @@ void	 Command::parseRawline( void ) {
 	std::string					parsed;
 
 	while(std::getline(rawlineStringStream, parsed, ' ')) {
-		splited.push_back(parsed);
+		if (parsed.size())
+			splited.push_back(parsed);
 	}
 	int const size = splited.size();
 	if (!size)
@@ -210,6 +211,8 @@ void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
 	Mode*		newCommand = new Mode();
 	int const	size = splitedLine.size();
 
+	if (idx < size)
+		newCommand->_targetChannel = splitedLine[idx++];
 	for (;idx < size; idx++) {
 		if (splitedLine[idx][0] == '+' || splitedLine[idx][0] == '-') {
 			unsigned int	sign = splitedLine[idx][0]; 
