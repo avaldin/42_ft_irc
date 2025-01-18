@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 11:48:25 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/17 16:24:34 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,12 @@ void	Join::RPL_join(t_data& myData) {
 		Send::ToClient(myData.client->_clientID, RPL_TOPIC(myData.client->_nickname, myData.targetChannel->_channelName ,myData.targetChannel->_channelTopic));
 	else
 		Send::ToClient(myData.client->_clientID, RPL_NOTOPIC(myData.client->_nickname, myData.targetChannel->_channelName));
-	std::string					names;
-	for (std::map<int, Client const *>::iterator it = myData.targetChannel->_channelOperator.begin(); it != myData.targetChannel->_channelOperator.end() ; ++it)
-		names += "@" + it->second->_nickname + " ";
-	for (std::map<int, Client const *>::iterator it = myData.targetChannel->_channelClient.begin(); it != myData.targetChannel->_channelClient.end() ; ++it)
-		if (myData.targetChannel->_channelOperator.find(it->first) == myData.targetChannel->_channelOperator.end())
-			names += it->second->_nickname + " ";
+	std::string	names;
+	for (std::map<int, Client const *>::iterator it = myData.targetChannel->_channelClient.begin(); it != myData.targetChannel->_channelClient.end() ; ++it) {
+		if (myData.targetChannel->isOperator(it->first))
+			names += "@";
+		names += it->second->_nickname + " ";
+	}
 	names.erase(names.size() - 1);
 	Send::ToClient(myData.client->_clientID, RPL_NAMERPLY(myData.client->_nickname, myData.targetChannel->_channelName, names));
 	Send::ToClient(myData.client->_clientID, RPL_ENDOFNAMES(myData.client->_nickname, myData.targetChannel->_channelName));
