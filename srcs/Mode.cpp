@@ -85,7 +85,7 @@ void	Mode::lFlag(t_mode const * currentMode, t_data& myData) {
 			limitSS >> myData.channel->_channelLimit;
 		}
 		else
-			myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+			myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	}
 	else if (currentMode->sign == '-')
 		myData.channel->_channelLimit = -1;
@@ -97,7 +97,7 @@ void	Mode::kFlag(t_mode const * currentMode, t_data& myData) {
 		if (!currentMode->args.empty())
 			myData.channel->_channelPassword = currentMode->args;
 		else
-			myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+			myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	}
 	else if (currentMode->sign == '-')
 		myData.channel->_channelPassword = "";
@@ -122,7 +122,7 @@ void	Mode::oFlag(t_mode const * currentMode, t_data& myData) {
 }
 
 void	Mode::unknownFlag(t_mode const * currentMode, t_data& myData) {
-	myData.error = ERR_UNKNOWNMODE(static_cast<std::string>(&currentMode->mode));
+	myData.error = ERR_UNKNOWNMODE(myData.client->_nickname, static_cast<std::string>(&currentMode->mode));
 	return ;
 }
 
@@ -139,13 +139,13 @@ unsigned int	Mode::idxFuncMode(unsigned int const mode) {
 
 void	Mode::checkRegistered(t_data& myData) {
 	if (myData.client->status != REGISTERED)
-		myData.error = ERR_NOTREGISTRATED;
+		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);
 	return ;
 }
 
 void	Mode::checkParams(t_data& myData) {
 	if (this->_targetChannel.empty() || this->_mode.empty())
-		myData.error = ERR_NEEDMOREPARAMS(this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
 	return ;
 }
 
@@ -153,19 +153,19 @@ void	Mode::checkChannelExist(t_data& myData) {
 	std::map<std::string, Channel*>::iterator	it = this->_server->_serverChannel.find(this->_targetChannel);
 	
 	if (it == this->_server->_serverChannel.end())
-		myData.error = ERR_NOSUCHCHANNEL(this->_targetChannel);
+		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, this->_targetChannel);
 	myData.channel = it->second;
 	return ;
 }
 
 void	Mode::checkChannelOperator(t_data& myData) {
 	if (!myData.channel->isOperator(myData.client->_clientID))
-		myData.error = ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
+		myData.error = ERR_CHANOPRIVSNEEDED(myData.client->_nickname, myData.channel->_channelName);
 	return ;
 }
 
 void	Mode::checkClientTarget(t_data& myData) {
 	if (!myData.channel->isClient(myData.target->_clientID)) 
-		myData.error = ERR_USERNOTINCHANNEL(myData.mode->args, myData.channel->_channelName);
+		myData.error = ERR_USERNOTINCHANNEL(myData.client->_nickname, myData.mode->args, myData.channel->_channelName);
 	return ;
 }
