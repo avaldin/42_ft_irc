@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 12:53:12 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/18 12:36:25 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,11 @@ void	Client::action( void ) {
 	if (bytesReceived == -1)
 		throw RecvException();
 	else if (!bytesReceived)
-
+	{
+		message = "QUIT :Abrupt Disconnection";
+		Server::instantiate()->serverRequest(*this, message);
+		return ;
+	}
 	buff[bytesReceived] = '\0';
 	std::stringstream ss(buff);
 	while (std::getline(ss, message, '\n'))

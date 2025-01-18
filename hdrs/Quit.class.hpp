@@ -8,11 +8,6 @@
 class Command;
 class Server;
 
-typedef enum e_type {
-	CHANNEL,
-	CLIENT,
-}			t_type;
-
 class Quit : public ACommand {
 public:
 	void	execute(Client &client);
@@ -33,8 +28,6 @@ private:
 	std::string	const			_cmdName;
 	std::string					_message;
 	static Server*				_server;
-
-	static void(Quit::*_method[3])(t_data&);
 
 	friend class Command;
 
