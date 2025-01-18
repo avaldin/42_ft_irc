@@ -9,7 +9,7 @@ Server*	Privmsg::_server = Server::instantiate();
 void(Privmsg::*Privmsg::_method[4])(t_data&) = {
 		&Privmsg::checkRegistered,
 		&Privmsg::checkParams,
-		&Privmsg::checkTargetExist
+		&Privmsg::checkTargetExist,
 		&Privmsg::checkAuthorisation
 		};
 
