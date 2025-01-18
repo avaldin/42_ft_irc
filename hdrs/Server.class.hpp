@@ -97,6 +97,7 @@ friend class Nick;
 friend class User;
 friend class Join;
 friend class Privmsg;
+friend class Quit;
 };
 
 

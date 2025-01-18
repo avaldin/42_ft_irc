@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 20:19:47 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/18 12:19:30 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "User.class.hpp"
 #include "Join.class.hpp"
 #include "Privmsg.class.hpp"
+#include "Quit.class.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -51,7 +52,7 @@ Command::Command(std::string const & rawLine) {
 	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
 	this->_cmdMethods["MODE"] = &Command::setMODE;
 	this->_cmdMethods["INVITE"] = &Command::setINVITE;
-	// this->_cmdMethods["QUIT"] = &Command::setQUIT;
+	this->_cmdMethods["QUIT"] = &Command::setQUIT;
 	this->_cmdMethods["PRIVMSG"] = &Command::setPRIVMSG;
 	this->_command = NULL;
 	this->parseRawline();
@@ -261,9 +262,24 @@ void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 	this->_command = newCommand;
 }
 
-// void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
-// 	return ;
-// }
+ void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
+	Quit*	newCommand = new Quit();
+
+	if (splitedLine.size() >= 2) {
+		if (splitedLine[idx][0] == ':') {
+			splitedLine[idx].erase(0, 1);
+			for (unsigned long i = idx; i < splitedLine.size(); i++)
+			{
+				if (!newCommand->_message.empty())
+					newCommand->_message += " ";
+				newCommand->_message += splitedLine[i];
+			}
+		}
+		else
+			newCommand->_message = splitedLine[idx];
+	}
+	this->_command = newCommand;
+}
 
 std::string 	Command::getPrefix( void ) {
 	return this->_prefix;
