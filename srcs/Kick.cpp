@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/16 17:55:29 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/18 13:45:28 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	Kick::execute(Client& client) {
 			(this->*_method[idx])(myData);
 		if (myData.error.empty()) {
 			myData.channel->deleteClient(myData.targetClient->_clientID);
-			std::string const	message = client._prefix + " KICK " + myData.channel->_channelName + " " + this->_message;
+			std::string const	message = ":" + client._prefix + " KICK " + myData.channel->_channelName + " " + myData.targetUser + " " + this->_message;
 			Send::ToChannel(*myData.channel, message);
 			Send::ToClient(myData.targetClient->_clientID, message);
 		}
@@ -70,7 +70,8 @@ void	Kick::checkChannelExist(t_data& myData) {
 
 	if (it == this->_server->_serverChannel.end())
 		myData.error =  ERR_NOSUCHCHANNEL(myData.client->_nickname, this->_targetChannels[myData.idxChannel]);
-	myData.channel = it->second;
+	else
+		myData.channel = it->second;
 }
 
 void	Kick::checkChannelClient(t_data& myData) {
