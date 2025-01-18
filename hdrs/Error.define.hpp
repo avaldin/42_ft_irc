@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:38:55 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 16:21:25 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/18 13:29:27 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 
 # define ERR_NOSUCHCHANNEL(target, channel) (":IRC_serv 403 " + (target) + " " + (channel) + " :No such channel")
 // Used to indicate the given channel name is invalid
+
+#define ERR_CANNOTSENDTOCHAN(target, channel) (":IRC_serv 404 " + (target) + " " + (channel) + " :Cannot send to channel")
+//This is returned when a message to a channel is blocked by a channel mode or ban
 
 # define ERR_TOOMANYCHANNELS(target, channel) (":IRC_serv 405 " + (target) + " " + (channel) + " :You have joined too many channels")
 // Sent to a user when they have joined the maximum number of allowed channels
