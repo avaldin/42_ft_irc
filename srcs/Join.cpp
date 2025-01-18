@@ -144,7 +144,8 @@ void	Join::checkChannelInvite(t_data& myData) {
 }
 
 void	Join::checkChannelFilling(t_data& myData) {
-	if (myData.targetChannel->_channelLimit > 0 && myData.targetChannel->_channelClient.size() == myData.targetChannel->_channelLimit)
-		myData.error = ERR_CHANNELISFULL(myData.client->_nickname, myData.targetChannel->_channelName);
+	if (myData.targetChannel->_channelLimit > 0 && myData.targetChannel->_channelClient.size() >= myData.targetChannel->_channelLimit) {
+		myData.error = ERR_CHANNELISFULL(myData.targetChannel->_channelName);
+	}
 	return ;
 }

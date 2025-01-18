@@ -58,7 +58,7 @@ private:
 	void	setTOPIC(std::vector<std::string> splitedLine, int idx);
 	void	setMODE(std::vector<std::string> splitedLine, int idx);
 	void	setINVITE(std::vector<std::string> splitedLine, int idx);
-	// void	setQUIT(std::vector<std::string> splitedLine, int idx);
+	void	setQUIT(std::vector<std::string> splitedLine, int idx);
 	void	setPRIVMSG(std::vector<std::string> splitedLine, int idx);
 
 

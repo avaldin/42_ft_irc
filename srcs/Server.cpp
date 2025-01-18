@@ -138,7 +138,7 @@ void	Server::debugPrintServer( void ) const {
 // }
 
 void	Server::serverRequest(Client& client, std::string rawLine) {
-	std::string	const	logLine = ":" + client._nickname + "!" + client._username + "@" + this->_serverName + " " + rawLine; 
+	std::string	const	logLine = ":" + client._nickname + "!" + client._username + "@" + this->_serverName + " " + rawLine;
 	
 	// Send::ToConsole(client._clientID, logLine);
 	Command		myCommand(rawLine);
@@ -183,9 +183,12 @@ void	Server::addClient() {
 }
 
 void	Server::eraseClient(int const & clientID) {
+	Client* toDelete = this->_serverClientId[clientID];
+	if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, clientID, nullptr) == -1)
+		throw EpollCtlException();
 	this->_serverClientId.erase(clientID);
-	Factory::deleteClient(this->_serverClientId[clientID]);
-	return ;	
+	Factory::deleteClient(toDelete);
+	return ;
 }
 
 Client*	Server::findClientUsername(std::string const & username) {
