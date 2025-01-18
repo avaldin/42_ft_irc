@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/18 12:19:30 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/18 15:20:44 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,8 +201,17 @@ void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 	
 	if (idx < size)
 		newCommand->_targetChannel = splitedLine[idx++];
-	while (idx < size)
-		newCommand->_topic += (splitedLine[idx++] + " ");
+	if (idx < size && splitedLine[idx][0] == ':') {
+		splitedLine[idx].erase(0, 1);
+		for (;idx < size; idx++)
+		{
+			if (!newCommand->_topic.empty())
+				newCommand->_topic += " ";
+			newCommand->_topic += splitedLine[idx];
+		}
+	}
+	else if (idx < size)
+		newCommand->_topic = splitedLine[idx];
 	this->_command = newCommand;
 	return ;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:01:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 00:11:49 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/18 15:14:42 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	Topic::execute(Client& client) {
 		return ;
 	}
 	myData.channel->_channelTopic = this->_topic;
-	Send::ToChannel(*myData.channel, client._prefix + " TOPIC " + myData.channel->_channelName + " :" + myData.channel->_channelTopic);
+	Send::ToChannel(*myData.channel, ":" + client._prefix + " TOPIC " + myData.channel->_channelName + " :" + myData.channel->_channelTopic);
 	return ;
 }
 
@@ -69,7 +69,8 @@ void	Topic::checkChannelExist(t_data& myData) {
 
 	if (it == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, this->_targetChannel);
-	myData.channel = it->second;
+	else
+		myData.channel = it->second;
 	return ;
 }
 

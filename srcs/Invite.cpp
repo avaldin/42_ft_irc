@@ -61,7 +61,8 @@ void	Invite::checkChannelExist(t_data& myData) {
 
 	if (it == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, myData.nameTargetChannel);
-	myData.channel = it->second;
+	else
+		myData.channel = it->second;
 }
 
 void	Invite::checkChannelClient(t_data& myData) {

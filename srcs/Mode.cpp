@@ -154,7 +154,8 @@ void	Mode::checkChannelExist(t_data& myData) {
 	
 	if (it == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, this->_targetChannel);
-	myData.channel = it->second;
+	else
+		myData.channel = it->second;
 	return ;
 }
 
