@@ -1,6 +1,7 @@
 
 #ifndef PRIVMSG_HPP
 # define PRIVMSG_HPP
+# define CHECK_MSG 5
 
 #include "ACommand.class.hpp"
 #include "Server.class.hpp"
@@ -23,6 +24,7 @@ private:
 
 	typedef struct	s_data {
 		Client*		client;
+		Channel*	targetChannel;
 		std::string	target;
 		t_type		targetType;
 		std::string	message;
@@ -32,7 +34,8 @@ private:
 
 	void checkRegistered(t_data &myData);
 	void checkParams(t_data &myData);
-	void checkTargetExist(t_data &myData);
+	void checkTargetClientExist(t_data &myData);
+	void checkTargetChannelExist(t_data &myData);
 	void checkAuthorisation(t_data &myData);
 
 	std::string	const			_cmdName;
@@ -40,7 +43,7 @@ private:
 	std::string					_message;
 	static Server*				_server;
 
-	static void(Privmsg::*_method[4])(t_data&);
+	static void(Privmsg::*_method[CHECK_MSG])(t_data&);
 
 	friend class Command;
 

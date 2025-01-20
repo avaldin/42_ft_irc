@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 16:59:40 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 11:26:29 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 16:12:37 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define JOIN_CLASS_HPP
 # include "ACommand.class.hpp"
 # include <vector>
-# define CHECK_JOIN 6
+# define CHECK_JOIN 7
 
 class Client;
 class Channel;
@@ -41,6 +41,7 @@ private:
 	void	checkRegistered(t_data& myData);
 	void	checkParams(t_data& myData);
 	void	checkChannelName(t_data& myData);
+	void	checkChannelExist(t_data& myData);
 	void	checkChannelKey(t_data& myData);
 	void	checkChannelInvite(t_data& myData);
 	void	checkChannelFilling(t_data& myData);

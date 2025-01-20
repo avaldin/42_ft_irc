@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/30 00:18:19 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 15:59:43 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,7 @@ public:
 	~Command( void );
 	Command(std::string const & rawLine);
 
-	std::string					getPrefix( void );
-	ACommand*							_command;
-	std::string							_cmdName;
 	ACommand*					getCommand( void );
-	// std::string					getPassword( void );
-	// std::string					getMessage( void );
-	// std::vector<std::string&>&	getTargetChannels( void );
-	// std::vector<t_user*>		getTargetUsers( void );
 	
 private:
 	Command( void );
@@ -61,13 +54,10 @@ private:
 	void	setQUIT(std::vector<std::string> splitedLine, int idx);
 	void	setPRIVMSG(std::vector<std::string> splitedLine, int idx);
 
-
-
+	ACommand*							_command;
 	std::string							_rawLine;
-	std::string							_prefix;
 	std::string							_password;
-
-	std::string							_message;
+	std::string							_cmdName;
 
 	std::map<std::string,void(Command::*)(std::vector<std::string>, int)>	_cmdMethods;
 };

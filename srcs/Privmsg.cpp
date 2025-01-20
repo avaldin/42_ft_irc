@@ -6,10 +6,11 @@
 
 Server*	Privmsg::_server = Server::instantiate();
 
-void(Privmsg::*Privmsg::_method[4])(t_data&) = {
+void(Privmsg::*Privmsg::_method[CHECK_MSG])(t_data&) = {
 		&Privmsg::checkRegistered,
 		&Privmsg::checkParams,
-		&Privmsg::checkTargetExist,
+		&Privmsg::checkTargetClientExist,
+		&Privmsg::checkTargetChannelExist,
 		&Privmsg::checkAuthorisation
 		};
 
@@ -23,7 +24,7 @@ void	Privmsg::execute(Client &client) {
 		myData.targetType = CHANNEL;
 	else
 		myData.targetType = CLIENT;
-	for (int idx = 0; idx < 4 && myData.error.empty(); ++idx)
+	for (int idx = 0; idx < CHECK_MSG && myData.error.empty(); ++idx)
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty()) {
 		Send::ToClient(client._clientID, myData.error);
@@ -33,7 +34,7 @@ void	Privmsg::execute(Client &client) {
 	if (myData.targetType == CLIENT)
 		Send::ToClient(this->_server->findClientNickname(_receiver)->_clientID, toSend);
 	else if (myData.targetType == CHANNEL)
-		this->_server->_serverChannel[myData.target]->privMsgToChannel(toSend, client._clientID);
+		myData.targetChannel->privMsgToChannel(toSend, client._clientID);
 }
 
 void	Privmsg::checkRegistered(t_data& myData) {
@@ -48,15 +49,21 @@ void	Privmsg::checkParams(t_data& myData) {
 		myData.error = ERR_NOTEXTTOSEND(myData.client->_nickname);
 }
 
-void	Privmsg::checkTargetExist(t_data& myData) {
+void	Privmsg::checkTargetClientExist(t_data& myData) {
 	if (myData.targetType == CLIENT && !this->_server->findClientNickname(myData.target))
 		myData.error = ERR_NOSUCHNICK(myData.client->_nickname, myData.target);
-	if (myData.targetType == CHANNEL
-			&& this->_server->_serverChannel.find(myData.target) == this->_server->_serverChannel.end())
+}
+
+void	Privmsg::checkTargetChannelExist(t_data& myData) {
+	std::map<std::string,Channel*>::iterator	it = this->_server->_serverChannel.find(myData.target);
+
+	if (myData.targetType == CHANNEL && it == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, myData.target);
+	else
+		myData.targetChannel = it->second;
 }
 
 void	Privmsg::checkAuthorisation(t_data& myData) {
-	if (myData.targetType == CHANNEL && !_server->_serverChannel.find(myData.target)->second->isClient(myData.client->_clientID))
+	if (myData.targetType == CHANNEL && !myData.targetChannel->isClient(myData.client->_clientID))
 		myData.error = ERR_CANNOTSENDTOCHAN(myData.client->_nickname, myData.target);
 }
