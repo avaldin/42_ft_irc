@@ -87,3 +87,4 @@ void	Invite::checkChannelTarget(t_data& myData) {
 	if (myData.channel->isClient(myData.targetClient->_clientID))
 		myData.error =  ERR_USERONCHANNEL(myData.client->_nickname, myData.targetClient->_username, myData.channel->_channelName);
 }
+

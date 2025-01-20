@@ -49,6 +49,7 @@ private:
 	Client(int clientID);
 	Client&	operator=(Client const & rhs);
 
+	std::string					_message;
 	std::vector<std::string>	_actualChannel;
 };
 
