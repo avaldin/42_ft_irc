@@ -117,4 +117,11 @@ public:
 	}
 };
 
+class signalfdException : public Exception {
+public:
+	void	what() const throw() {
+		std::cerr << "Error: signalfd failed" << std::endl;
+	}
+};
+
 #endif

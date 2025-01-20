@@ -22,10 +22,12 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
+#include <sys/signalfd.h>
 #include <cstring>
-#include <sstream>
-#include <ctime>
 #include <arpa/inet.h>
+#include <unistd.h>
+#include <csignal>
+
 
 Server*	Server::_me = nullptr;
 
@@ -78,10 +80,11 @@ void	Server::startServer(int port, const std::string& password) {
 	this->_ev.data.fd = this->_mySocket;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, this->_mySocket, &this->_ev) == -1)
 		throw EpollCtlException();
-	this->_console = Factory::createClient(1);
-	this->_console->_nickname = "CONSOLE";
-	this->_console->_username = "CONSOLE";
+//	this->_console = Factory::createClient(1);
+//	this->_console->_nickname = "CONSOLE";
+//	this->_console->_username = "CONSOLE";
 	this->_serverPassword = password;
+	signalHandler();
 	return ;
 }
 
@@ -91,13 +94,21 @@ void	Server::runServer( void ) {
 
 	while (true) {
 		nfds = epoll_wait(this->_epollfd, events, 10, -1);
-		if (nfds == -1) 
+		if (nfds == -1)
 			throw EpollWaitException();
 		for (int nfd = 0; nfd < nfds; ++nfd) {
 			if (events[nfd].data.fd == this->_mySocket) {
 				try {this->addClient();}
 				catch (Exception const & e) {
 					throw AcceptException();
+				}
+			}
+			else if (events[nfd].data.fd == this->_signalfd) {
+				struct signalfd_siginfo si;
+				read(_signalfd, &si, sizeof(si));
+				if (si.ssi_signo == SIGINT ||si.ssi_signo == SIGQUIT || si.ssi_signo == SIGPIPE) {
+					closeServer();
+					_exit(0);
 				}
 			}
 			else {
@@ -144,6 +155,7 @@ void	Server::serverRequest(Client& client, std::string rawLine) {
 	Command		myCommand(rawLine);
 	if (myCommand._command) {
 		myCommand._command->execute(client);
+		delete(myCommand._command);
 		//this->debugPrintServer();
 	}
 	else
@@ -239,9 +251,45 @@ void	Server::Factory::deleteChannel(Channel* oldChannel) {
 	return ;
 }
 
-void	Server::sendError(int const clientId, std::string const & msgError)
-{
+void	Server::signalHandler() {
+	sigset_t sigmask;
+	sigemptyset(&sigmask);
+	sigaddset(&sigmask, SIGINT);
+	sigaddset(&sigmask, SIGQUIT);
+	sigaddset(&sigmask, SIGPIPE);
+	if (sigprocmask(SIG_BLOCK, &sigmask, NULL) != 0) {
+		std::cout << "fail" << std::endl;
+	}
+
+	if ((_signalfd = signalfd(-1, &sigmask, 0)) == -1) {
+		throw signalfdException();
+	}
+
+	struct epoll_event event;
+	event.events = EPOLLIN;
+	event.data.fd = _signalfd;
+	if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _signalfd, &event) == -1) {
+		throw EpollCtlException();
+	}
+}
+
+void	Server::sendError(int const clientId, std::string const & msgError) {
 	if (send(clientId, msgError.c_str(), msgError.size(), 0) == -1)
 		throw SendException();
 	return ;
+}
+
+void	Server::closeServer() {
+	for (std::map<int, Client*>::iterator it = _serverClientId.begin(); it != _serverClientId.end() ; ++it) {
+		if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, it->first, nullptr) == -1)
+			throw EpollCtlException();
+		close(it->first);
+		Factory::deleteClient(it->second);
+	}
+	for (std::map<std::string, Channel*>::iterator it = _serverChannel.begin(); it != _serverChannel.end() ; ++it) {
+		Factory::deleteChannel(it->second);
+	}
+	close(this->_mySocket);
+	close(_epollfd);
+	delete this;
 }

@@ -39,7 +39,7 @@ void	Join::execute(Client& client) {
 	int		idx;
 
 	myData.client = &client;
-	for (idx = 0; idx < 2 && myData.error.empty(); idx++)
+	for (idx = 0; idx < 2 && myData.error.empty(); idx++)// attention au 2
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty()) {
 		Send::ToClient(client._clientID, myData.error);
