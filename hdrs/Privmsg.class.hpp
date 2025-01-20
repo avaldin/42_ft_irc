@@ -3,10 +3,10 @@
 # define PRIVMSG_HPP
 # define CHECK_MSG 5
 
-#include "ACommand.class.hpp"
+#include "Command.class.hpp"
 #include "Server.class.hpp"
 
-class Command;
+class Parser;
 class Server;
 
 typedef enum e_type {
@@ -14,12 +14,14 @@ typedef enum e_type {
 	CLIENT,
 }			t_type;
 
-class Privmsg : public ACommand {
+class Privmsg : public Command {
 public:
 	void	execute(Client &client);
 
+	std::string	const	cmdName;
+
 private:
-	Privmsg() :_cmdName("PRIVMSG") {}
+	Privmsg() : cmdName("PRIVMSG") {}
 	~Privmsg() {}
 
 	typedef struct	s_data {
@@ -38,14 +40,13 @@ private:
 	void checkTargetChannelExist(t_data &myData);
 	void checkAuthorisation(t_data &myData);
 
-	std::string	const			_cmdName;
 	std::string					_receiver;
 	std::string					_message;
 	static Server*				_server;
 
 	static void(Privmsg::*_method[CHECK_MSG])(t_data&);
 
-	friend class Command;
+	friend class Parser;
 
 };
 #endif

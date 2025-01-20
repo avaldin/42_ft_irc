@@ -22,7 +22,6 @@ void	Quit::execute(Client &client) {
 	_server->eraseClient(client._clientID);
 }
 
-
 void Quit::checkRegistered(Quit::t_data &myData) {
 	if (myData.client->status != REGISTERED)
 		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);

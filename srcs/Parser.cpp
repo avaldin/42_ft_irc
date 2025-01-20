@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Command.cpp                                        :+:      :+:    :+:   */
+/*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 15:58:54 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:22:01 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Command.class.hpp"
+#include "Parser.class.hpp"
 #include "Reply.define.hpp"
 
 #include "Mode.class.hpp"
@@ -30,47 +30,33 @@
 #include <vector>
 #include <map>
 
-#include <iostream>
-
-#include <stdio.h>
-
-Command::Command( void ) {
+Parser::Parser( void ) {
 	return ;
 }
 
-Command::~Command( void ) {
+Parser::~Parser( void ) {
 	return ;
 }
 
-Command::Command(std::string const & rawLine) {
+Parser::Parser(std::string const & rawLine) {
 	this->_rawLine = rawLine;
 	deleteNewline(this->_rawLine);
-	this->_cmdMethods["PASS"] = &Command::setPASS;
-	this->_cmdMethods["NICK"] = &Command::setNICK;
-	this->_cmdMethods["USER"] = &Command::setUSER;
-	this->_cmdMethods["JOIN"] = &Command::setJOIN;
-	this->_cmdMethods["KICK"] = &Command::setKICK;
-	this->_cmdMethods["TOPIC"] = &Command::setTOPIC;
-	this->_cmdMethods["MODE"] = &Command::setMODE;
-	this->_cmdMethods["INVITE"] = &Command::setINVITE;
-	this->_cmdMethods["QUIT"] = &Command::setQUIT;
-	this->_cmdMethods["PRIVMSG"] = &Command::setPRIVMSG;
+	this->_cmdMethods["PASS"] = &Parser::setPASS;
+	this->_cmdMethods["NICK"] = &Parser::setNICK;
+	this->_cmdMethods["USER"] = &Parser::setUSER;
+	this->_cmdMethods["JOIN"] = &Parser::setJOIN;
+	this->_cmdMethods["KICK"] = &Parser::setKICK;
+	this->_cmdMethods["TOPIC"] = &Parser::setTOPIC;
+	this->_cmdMethods["MODE"] = &Parser::setMODE;
+	this->_cmdMethods["INVITE"] = &Parser::setINVITE;
+	this->_cmdMethods["QUIT"] = &Parser::setQUIT;
+	this->_cmdMethods["PRIVMSG"] = &Parser::setPRIVMSG;
 	this->_command = NULL;
 	this->parseRawline();
 	return ;
 }
 
-Command::Command(Command const & src) {
-	(void)src;
-	return ;
-}
-
-Command& Command::operator=(Command const & rhs) {
-	(void)rhs;
-	return *this;
-}
-
-void	 Command::parseRawline( void ) {
+void	 Parser::parseRawline( void ) {
 	std::stringstream			rawlineStringStream(this->_rawLine);
 	std::vector<std::string>	splited;
 	std::string					parsed;
@@ -84,14 +70,14 @@ void	 Command::parseRawline( void ) {
 		return ;
 	int	idx = 0;
 	this->_cmdName = splited[idx++];
-	std::map<std::string,void(Command::*)(std::vector<std::string>,int)>::iterator it = _cmdMethods.find(this->_cmdName);
+	std::map<std::string,void(Parser::*)(std::vector<std::string>,int)>::iterator it = _cmdMethods.find(this->_cmdName);
 	if (it == _cmdMethods.end())
 		return ;
 	(this->*(it->second))(splited,idx);
 	return ;
 }
 
-void	Command::deleteNewline(std::string& line) {
+void	Parser::deleteNewline(std::string& line) {
 	int const size = line.size();
 	unsigned long	endTextPos;
 
@@ -102,7 +88,7 @@ void	Command::deleteNewline(std::string& line) {
 	return ;
 }
 
-t_user	*Command::parseUser(std::string user) {
+t_user	*Parser::parseUser(std::string user) {
 	int			idx = 0;
 	int const	size = user.size();
 	t_user*		userStruct = new t_user;
@@ -120,7 +106,7 @@ t_user	*Command::parseUser(std::string user) {
 	return userStruct;
 }
 
-void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setPASS(std::vector<std::string> splitedLine, int idx) {
 	Pass*		newCommand = new Pass();
 	int const	size = splitedLine.size();
 	
@@ -130,7 +116,7 @@ void	Command::setPASS(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setNICK(std::vector<std::string> splitedLine, int idx) {
 	int const	size = splitedLine.size();
 	Nick*		newCommand = new Nick();
 	
@@ -140,7 +126,7 @@ void	Command::setNICK(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setUSER(std::vector<std::string> splitedLine, int idx) {
 	int const	size = splitedLine.size(); 
 	User*		newCommand = new User();
 
@@ -155,7 +141,7 @@ void	Command::setUSER(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setJOIN(std::vector<std::string> splitedLine, int idx) {
 	int	const			size = splitedLine.size();
 	Join*				newCommand = new Join();
 	std::string			parsed;
@@ -173,7 +159,7 @@ void	Command::setJOIN(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setKICK(std::vector<std::string> splitedLine, int idx) {
 	int const	size = splitedLine.size();
 	Kick*		newCommand = new Kick();
 	std::string	parsed;
@@ -193,7 +179,7 @@ void	Command::setKICK(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 	Topic*		newCommand = new Topic();
 	int const	size = splitedLine.size();
 	
@@ -214,7 +200,7 @@ void	Command::setTOPIC(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setMODE(std::vector<std::string> splitedLine, int idx) {
 	Mode*		newCommand = new Mode();
 	int const	size = splitedLine.size();
 
@@ -237,7 +223,7 @@ void	Command::setMODE(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setINVITE(std::vector<std::string> splitedLine, int idx) {
 	int const	size = splitedLine.size();
 	Invite*	newCommand = new Invite();
 	
@@ -249,7 +235,7 @@ void	Command::setINVITE(std::vector<std::string> splitedLine, int idx) {
 	return ;
 }
 
-void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
+void	Parser::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 	Privmsg*	newCommand = new Privmsg();
 
 	if (splitedLine.size() >= 3) {
@@ -269,7 +255,7 @@ void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 	this->_command = newCommand;
 }
 
- void	Command::setQUIT(std::vector<std::string> splitedLine, int idx) {
+ void	Parser::setQUIT(std::vector<std::string> splitedLine, int idx) {
 	Quit*	newCommand = new Quit();
 
 	if (splitedLine.size() >= 2) {
@@ -288,7 +274,7 @@ void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 	this->_command = newCommand;
 }
 
-ACommand* 	Command::getCommand( void ) {
+Command* 	Parser::getCommand( void ) {
 	return this->_command;
 }
 

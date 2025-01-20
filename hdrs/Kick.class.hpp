@@ -6,13 +6,13 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:04:44 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 17:09:33 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:26:34 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef KICK_CLASS_HPP
 # define KICK_CLASS_HPP
-# include "ACommand.class.hpp"
+# include "Command.class.hpp"
 # include <vector>
 # define CHECK_KICK 6
 
@@ -21,12 +21,14 @@ class Channel;
 class Client;
 class Server;
 
-class Kick : public ACommand {
+class Kick : public Command {
 public:
 	void	execute(Client& client);
 
+	std::string const	cmdName;
+	
 private:
-	Kick( void ) : _cmdName("KICK") {}
+	Kick( void ) : cmdName("KICK") {}
 	~Kick( void ) {}
 
 	typedef struct	s_data {
@@ -46,7 +48,6 @@ private:
 	void	checkChannelClient(t_data& myData);
 	void	checkChannelOperator(t_data& myData);
 	
-	std::string const				_cmdName;
 	std::string						_message;
 	std::vector<std::string>		_targetUsers;
 	std::vector<std::string>		_targetChannels;
@@ -56,7 +57,7 @@ private:
 	static void(Kick::*_method[CHECK_KICK])(t_data&);
 
 	
-friend class Command;
+friend class Parser;
 };
 	
 #endif

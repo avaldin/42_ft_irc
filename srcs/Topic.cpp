@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:01:51 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/18 15:14:42 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:34:08 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "Reply.define.hpp"
 #include "Error.define.hpp"
 #include "Channel.class.hpp"
-#include "Command.class.hpp"
+#include "Parser.class.hpp"
 
 #include <iostream>
 
@@ -30,14 +30,6 @@ void(Topic::*Topic::_method[CHECK_TOPIC])(t_data&) = {
 	&Topic::checkCommandMessage,
 	&Topic::checkChannelClient,
 	&Topic::checkChannelOperator};
-
-Topic::Topic( void ) : _cmdName("TOPIC") {
-	return ;
-}
-
-Topic::~Topic( void ) {
-	return ;
-}
 
 void	Topic::execute(Client& client) {
 	t_data	myData;
@@ -61,7 +53,7 @@ void	Topic::checkRegistered(t_data& myData) {
 
 void	Topic::checkParams(t_data& myData) {
 	if (this->_targetChannel.empty())
-		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 }
 
 void	Topic::checkChannelExist(t_data& myData) {

@@ -6,13 +6,13 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 16:59:40 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 16:12:37 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:26:27 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef JOIN_CLASS_HPP
 # define JOIN_CLASS_HPP
-# include "ACommand.class.hpp"
+# include "Command.class.hpp"
 # include <vector>
 # define CHECK_JOIN 7
 
@@ -20,12 +20,14 @@ class Client;
 class Channel;
 class Server;
 
-class Join : public ACommand {
+class Join : public Command {
 public :
 	void	execute(Client& client);
 	
+	std::string const	cmdName;
+
 private:
-	Join( void ) : _cmdName("JOIN") {}
+	Join( void ) : cmdName("JOIN") {}
 	~Join( void ) {}
 	
 	typedef struct	s_data {
@@ -51,7 +53,6 @@ private:
 
 	void	RPL_join(t_data& myData);
 
-	std::string const			_cmdName;
 	std::vector<std::string>	_targetChannels;
 	std::vector<std::string>	_targetKeys;
 
@@ -59,7 +60,7 @@ private:
 	
 	static void(Join::*_method[CHECK_JOIN])(t_data&);
 
-friend class Command;
+friend class Parser;
 };
 
 #endif

@@ -6,20 +6,20 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:03:19 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 19:01:42 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:30:05 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MODE_CLASS_HPP
 # define MODE_CLASS_HPP
-# include "ACommand.class.hpp"
+# include "Command.class.hpp"
 
 # include <vector>
 # define CHECK_MODE 6
 # define NUM_MODE 6
 # define LOWEST_MODE 105
 
-class Command;
+class Parser;
 class Client;
 class Channel;
 class Server;
@@ -30,13 +30,15 @@ typedef struct s_mode {
 	std::string					args;
 }	t_mode;
 
-class Mode : public ACommand {
+class Mode : public Command {
 	public:
 		void	execute(Client& client);
+
+		std::string const	cmdName;
 	
 	private:
-		Mode( void ) : _cmdName("MODE") {}
-		~Mode( void ){}
+		Mode( void ) : cmdName("MODE") {}
+		~Mode( void ) {}
 		
 		typedef struct	s_data {
 			Client const *	client;
@@ -62,7 +64,6 @@ class Mode : public ACommand {
 		
 		unsigned int	idxFuncMode(unsigned int const mode);
 	
-		std::string const		_cmdName;
 		std::vector<t_mode*>	_mode;
 		std::string				_targetChannel;
 				
@@ -71,7 +72,7 @@ class Mode : public ACommand {
 		static void(Mode::*_funcMode[NUM_MODE])(t_mode const *, t_data& myData);
 		static void(Mode::*_method[CHECK_MODE])(t_data&);
 	
-	friend class Command;
+	friend class Parser;
 };
 
 #endif

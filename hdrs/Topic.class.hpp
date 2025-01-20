@@ -6,13 +6,13 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:37:15 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 18:41:27 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:33:59 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOPIC_CLASS_HPP
 # define TOPIC_CLASS_HPP
-# include "ACommand.class.hpp"
+# include "Command.class.hpp"
 # include <vector>
 # define CHECK_TOPIC 6
 
@@ -20,13 +20,15 @@ class Client;
 class Channel;
 class Server;
 
-class Topic : public ACommand {
+class Topic : public Command {
 	public:
 		void	execute(Client& client);
 
+		std::string const	cmdName;
+
 	private:
-		Topic( void );
-		~Topic( void );
+		Topic( void ) : cmdName("TOPIC") {}
+		~Topic( void ) {}
 		
 		typedef struct s_data {
 			std::string		error;
@@ -41,7 +43,6 @@ class Topic : public ACommand {
 		void	checkChannelClient(t_data& myData);
 		void	checkChannelOperator(t_data& myData);
 
-		std::string const	_cmdName;
 		std::string			_targetChannel;
 		std::string			_topic;
 
@@ -49,7 +50,7 @@ class Topic : public ACommand {
 
 		static void(Topic::*_method[CHECK_TOPIC])(t_data&);
 		
-	friend class Command;
+	friend class Parser;
 };
 
 #endif

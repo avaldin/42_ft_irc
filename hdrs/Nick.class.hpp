@@ -6,24 +6,26 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 21:32:30 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 18:16:04 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:28:58 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef NICK_CLASS_HPP
 # define NICK_CLASS_HPP
-# include "ACommand.class.hpp"
+# include "Command.class.hpp"
 
 class Client;
 class Server;
 
-class Nick : public ACommand {
+class Nick : public Command {
 public :
 	void	execute(Client& client);
 	
+	std::string const	cmdName;
+
 private:
-	Nick( void );
-	~Nick( void );
+	Nick( void ) : cmdName("NICK") {}
+	~Nick( void ) {}
 	
 	typedef struct	s_data {
 		Client*		client;
@@ -35,14 +37,13 @@ private:
 	void	checkNicknameRestriction(t_data& myData);
 	void	checkNicknameExist(t_data& myData);
 
-	std::string const	_cmdName;
-	std::string			_nickname;
+	std::string	_nickname;
 	
 	static Server*	_server;
 	
 	static void(Nick::*_method[4])(t_data&);
 
-friend class Command;	
+friend class Parser;	
 };
 
 #endif

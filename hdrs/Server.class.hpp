@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 17:26:07 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:43:41 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 struct	sockaddr_in;
 struct	epoll_event;
 
-class	Command;
+class	Parser;
 
 class Server {
 public:
@@ -50,7 +50,7 @@ private:
 
 	// void	processCommand(ACommand* command);
 
-	void		debugPrintServer( void ) const;
+	// void		debugPrintServer( void ) const;
 
 	void		addClient( void );
 	void		eraseClient(int const & clientID);

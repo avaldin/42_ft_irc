@@ -16,7 +16,7 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
-#include "Command.class.hpp"
+#include "Parser.class.hpp"
 #include "Send.namespace.hpp"
 
 #include <netinet/in.h>
@@ -119,16 +119,16 @@ void	Server::runServer( void ) {
 	}
 }
 
-void	Server::debugPrintServer( void ) const {
-	std::cout << "ENTER DEBUG PRINT" << std::endl;
-	if (this->_serverChannel.empty())
-		return ;
-	for (std::map<std::string, Channel*>::const_iterator it = this->_serverChannel.begin(); it != this->_serverChannel.end(); it++) {
-		if (it->second)
-			it->second->debugPrintChannel();
-	}
-	std::cout << "EXIT DEBUG PRINT" << std::endl;
-}
+// void	Server::debugPrintServer( void ) const {
+// 	std::cout << "ENTER DEBUG PRINT" << std::endl;
+// 	if (this->_serverChannel.empty())
+// 		return ;
+// 	for (std::map<std::string, Channel*>::const_iterator it = this->_serverChannel.begin(); it != this->_serverChannel.end(); it++) {
+// 		if (it->second)
+// 			it->second->debugPrintChannel();
+// 	}
+// 	std::cout << "EXIT DEBUG PRINT" << std::endl;
+// }
 
 // void	Server::LegacysendToServer(int const clientID, std::string token) {
 // 	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
@@ -151,23 +151,18 @@ void	Server::debugPrintServer( void ) const {
 
 void	Server::serverRequest(Client& client, std::string rawLine) {
 	std::string	const	logLine = ":" + client._nickname + "!" + client._username + "@" + this->_serverName + " " + rawLine;
-	
-	// Send::ToConsole(client._clientID, logLine);
-	Command		myCommand(rawLine);
-	if (myCommand._command) {
-		myCommand._command->execute(client);
-		delete(myCommand._command);
+	Parser		parsed(rawLine);
+	Command*	myCommand = parsed.getCommand();
+
+	if (myCommand) {
+		myCommand->execute(client);
+		delete(myCommand);
 		//this->debugPrintServer();
 	}
 	else
-		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(client._nickname, myCommand._cmdName));
+		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(client._nickname, myCommand->cmdName));
 	return ;
 }
-
-// void	Server::processCommand(ACommand* command) {
-// 	command->execute();
-// 	return ;
-// }
 
 void	Server::addChannel(t_channelType channelType, std::string channelName) {
 	Channel*	newChannel = Factory::createChannel(channelType, channelName);

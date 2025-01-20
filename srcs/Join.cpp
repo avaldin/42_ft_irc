@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 16:37:36 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:42:48 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	Join::checkRegistered(t_data& myData) {
 
 void	Join::checkParams(t_data& myData) {
 	if (this->_targetChannels.empty())
-		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 	return ;
 }
 
@@ -136,7 +136,7 @@ void	Join::checkChannelExist(t_data& myData) {
 	
 	myData.targetChannel = NULL;
 	if (it != this->_server->_serverChannel.end())
-		myData.targetChannel == it->second;
+		myData.targetChannel = it->second;
 	return ;
 }
 

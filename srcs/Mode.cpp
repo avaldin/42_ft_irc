@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 21:04:57 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:42:20 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
-#include "Command.class.hpp"
+#include "Parser.class.hpp"
 #include "Send.namespace.hpp"
 
 #include "Mode.class.hpp"
@@ -85,7 +85,7 @@ void	Mode::lFlag(t_mode const * currentMode, t_data& myData) {
 			limitSS >> myData.channel->_channelLimit;
 		}
 		else
-			myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+			myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 	}
 	else if (currentMode->sign == '-')
 		myData.channel->_channelLimit = -1;
@@ -97,7 +97,7 @@ void	Mode::kFlag(t_mode const * currentMode, t_data& myData) {
 		if (!currentMode->args.empty())
 			myData.channel->_channelPassword = currentMode->args;
 		else
-			myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+			myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 	}
 	else if (currentMode->sign == '-')
 		myData.channel->_channelPassword = "";
@@ -145,7 +145,7 @@ void	Mode::checkRegistered(t_data& myData) {
 
 void	Mode::checkParams(t_data& myData) {
 	if (this->_targetChannel.empty() || this->_mode.empty())
-		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 	return ;
 }
 

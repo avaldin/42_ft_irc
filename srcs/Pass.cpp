@@ -48,7 +48,7 @@ void	Pass::checkRegistered(t_data& myData) {
 
 void	Pass::checkParams(t_data& myData) {
 	if (this->_password.empty())
-		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 }
 
 void	Pass::checkPassword(t_data& myData) {
