@@ -121,11 +121,11 @@ void	Join::checkChannelName(t_data& myData) {
 	int const size = myData.targetName.size();
 	
 	if (size > 50 || myData.targetName[0] != '&')
-		myData.error = ERR_BADCHANMASK(myData.targetName);	
+		myData.error = ERR_BADCHANMASK(myData.client->_nickname, myData.targetName);
 	for (int idx = 0; idx < size && myData.error.empty(); idx++) {
 		char const	c = myData.targetName[idx]; 
 		if (c <= 32 || c == ',' || c == ':')
-			myData.error = ERR_BADCHANMASK(myData.targetName);
+			myData.error = ERR_BADCHANMASK(myData.client->_nickname, myData.targetName);
 	}
 	return ;
 }

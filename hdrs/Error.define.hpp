@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:38:55 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/18 13:29:27 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 14:38:50 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@
 
 # define ERR_BADCHANNELKEY(target, channel) (":IRC_serv 475 " + (target) + " " + (channel) + " :Cannot join channel, you need the correct key (+k)")
 
-# define ERR_BADCHANMASK(channel) ("476 :" + (channel) + " :Bad Channel Mask\r\n") // pas sur le site
+# define ERR_BADCHANMASK(target, channel) (":IRC_serv 476" + (target) + " " + (channel) + " :Bad Channel Mask") // pas sur le site
 
 # define ERR_NOPRIVILEGES(target) (":IRC_serv 481 " + (target) + " :Permission Denied: Insufficient privileges")
 // Any command requiring operator privileges to operate must return this
