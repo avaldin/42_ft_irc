@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 13:39:12 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 14:23:26 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,16 @@ void	Client::action( void ) {
 		Server::instantiate()->serverRequest(*this, _message);
 		return ;
 	}
+	std::cout << "->" << bytesReceived << std::endl;
 	buff[bytesReceived] = '\0';
+
 	if ((_message += buff).find('\n') != std::string::npos)
 	{
+		if (_message.size() > 512) {
+			std::cout << "HQHQ" << std::endl;
+			_message.erase(510).append("\r\n");
+		}
 		std::stringstream ss(_message);
-		std::cout << "message to execut ->" << _message << std::endl;
 		while (std::getline(ss, _message, '\n'))
 			Server::instantiate()->serverRequest(*this, _message);
 		_message = "";
