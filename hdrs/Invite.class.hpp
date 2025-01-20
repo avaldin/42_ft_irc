@@ -6,13 +6,13 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 17:01:59 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 17:15:37 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:19:41 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef INVITE_CLASS_HPP
 # define INVITE_CLASS_HPP
-# include "ACommand.class.hpp"
+# include "Command.class.hpp"
 # include <string>
 # include <vector>
 
@@ -20,12 +20,14 @@ class Client;
 class Server;
 class Channel;
 
-class Invite : public ACommand {
+class Invite : public Command {
 	public:
 		void	execute(Client& client);
-	
+
+		std::string const	cmdName;
+
 	private:
-		Invite( void ) : _cmdName("INVITE") {}
+		Invite( void ) : cmdName("INVITE") {}
 		~Invite( void ) {}
 
 		typedef struct s_data {
@@ -45,7 +47,6 @@ class Invite : public ACommand {
 		void	checkTargetExist(t_data& myData);
 		void	checkChannelTarget(t_data& myData);
 		
-		std::string const			_cmdName;
 		std::vector<std::string>	_targetUsers;
 		std::vector<std::string>	_targetChannels;
 		
@@ -53,7 +54,7 @@ class Invite : public ACommand {
 	
 		static void(Invite::*_method[7])(t_data&);
 	
-	friend class Command;
+	friend class Parser;
 };
 
 #endif

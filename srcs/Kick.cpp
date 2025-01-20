@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 00:42:16 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/18 13:45:28 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:24:36 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "Server.class.hpp"
 #include "Send.namespace.hpp"
 #include "Error.define.hpp"
-#include "Command.class.hpp"
+#include "Parser.class.hpp"
 
 #include <iostream>
 
@@ -62,7 +62,7 @@ void	Kick::checkRegistered(t_data& myData) {
 
 void	Kick::checkParams(t_data& myData) {
 	if (this->_targetChannels.empty() || this->_targetUsers.empty())
-		myData.error =  ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+		myData.error =  ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 }
 
 void	Kick::checkChannelExist(t_data& myData) {

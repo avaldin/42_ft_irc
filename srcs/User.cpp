@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 23:18:47 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 11:56:00 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:35:03 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,6 @@ void(User::*User::_method[NB_CHECK])(t_data&) = {
 	&User::checkParams,
 	&User::checkUsernameRestriction,
 	&User::checkModeExist};
-
-User::User( void ) : _cmdName("User") {
-	return ;
-}
-
-User::~User( void ) {
-	return ;
-}
 
 void	User::execute(Client& client) {
 	t_data		myData;
@@ -64,7 +56,7 @@ void	User::checkRegistered(t_data& myData) {
 
 void	User::checkParams(t_data& myData) {
 	if (this->_username.empty() || this->_mode.empty() || this->_realname.empty())
-		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 	return ;
 }
 

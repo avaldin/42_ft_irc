@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 22:43:58 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/15 15:50:34 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:29:37 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 
 #include "Client.class.hpp"
 
-#include "iostream"
-
 Server*	Nick::_server = Server::instantiate();
 
 void(Nick::*Nick::_method[4])(t_data&) = {
@@ -27,14 +25,6 @@ void(Nick::*Nick::_method[4])(t_data&) = {
 	&Nick::checkParams,
 	&Nick::checkNicknameRestriction,
 	&Nick::checkNicknameExist};
-
-Nick::Nick( void ) : _cmdName("NICK") {
-	return ;
-}
-
-Nick::~Nick( void ) {
-	return ;
-}
 
 void	Nick::execute(Client& client) {
 	t_data		myData;
@@ -67,7 +57,7 @@ void	Nick::checkRegistered(t_data& myData) {
 
 void	Nick::checkParams(t_data& myData) {
 	if (this->_nickname.empty())
-		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 	return ;
 }
 

@@ -10,21 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef Pass_CLASS_HPP
-# define Pass_CLASS_HPP
+#ifndef PASS_CLASS_HPP
+# define PASS_CLASS_HPP
 
-#include <iostream>
-# include "ACommand.class.hpp"
+# include "Command.class.hpp"
 
 class Client;
 class Server;
 
-class Pass : public ACommand {
+class Pass : public Command {
 public:
 	void	execute(Client& client);
 
+	std::string const	cmdName;
+
 private:
-	Pass( void ) : _cmdName("PASS") {}
+	Pass( void ) : cmdName("PASS") {}
 	~Pass( void ) {}
 
 	typedef struct	s_data {
@@ -37,14 +38,13 @@ private:
 	void	checkParams(t_data& myData);
 	void	checkPassword(t_data& myData);
 	
-	std::string const	_cmdName;
 	std::string			_password;
 
 	static Server*	_server;
 	
 	static void(Pass::*_method[3])(t_data&);
 
-friend class Command;	
+friend class Parser;	
 };
 
 #endif

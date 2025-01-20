@@ -6,12 +6,12 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 17:51:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 16:01:08 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:24:28 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.class.hpp"
-#include "Command.class.hpp"
+#include "Parser.class.hpp"
 #include "Error.define.hpp"
 #include "Reply.define.hpp"
 #include "Send.namespace.hpp"
@@ -52,7 +52,7 @@ void	Invite::checkRegistered(t_data& myData) {
 
 void	Invite::checkParams(t_data& myData) {
 	if (this->_targetChannels.empty() || this->_targetUsers.empty())
-		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->_cmdName);
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
 }
 
 void	Invite::checkChannelExist(t_data& myData) {
