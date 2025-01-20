@@ -21,7 +21,7 @@ HEADER		=	hdrs/
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	.objs/
 DEPS_DIR	=	.deps/
-SRCS		=	main.cpp Server.cpp Client.cpp Channel.cpp Command.cpp Invite.cpp Mode.cpp Send.cpp Topic.cpp Kick.cpp User.cpp Nick.cpp Pass.cpp Join.cpp Privmsg.cpp signal.cpp Quit.cpp
+SRCS		=	main.cpp Server.cpp Client.cpp Channel.cpp Command.cpp Invite.cpp Mode.cpp Send.cpp Topic.cpp Kick.cpp User.cpp Nick.cpp Pass.cpp Join.cpp Privmsg.cpp Quit.cpp
 
 OBJS		= $(SRCS:%.cpp=$(OBJS_DIR)%.o)
 DEPS		= $(SRCS:%.cpp=$(DEPS_DIR)%.d)

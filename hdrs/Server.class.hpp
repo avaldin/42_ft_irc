@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/13 18:14:40 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 11:48:30 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ public:
 
 	void			startServer(int port, const std::string& password);
 	void			runServer( void );
+	void 			closeServer();
 	void			sendError(int const ClientId, std::string const & msgError);
 
 	void			serverRequest(Client& client, std::string rawLine);
@@ -60,6 +61,8 @@ private:
 	Client*		findClientUsername(std::string const & username);
 	Client*		findClientId(int const & id);
 
+	void		signalHandler( void );
+
 	std::string const					_serverName;
 	std::string							_serverPassword;
 
@@ -69,6 +72,7 @@ private:
 	int									_port;
 	int									_mySocket;
 	int									_epollfd;
+	int 								_signalfd;
 	unsigned int						_serverLen;
 	sockaddr_in*						_address;
 	epoll_event							_ev;
@@ -98,6 +102,7 @@ friend class User;
 friend class Join;
 friend class Privmsg;
 friend class Quit;
+
 };
 
 
