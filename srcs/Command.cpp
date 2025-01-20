@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/18 15:20:44 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 15:58:54 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <map>
 
 #include <iostream>
 
@@ -82,14 +83,11 @@ void	 Command::parseRawline( void ) {
 	if (!size)
 		return ;
 	int	idx = 0;
-	// if (splited[idx][0] == ':')
-	// 	this->_prefix = splited[idx++];
 	this->_cmdName = splited[idx++];
-	void(Command::*func)(std::vector<std::string>, int) = NULL;
-	func = _cmdMethods[this->_cmdName];
-	if (!func)
+	std::map<std::string,void(Command::*)(std::vector<std::string>,int)>::iterator it = _cmdMethods.find(this->_cmdName);
+	if (it == _cmdMethods.end())
 		return ;
-	(this->*func)(splited, idx);
+	(this->*(it->second))(splited,idx);
 	return ;
 }
 
@@ -290,27 +288,7 @@ void	Command::setPRIVMSG(std::vector<std::string> splitedLine, int idx) {
 	this->_command = newCommand;
 }
 
-std::string 	Command::getPrefix( void ) {
-	return this->_prefix;
-}
-
 ACommand* 	Command::getCommand( void ) {
 	return this->_command;
 }
 
-// std::string 	Command::getPassword( void ) {
-// 	return this->_password;
-// }
-
-// std::string 	Command::getMessage( void ) {
-// 	return this->_message;
-// }
-
-// std::vector<std::string&>&	Command::getTargetChannels( void ) {
-// 	return this->_targetChannels;
-// }
-
-// std::vector<t_user*>	Command::getTargetUsers( void ) {
-// 	return this->_targetUsers;
-// }
-	

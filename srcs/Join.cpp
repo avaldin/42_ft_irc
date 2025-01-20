@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 16:24:34 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 16:37:36 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void(Join::*Join::_method[CHECK_JOIN])(t_data&) = {
 	&Join::checkRegistered,
 	&Join::checkParams,
 	&Join::checkChannelName,
+	&Join::checkChannelExist,
 	&Join::checkChannelKey,
 	&Join::checkChannelInvite,
 	&Join::checkChannelFilling};
@@ -50,8 +51,8 @@ void	Join::execute(Client& client) {
 	myData.idxKey = 0;
 	for (int idxChannel = 0; idxChannel < sizeChannels && myData.error.empty(); idxChannel++, myData.idxKey++) {
 		myData.targetName = this->_targetChannels[idxChannel];
-		(this->*_method[idx])(myData);
-		myData.targetChannel = this->_server->_serverChannel[myData.targetName];
+		for (int idxCheck = idx; idxCheck < idx + 2 && myData.error.empty(); idxCheck++)
+			(this->*_method[idx])(myData);
 		if (myData.error.empty() && myData.targetChannel)
 			joinChannel(myData);
 		else if (myData.error.empty())
@@ -127,6 +128,15 @@ void	Join::checkChannelName(t_data& myData) {
 		if (c <= 32 || c == ',' || c == ':')
 			myData.error = ERR_BADCHANMASK(myData.client->_nickname, myData.targetName);
 	}
+	return ;
+}
+
+void	Join::checkChannelExist(t_data& myData) {
+	std::map<std::string,Channel*>::iterator	it = this->_server->_serverChannel.find(myData.targetName); 
+	
+	myData.targetChannel = NULL;
+	if (it != this->_server->_serverChannel.end())
+		myData.targetChannel == it->second;
 	return ;
 }
 

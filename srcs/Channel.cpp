@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/18 15:31:01 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 15:47:43 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,29 +108,29 @@ void	Channel::deleteInvited(int const clientID) {
 }
 
 bool	Channel::isOperator(int const clientID) {
-	if (this->_channelOperator[clientID])
-		return true;
-	return false;
+	if (this->_channelOperator.find(clientID) == this->_channelOperator.end())
+		return false;
+	return true;
 }
 
 bool	Channel::isInvited(int const clientID) {
-	if (this->_invitedClient[clientID])
-		return true;
-	return false;
+	if (this->_invitedClient.find(clientID) == this->_invitedClient.end())
+		return false;
+	return true;
 }
 
 bool	Channel::isClient(int const clientID) {
-	if (this->_channelClient[clientID])
-		return true;
-	return false;
+	if (this->_channelClient.find(clientID) == this->_channelClient.end())
+		return false;
+	return true;
 }
 
-#include <iostream>
+// #include <iostream>
 
-void	Channel::debugPrintChannel( void ) const {
-	std::cout << "Channel: " << this->_channelName << std::endl;
-	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
-		if (it->second)
-			std::cout << "   -" << it->second->_nickname << std::endl; 
-	}
-}
+// void	Channel::debugPrintChannel( void ) const {
+// 	std::cout << "Channel: " << this->_channelName << std::endl;
+// 	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
+// 		if (it->second)
+// 			std::cout << "   -" << it->second->_nickname << std::endl; 
+// 	}
+// }

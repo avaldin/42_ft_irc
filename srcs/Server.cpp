@@ -27,6 +27,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <csignal>
+#include <map>
 
 
 Server*	Server::_me = nullptr;
@@ -220,7 +221,10 @@ Client*	Server::findClientNickname(std::string const & nickname) {
 }
 
 Client*	Server::findClientId(int const & id) {
-	return this->_serverClientId[id];
+	std::map<int,Client*>::iterator	it = this->_serverClientId.find(id);
+	if (it == this->_serverClientId.end()) 
+		return NULL;
+	return it->second;
 }
 
 // SUBCLASS FACTORY //
@@ -271,12 +275,6 @@ void	Server::signalHandler() {
 	if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _signalfd, &event) == -1) {
 		throw EpollCtlException();
 	}
-}
-
-void	Server::sendError(int const clientId, std::string const & msgError) {
-	if (send(clientId, msgError.c_str(), msgError.size(), 0) == -1)
-		throw SendException();
-	return ;
 }
 
 void	Server::closeServer() {

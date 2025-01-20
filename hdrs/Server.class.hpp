@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:43:48 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 11:48:30 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/20 17:26:07 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ public:
 	void			startServer(int port, const std::string& password);
 	void			runServer( void );
 	void 			closeServer();
-	void			sendError(int const ClientId, std::string const & msgError);
 
 	void			serverRequest(Client& client, std::string rawLine);
 
