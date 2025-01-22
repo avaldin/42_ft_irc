@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:23:27 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/17 11:35:22 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/22 11:48:52 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@
 
 #define RPL_WHOISOPERATOR(target, nick) (":IRC_serv 313 " + (target) + " " + (nick) + " :is an IRC Operator")
 
-// pas ok jsp ce qu'est ...time #define RPL_WHOISIDLE(nick, integer) (":IRC_serv 317 " + (target) + " " + (nick) + " <idle_time> <signon_time> :seconds idle, signon time")
+//#define RPL_WHOISIDLE(nick, integer) (":IRC_serv 317 " + (target) + " " + (nick) + " <idle_time> <signon_time> :seconds idle, signon time")
 
-// pqs ok jsp ce qu'est mask #define RPL_ENDOFWHOIS(nick) (":IRC_serv 318 " + (target) + " <mask> :End of /WHOIS list.")
+//#define RPL_ENDOFWHOIS(nick) (":IRC_serv 318 " + (target) + " <mask> :End of /WHOIS list.")
 
 
 #define RPL_WHOISCHANNELS(target, nick, channel) (":IRC_serv 319 " + (target) + " " + (nick) + " :" + (channels))

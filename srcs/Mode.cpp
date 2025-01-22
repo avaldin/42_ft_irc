@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 18:42:20 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/22 13:51:48 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
+#include "Reply.define.hpp"
 #include "Parser.class.hpp"
 #include "Send.namespace.hpp"
 
@@ -25,6 +26,12 @@
 #include <stdio.h>
 
 Server* Mode::_server = Server::instantiate();
+
+Mode::~Mode(void)
+{
+	for (std::vector<t_mode*>::iterator it = this->_mode.begin(); it != this->_mode.end(); it++)
+		delete (*it);
+}
 
 void(Mode::*Mode::_funcMode[NUM_MODE])(t_mode const *, t_data& myData) = {
 	&Mode::iFlag,
@@ -51,6 +58,11 @@ void	Mode::execute(Client& client) {
 		(this->*_method[myData.idxCheck])(myData);
 	if (!myData.error.empty()) {
 		Send::ToClient(client._clientID, myData.error);
+		return ;
+	}
+	if (this->_mode.empty())
+	{
+		Send::ToClient(client._clientID, RPL_CHANNELMODEIS(myData.client->_nickname, myData.channel->_channelName, modeString(*myData.channel)));
 		return ;
 	}
 	int const	size = this->_mode.size();
@@ -122,7 +134,7 @@ void	Mode::oFlag(t_mode const * currentMode, t_data& myData) {
 }
 
 void	Mode::unknownFlag(t_mode const * currentMode, t_data& myData) {
-	myData.error = ERR_UNKNOWNMODE(myData.client->_nickname, static_cast<std::string>(&currentMode->mode));
+	myData.error = ERR_UNKNOWNMODE(myData.client->_nickname, currentMode->mode);
 	return ;
 }
 
@@ -144,9 +156,8 @@ void	Mode::checkRegistered(t_data& myData) {
 }
 
 void	Mode::checkParams(t_data& myData) {
-	if (this->_targetChannel.empty() || this->_mode.empty())
+	if (this->_targetChannel.empty())
 		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
-	return ;
 }
 
 void	Mode::checkChannelExist(t_data& myData) {
@@ -170,3 +181,28 @@ void	Mode::checkClientTarget(t_data& myData) {
 		myData.error = ERR_USERNOTINCHANNEL(myData.client->_nickname, myData.mode->args, myData.channel->_channelName);
 	return ;
 }
+
+std::string	Mode::modeString(Channel& channel) {
+	std::string			mode;
+	std::stringstream	ss;
+
+	if (channel._channelLimit != (unsigned int)-1)
+	{
+		ss << channel._channelLimit;
+		mode += "l";
+	}
+	if (!channel._channelPassword.empty()) {
+		mode += "k";
+		if (!ss.str().empty())
+			ss << " ";
+		ss << channel._channelPassword;
+	}
+	if (channel._topicMode)
+		mode += "t";
+	if (!ss.str().empty()) {
+		mode += " " + ss.str();
+	}
+	return (mode);
+}
+
+
