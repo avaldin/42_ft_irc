@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:01:51 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 18:34:08 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/22 11:39:11 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,15 @@ void(Topic::*Topic::_method[CHECK_TOPIC])(t_data&) = {
 	&Topic::checkRegistered,
 	&Topic::checkParams,
 	&Topic::checkChannelExist,
-	&Topic::checkCommandMessage,
 	&Topic::checkChannelClient,
-	&Topic::checkChannelOperator};
+	&Topic::checkChannelOperator,
+	&Topic::checkCommandMessage};
 
 void	Topic::execute(Client& client) {
 	t_data	myData;
 
 	myData.client = &client;
-	for (int idx = 0;idx < CHECK_TOPIC && myData.error.empty(); idx++)
+	for (int idx = 0; idx < CHECK_TOPIC && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty()) {
 		Send::ToClient(client._clientID, myData.error);
