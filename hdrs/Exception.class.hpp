@@ -23,6 +23,7 @@ class SocketException : public Exception {
 	public:
 		void	what() const throw() {
 			std::cerr << "Error: Socket failed" << std::endl;
+
 		}
 };
 

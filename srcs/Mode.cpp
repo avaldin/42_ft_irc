@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:10:51 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/22 13:51:48 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/22 13:52:27 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,8 @@ std::string	Mode::modeString(Channel& channel) {
 	}
 	if (channel._topicMode)
 		mode += "t";
+	if (channel._inviteOnlyMode)
+		mode += "i";
 	if (!ss.str().empty()) {
 		mode += " " + ss.str();
 	}

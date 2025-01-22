@@ -19,7 +19,7 @@ void	Quit::execute(Client &client) {
 			}
 		}
 	}
-	_server->eraseClient(client._clientID);
+	client.status = DISCONNECTED;
 }
 
 void Quit::checkRegistered(Quit::t_data &myData) {

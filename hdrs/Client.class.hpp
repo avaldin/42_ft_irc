@@ -19,7 +19,8 @@
 typedef enum s_registeredState {
 	NOT_REGISTERED,
 	ONGOING_REGISTERING,
-	REGISTERED
+	REGISTERED,
+	DISCONNECTED
 }			t_registeredState;
 
 class Client {

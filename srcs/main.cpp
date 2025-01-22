@@ -40,11 +40,13 @@ int	main(int argc, char **argv)
 	try {ircServer->startServer(port, argv[2]);}
 	catch (Exception& e) {
 		e.what();
+		ircServer->closeServer();
 		return 1;
 	}
 	try {ircServer->runServer();}
 	catch (Exception& e) {
 		e.what();
+		ircServer->closeServer();
 		return 1;
 	}
 	return (0);

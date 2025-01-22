@@ -6,7 +6,7 @@
 /*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/22 11:17:57 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/22 15:21:31 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	Client::action( void ) {
 		if (_message.size() > 512)
 			_message.erase(510).append("\r\n");
 		std::stringstream ss(_message);
-		while (std::getline(ss, _message, '\n'))
+		while (status != DISCONNECTED && std::getline(ss, _message, '\n'))
 			Server::instantiate()->serverRequest(*this, _message);
 		_message = "";
 	}

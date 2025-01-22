@@ -114,6 +114,8 @@ void	Server::runServer( void ) {
 			}
 			else {
 				this->_serverClientId[events[nfd].data.fd]->action();
+				if (_serverClientId[events[nfd].data.fd]->status == DISCONNECTED)
+					eraseClient(events[nfd].data.fd);
 			}
 		}
 	}
