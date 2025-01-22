@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.class.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:03:19 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 18:30:05 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/22 12:27:15 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class Mode : public Command {
 	
 	private:
 		Mode( void ) : cmdName("MODE") {}
-		~Mode( void ) {}
+		~Mode( void );
 		
 		typedef struct	s_data {
 			Client const *	client;
@@ -61,7 +61,9 @@ class Mode : public Command {
 		void	checkChannelExist(t_data& myData);
 		void	checkChannelOperator(t_data& myData);
 		void	checkClientTarget(t_data& myData);
-		
+
+		std::string 	modeString(Channel& channel);
+
 		unsigned int	idxFuncMode(unsigned int const mode);
 	
 		std::vector<t_mode*>	_mode;

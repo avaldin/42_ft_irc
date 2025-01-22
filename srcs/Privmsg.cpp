@@ -59,7 +59,7 @@ void	Privmsg::checkTargetChannelExist(t_data& myData) {
 
 	if (myData.targetType == CHANNEL && it == this->_server->_serverChannel.end())
 		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, myData.target);
-	else
+	else if (myData.targetType == CHANNEL)
 		myData.targetChannel = it->second;
 }
 

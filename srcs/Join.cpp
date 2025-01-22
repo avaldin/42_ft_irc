@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 18:42:48 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/22 11:01:19 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	Join::execute(Client& client) {
 	for (int idxChannel = 0; idxChannel < sizeChannels && myData.error.empty(); idxChannel++, myData.idxKey++) {
 		myData.targetName = this->_targetChannels[idxChannel];
 		for (int idxCheck = idx; idxCheck < idx + 2 && myData.error.empty(); idxCheck++)
-			(this->*_method[idx])(myData);
+			(this->*_method[idxCheck])(myData);
 		if (myData.error.empty() && myData.targetChannel)
 			joinChannel(myData);
 		else if (myData.error.empty())
