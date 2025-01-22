@@ -160,7 +160,7 @@ void	Server::serverRequest(Client& client, std::string rawLine) {
 		//this->debugPrintServer();
 	}
 	else
-		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(client._nickname, myCommand->cmdName));
+		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(client._nickname, parsed._cmdName));
 	return ;
 }
 

@@ -33,6 +33,9 @@ public:
 	Parser(std::string const & rawLine);
 
 	Command*	getCommand( void );
+
+	std::string	_cmdName;
+
 	
 private:
 	Parser( void );
@@ -55,7 +58,6 @@ private:
 	Command*							_command;
 	std::string							_rawLine;
 	std::string							_password;
-	std::string							_cmdName;
 
 	std::map<std::string,void(Parser::*)(std::vector<std::string>, int)>	_cmdMethods;
 };
