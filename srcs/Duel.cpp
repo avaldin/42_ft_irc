@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Duel.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 02:54:43 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 06:29:33 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 18:34:18 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include "Client.class.hpp"
 
 #include <sstream>
-#include <iostream>
 
 void(Duel::*Duel::_method[CHECK_DUEL])(t_data&) = {
 	&Duel::checkParams,
@@ -36,11 +35,9 @@ std::string	Duel::execute(Client& client, Channel& channel) {
 
 	myData.client = &client;
 	myData.channel = &channel;
-	myData.myBot = channel._myBot;
-	for (idx = 0; idx < CHECK_DUEL && myData.error.empty(); idx++) {
-		std::cout << idx << std::endl;
+	myData.myBot = &channel._myBot;
+	for (idx = 0; idx < CHECK_DUEL && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
-	}
 	if (!myData.error.empty())
 		return myData.error;
 	return myData.reply;
@@ -53,7 +50,7 @@ void	Duel::checkParams(t_data& myData) {
 }
 
 void	Duel::checkClientTarget(t_data& myData) {
-	if (myData.channel->isClient(this->target))
+	if (!myData.channel->isClient(this->target))
 		myData.error = BOTERR_USERNOTVALID(this->target);
 	return ;
 }
@@ -97,7 +94,7 @@ void	Duel::createDuel(t_data& myData) {
 	newDuel->bet = this->bet;
 	myData.myBot->_pendingDuel.push_back(newDuel);
 	std::stringstream	ss;
-	ss << myData.client << " provoke " << this->target << " to a duel for " << this->bet << "pts! (!duelbot accept/refuse)";
+	ss << myData.client->_nickname << " provoke " << this->target << " to a duel for " << this->bet << "pts! (!duelbot ACCEPT/REFUSE)";
 	myData.reply = ss.str();
 	return ;
 }

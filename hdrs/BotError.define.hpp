@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BotError.define.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 03:26:49 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 05:36:57 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 19:27:48 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,9 @@
 #define BOTERR_NOTINDUEL(client) ((client) + " :Not in a duel")
 
 #define BOTERR_DUELHIMSELF(client) ((client) + " :Can not duel himself")
+
+#define	BOTERR_UNKNOWNBOT(target) ((target) + " :Unknown bot")
+
+#define BOTERR_UNKNOWNCOMMAND(command) ((command) + " :Unknown command")
 
 #endif

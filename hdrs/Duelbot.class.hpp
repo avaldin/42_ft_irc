@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Duelbot.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 15:54:44 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/24 06:12:58 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 19:25:20 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,12 @@ typedef struct s_duel {
 
 class Duelbot {
 public:
-	Duelbot( void ){}
+	Duelbot( void ) : name("!duelbot") {}
 	~Duelbot( void ) {}
 
 	std::string	useBot(Client&, std::string const &, Channel&);
+
+	std::string const	name;
 	
 private:
 	typedef struct	s_data {

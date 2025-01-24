@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Scoreboard.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 06:01:35 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 06:04:54 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 18:44:40 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-void(Scoreboard::*Scoreboard::_method[CHECK_SCOREBOARD])(t_data&) = {};
+#include <iostream>
+
+void(Scoreboard::*Scoreboard::_method[CHECK_SCOREBOARD])(t_data&) = {
+	&Scoreboard::displayScore
+};
 
 std::string	Scoreboard::execute(Client& client, Channel& channel) {
 	t_data	myData;
@@ -29,7 +33,7 @@ std::string	Scoreboard::execute(Client& client, Channel& channel) {
 
 	myData.client = &client;
 	myData.channel = &channel;
-	myData.myBot = channel._myBot;
+	myData.myBot = &channel._myBot;
 	for (idx = 0; idx < CHECK_SCOREBOARD && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty())
@@ -40,13 +44,10 @@ std::string	Scoreboard::execute(Client& client, Channel& channel) {
 void	Scoreboard::displayScore(t_data& myData) {
 	int const			size = myData.myBot->_scoreBoard.size();
 	std::stringstream	ss;
-	(void)myData;
 	
 	ss << "your top3 are:";
-	for (int idx = 0; idx < 3 && idx < size; idx++) {
-		t_player*	actPlayer = myData.myBot->_scoreBoard[idx];
-		ss << std::endl << "Top" << idx + 1 << ": " << actPlayer->nick  << " with " << actPlayer->score << "pts";
-	}
+	for (int idx = 0; idx < 3 && idx < size; idx++)
+		ss << " -Top" << idx + 1 << ": " << myData.myBot->_scoreBoard[idx]->nick  << " (" << myData.myBot->_scoreBoard[idx]->score << "pts)";
 	myData.reply = ss.str();
 	return ;
 }

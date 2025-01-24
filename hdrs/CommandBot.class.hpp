@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandBot.class.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 03:40:46 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 06:16:35 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 17:55:45 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ public:
 	CommandBot( void ) {}
 	virtual ~CommandBot( void ) {}
 	
-	virtual std::string	execute(Client&, Channel&) {return "";}
+	virtual std::string	execute(Client&, Channel&) {return "default";}
 	
 	std::string const	cmdName;
 };

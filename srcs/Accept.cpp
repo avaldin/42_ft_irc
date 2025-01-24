@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Accept.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 05:19:04 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 06:19:03 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 19:04:45 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ std::string	Accept::execute(Client& client, Channel& channel) {
 
 	myData.client = &client;
 	myData.channel = &channel;
-	myData.myBot = channel._myBot;
+	myData.myBot = &channel._myBot;
 	for (idx = 0; idx < CHECK_ACCEPT && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty())
@@ -48,11 +48,12 @@ void	Accept::checkInDuel(t_data& myData) {
 }
 
 void	Accept::checkOwnDuel(t_data& myData) {
-	myData.p1 = myData.myBot->findPlayer(myData.client->_nickname);
-	myData.myDuel = myData.myBot->findDuel(myData.p1);
+	myData.p2 = myData.myBot->findPlayer(myData.client->_nickname);
+	myData.myDuel = myData.myBot->findDuel(myData.p2);
 
-	if (myData.myDuel->opponent1 == myData.p1)
+	if (myData.myDuel->opponent1 == myData.p2)
 		myData.error = BOTERR_DUELHIMSELF(myData.client->_nickname);
+	myData.p1 = myData.myDuel->opponent1;
 	return ;
 }
 
@@ -60,11 +61,11 @@ void	Accept::doDuel(t_data& myData) {
 	t_player * const	players[2] = {myData.p1, myData.p2};
 	
 	srand(time(NULL));
-	unsigned int const	result = rand() % 2;
+	unsigned int const	result = static_cast<unsigned int>(rand()) % 2;
 	players[result]->score += myData.myDuel->bet;
 	players[(result + 1) % 2]->score -= myData.myDuel->bet;
 	std::stringstream	ss;
-	ss << "AND " << players[result]->nick << " ANNIHILATE " << players[(result + 1) % 2]->nick << " FOR " << myData.myDuel->bet << "pts";
+	ss << players[result]->nick << " ANNIHILATE " << players[(result + 1) % 2]->nick << " FOR " << myData.myDuel->bet << "pts";
 	myData.myBot->deleteDuel(myData.myDuel);
 	myData.reply = ss.str();
 	return ;

@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Duelbot.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 16:29:20 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/24 06:23:51 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 21:07:40 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Duelbot.class.hpp"
 #include "DuelbotParser.class.hpp"
+#include "BotError.define.hpp"
 #include "Send.namespace.hpp"
 #include "Client.class.hpp"
 #include "Duel.class.hpp"
@@ -22,16 +23,29 @@
 #include <sstream>
 #include <stdlib.h>
 #include <time.h>
+#include <vector>
 
 #include <iostream>
 
-std::string	Duelbot::useBot(Client& client, std::string const & line, Channel& test) {
+std::string	Duelbot::useBot(Client& client, std::string const & line, Channel& channel) {
 	DuelbotParser	parser(line);
 	CommandBot*		cmd = parser.getCommand();
+	std::string		botMessage;
 
-	if (!cmd)
-		return "On comprend rien frero";
-	return cmd->execute(client, test);
+	this->_myChannel = &channel;
+	if (this->isPlayer(client._nickname))
+		this->findPlayer(client._nickname)->score += 1;
+	if (parser.botName[0] == '!' && parser.botName.compare(this->name))
+		botMessage = BOTERR_UNKNOWNBOT(parser.botName);
+	else if (!cmd) 
+		botMessage = BOTERR_UNKNOWNCOMMAND(parser.cmdName);
+	else
+		botMessage = cmd->execute(client, channel);
+	this->updateDb();
+	std::cout << "db updated" << std::endl;
+	this->sortScoreBoard();
+	std::cout << "sorted" << std::endl;
+	return botMessage;
 }
 
 void	Duelbot::sortScoreBoard( void ) {
@@ -62,8 +76,9 @@ void	Duelbot::deleteDuel(t_duel* myDuel) {
 
 bool	Duelbot::isClient(std::string const & nickname) const {
 	for (std::map<int, Client const *>::const_iterator it = this->_myChannel->_channelClient.begin(); it != this->_myChannel->_channelClient.end(); it++) {
-		if (it->second && !it->second->_nickname.compare(nickname))
+		if (it->second && !it->second->_nickname.compare(nickname)) {
 			return true;
+		}
 	}
 	return false;
 }
@@ -71,7 +86,6 @@ bool	Duelbot::isClient(std::string const & nickname) const {
 bool	Duelbot::isPlayer(std::string const & nickname) const {
 	int const	size = this->_scoreBoard.size();
 
-	std::cout << size << std::endl;
 	for (int idx = 0; idx < size; idx++) {
 		if (!this->_scoreBoard[idx]->nick.compare(nickname))
 			return true;
@@ -82,19 +96,19 @@ bool	Duelbot::isPlayer(std::string const & nickname) const {
 void	Duelbot::createPlayer(std::string const & nickname) {
 	t_player*	newPlayer = new t_player;
 
-	std::cout << "starting creation player" << std::endl;
 	newPlayer->nick = nickname;
 	newPlayer->score = 10;
 	this->_scoreBoard.push_back(newPlayer);
-	std::cout << "player created" << std::endl;
 	return ;
 }
 
 void	Duelbot::deletePlayer(std::string const & nickname) {
 	for (std::vector<t_player*>::iterator it = this->_scoreBoard.begin(); it != this->_scoreBoard.end(); it++) {
 		if ((*it)->nick.compare(nickname)) {
-			delete *it;
+			if (this->isInDuel(*it))
+				this->deleteDuel(this->findDuel(*it));
 			this->_scoreBoard.erase(it);
+			delete *it;
 		}
 	}
 	return ;
@@ -127,9 +141,18 @@ t_duel*	Duelbot::findDuel(t_player* player) const {
 }
 
 void	Duelbot::updateDb( void ) {
-	for (std::vector<t_player*>::iterator it = this->_scoreBoard.begin(); it != this->_scoreBoard.end(); it++) {
-		if (!this->isClient((*it)->nick))
-			this->deletePlayer((*it)->nick);
+	int const	size = this->_scoreBoard.size();
+	std::cout << "start update" << std::endl;
+	std::cout << "size: " << this->_scoreBoard.size() << std::endl;
+	for (int idx = 0; idx < size; idx++) {		
+		std::cout << "lap" << std::endl;
+		if (this->_scoreBoard[idx] && !this->isClient(this->_scoreBoard[idx]->nick)) {
+			this->deletePlayer(this->_scoreBoard[idx]->nick);
+			std::cout << "size delete: " << this->_scoreBoard.size() << std::endl;
+			updateDb();
+		}
+		std::cout << "end lap" << std::endl;
 	}
+	std::cout << "end update" << std::endl;
 	return ;
 }

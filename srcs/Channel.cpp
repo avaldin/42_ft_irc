@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/24 03:49:45 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 18:33:22 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <iostream>
 
 Channel::Channel( void ) : _channelType(MODE), _channelName("") {
 	return ;
@@ -31,8 +30,6 @@ Channel::Channel(t_channelType channelType, std::string channelName) : _channelT
 	this->_channelTopic = "";
 	this->_topicMode = true;
 	this->_inviteOnlyMode = false;
-	Duelbot bot;
-	this->_myBot = &bot;
 	return ;
 }
 Channel::Channel(Channel const & src) : _channelType(src._channelType), _channelName(src._channelName) {
@@ -134,13 +131,3 @@ bool	Channel::isClient(std::string const clientNick) {
 		}
 		return false;
 }
-
-// #include <iostream>
-
-// void	Channel::debugPrintChannel( void ) const {
-// 	std::cout << "Channel: " << this->_channelName << std::endl;
-// 	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
-// 		if (it->second)
-// 			std::cout << "   -" << it->second->_nickname << std::endl; 
-// 	}
-// }

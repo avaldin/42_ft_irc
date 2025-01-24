@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/24 03:47:12 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 17:43:48 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ public:
 	bool					_topicMode;
 	bool					_inviteOnlyMode;
 
-	Duelbot*				_myBot;
+	Duelbot					_myBot;
 
 protected:
 	Channel( void );

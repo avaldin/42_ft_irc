@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Refuse.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 05:46:37 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 06:18:53 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 17:44:32 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ std::string	Refuse::execute(Client& client, Channel& channel) {
 
 	myData.client = &client;
 	myData.channel = &channel;
-	myData.myBot = channel._myBot;
+	myData.myBot = &channel._myBot;
 	for (idx = 0; idx < CHECK_REFUSE && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty())

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DuelbotParser.class.hpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 02:30:56 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 03:52:33 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 19:36:28 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ public:
 	CommandBot*	getCommand( void );
 
 	std::string	cmdName;
-
+	std::string	botName;
 private:
 	void	parseRawline( void );
 

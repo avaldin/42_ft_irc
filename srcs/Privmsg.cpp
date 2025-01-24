@@ -35,10 +35,10 @@ void	Privmsg::execute(Client &client) {
 		Send::ToClient(this->_server->findClientNickname(_receiver)->_clientID, toSend);
 	else if (myData.targetType == CHANNEL) {
 		myData.targetChannel->privMsgToChannel(toSend, client._clientID);
-		if (this->_message.size() && this->_message[0] == '!') {
-			std::string	botAnswer(":Duelbot PRIVMSG " + myData.target + " :" + myData.targetChannel->_myBot->useBot(client, this->_message, *myData.targetChannel));
-			Send::ToChannel(*myData.targetChannel, botAnswer);
-			myData.targetChannel->privMsgToChannel(botAnswer, client._clientID);
+		if (this->_message.size()) {
+			std::string	botAnswer( myData.targetChannel->_myBot.useBot(client, this->_message, *myData.targetChannel));
+			if (!botAnswer.empty())
+				Send::ToChannel(*myData.targetChannel, ":Duelbot PRIVMSG " + myData.target + " :" + botAnswer);
 		}
 	}
 }

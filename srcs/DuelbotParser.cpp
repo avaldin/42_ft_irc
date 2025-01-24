@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DuelbotParser.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 02:38:53 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 06:10:56 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/24 19:36:39 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 DuelbotParser::DuelbotParser(std::string const & rawline) {
 	this->_rawline = rawline;
+	this->_command = NULL;
 	this->_cmdMethods["DUEL"] = &DuelbotParser::setDuel;
 	this->_cmdMethods["RANK"] = &DuelbotParser::setRank;
 	this->_cmdMethods["SCOREBOARD"] = &DuelbotParser::setScoreboard;
@@ -42,12 +43,13 @@ void	DuelbotParser::parseRawline( void ) {
 	int const size = splited.size();
 	if (size < 2)
 		return ;
-	this->cmdName = splited[2];
+	this->botName = splited[0];
+	this->cmdName = splited[1];
 	std::map<std::string,void(DuelbotParser::*)(std::vector<std::string>, int)>::iterator	it;
 	it = this->_cmdMethods.find(this->cmdName);
 	if (it == this->_cmdMethods.end())
 		return ;
-	(this->*(it->second))(splited, 3);
+	(this->*(it->second))(splited, 2);
 	return ;
 }
 
