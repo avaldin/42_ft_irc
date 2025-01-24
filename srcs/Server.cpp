@@ -178,7 +178,7 @@ void	Server::eraseChannel(std::string channelName) {
 	return ;
 }
 
-void	Server::addClient() {
+void	Server::addClient( void ) {
 	struct epoll_event	event;
 	int	clientID = accept(this->_mySocket, (sockaddr *)this->_address, &this->_serverLen);
 	if (clientID == -1)

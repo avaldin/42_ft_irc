@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/10 18:50:07 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/24 03:47:12 by thibaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CHANNEL_CLASS_HPP
 # include <map>
 # include <string>
+# include "Duelbot.class.hpp"
 
 class Client;
 
@@ -33,6 +34,7 @@ public:
 	bool			isOperator(int const clientID);
 	bool			isInvited(int const clientID);
 	bool			isClient(int const clientID);
+	bool			isClient(std::string const clientID);
 	void			addClient(int const clientID, Client const * client);
 	void			deleteClient(int const clientID);
 	void			addInvited(int const clientID, Client const * client);
@@ -49,6 +51,8 @@ public:
 	bool					_topicMode;
 	bool					_inviteOnlyMode;
 
+	Duelbot*				_myBot;
+
 protected:
 	Channel( void );
 	virtual ~Channel( void );
@@ -61,13 +65,14 @@ private:
 	Channel(t_channelType channelType, std::string channelName);
 
 	Channel&	operator=(Channel const & rhs);
-
-	std::map<int, Client const *>			_channelClient;
-	std::map<int, Client const *>			_channelOperator;
-	std::map<int, Client const *>			_channelCreator;
-	std::map<int, Client const *>			_invitedClient;
+	
+	std::map<int, Client const *>	_channelClient;
+	std::map<int, Client const *>	_channelOperator;
+	std::map<int, Client const *>	_channelCreator;
+	std::map<int, Client const *>	_invitedClient;
 
 friend class Join;
+friend class Duelbot;
 };
 
 #endif

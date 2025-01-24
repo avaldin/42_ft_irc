@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 15:47:43 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/24 03:49:45 by thibaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ Channel::Channel(t_channelType channelType, std::string channelName) : _channelT
 	this->_channelTopic = "";
 	this->_topicMode = true;
 	this->_inviteOnlyMode = false;
+	Duelbot bot;
+	this->_myBot = &bot;
 	return ;
 }
 Channel::Channel(Channel const & src) : _channelType(src._channelType), _channelName(src._channelName) {
@@ -123,6 +125,14 @@ bool	Channel::isClient(int const clientID) {
 	if (this->_channelClient.find(clientID) == this->_channelClient.end())
 		return false;
 	return true;
+}
+
+bool	Channel::isClient(std::string const clientNick) {
+	for (std::map<int, Client const *>::iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
+			if (!it->second->_nickname.compare(clientNick))
+				return true;
+		}
+		return false;
 }
 
 // #include <iostream>

@@ -33,8 +33,14 @@ void	Privmsg::execute(Client &client) {
 	std::string	toSend(":" + client._nickname + " PRIVMSG " + myData.target + " :" + _message);
 	if (myData.targetType == CLIENT)
 		Send::ToClient(this->_server->findClientNickname(_receiver)->_clientID, toSend);
-	else if (myData.targetType == CHANNEL)
+	else if (myData.targetType == CHANNEL) {
 		myData.targetChannel->privMsgToChannel(toSend, client._clientID);
+		if (this->_message.size() && this->_message[0] == '!') {
+			std::string	botAnswer(":Duelbot PRIVMSG " + myData.target + " :" + myData.targetChannel->_myBot->useBot(client, this->_message, *myData.targetChannel));
+			Send::ToChannel(*myData.targetChannel, botAnswer);
+			myData.targetChannel->privMsgToChannel(botAnswer, client._clientID);
+		}
+	}
 }
 
 void	Privmsg::checkRegistered(t_data& myData) {
