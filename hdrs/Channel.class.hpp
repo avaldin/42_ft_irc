@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 17:37:21 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/24 17:43:48 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/25 17:50:56 by thibaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ typedef enum	e_channelType {
 
 class Channel {
 public:
-
-	void			debugPrintChannel( void ) const;
 
 	void			sendToChannel(std::string const message) const;
 	void			privMsgToChannel(std::string const message, int clientID) const;

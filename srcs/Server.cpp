@@ -81,9 +81,6 @@ void	Server::startServer(int port, const std::string& password) {
 	this->_ev.data.fd = this->_mySocket;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, this->_mySocket, &this->_ev) == -1)
 		throw EpollCtlException();
-//	this->_console = Factory::createClient(1);
-//	this->_console->_nickname = "CONSOLE";
-//	this->_console->_username = "CONSOLE";
 	this->_serverPassword = password;
 	signalHandler();
 	return ;
@@ -121,36 +118,6 @@ void	Server::runServer( void ) {
 	}
 }
 
-// void	Server::debugPrintServer( void ) const {
-// 	std::cout << "ENTER DEBUG PRINT" << std::endl;
-// 	if (this->_serverChannel.empty())
-// 		return ;
-// 	for (std::map<std::string, Channel*>::const_iterator it = this->_serverChannel.begin(); it != this->_serverChannel.end(); it++) {
-// 		if (it->second)
-// 			it->second->debugPrintChannel();
-// 	}
-// 	std::cout << "EXIT DEBUG PRINT" << std::endl;
-// }
-
-// void	Server::LegacysendToServer(int const clientID, std::string token) {
-// 	std::string nickname = this->_serverClientId[clientID]->_nickname + ": " + token;
-// 	std::cout << nickname << std::endl;
-// 	for (std::map<int const &, Client *>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
-// 		int otherClient = it->second->_clientID;
-// 		send(otherClient, nickname.c_str(), nickname.size(), 0);
-// 	}
-// }
-
-// void	Server::LegacysendToChannel(std::string const channelName, int const clientID, std::string token) {
-// 	std::string	line;
-
-// 	if (this->_serverChannel[channelName]->isOperator(clientID))
-// 		line += "@";
-// 	line += (this->_serverClientId[clientID]->_nickname + ": " + token);
-// 	this->_serverChannel[channelName]->sendToChannel(line);
-// 	return ;
-// }
-
 void	Server::serverRequest(Client& client, std::string rawLine) {
 	std::string	const	logLine = ":" + client._nickname + "!" + client._username + "@" + this->_serverName + " " + rawLine;
 	Parser		parsed(rawLine);
@@ -159,7 +126,6 @@ void	Server::serverRequest(Client& client, std::string rawLine) {
 	if (myCommand) {
 		myCommand->execute(client);
 		delete(myCommand);
-		//this->debugPrintServer();
 	}
 	else
 		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(client._nickname, parsed._cmdName));

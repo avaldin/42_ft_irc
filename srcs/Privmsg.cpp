@@ -4,6 +4,8 @@
 #include "Send.namespace.hpp"
 #include "Error.define.hpp"
 
+#include <iostream>
+
 Server*	Privmsg::_server = Server::instantiate();
 
 void(Privmsg::*Privmsg::_method[CHECK_MSG])(t_data&) = {
