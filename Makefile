@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+         #
+#    By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/15 17:21:22 by thibaud           #+#    #+#              #
-#    Updated: 2025/01/20 18:41:34 by tmouche          ###   ########.fr        #
+#    Updated: 2025/01/24 06:19:43 by thibaud          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ HEADER		=	hdrs/
 SRCS_DIR	=	srcs/
 OBJS_DIR	=	.objs/
 DEPS_DIR	=	.deps/
-SRCS		=	main.cpp Server.cpp Client.cpp Channel.cpp Parser.cpp Invite.cpp Mode.cpp Send.cpp Topic.cpp Kick.cpp User.cpp Nick.cpp Pass.cpp Join.cpp Privmsg.cpp Quit.cpp
+SRCS		=	main.cpp Server.cpp Client.cpp Channel.cpp Parser.cpp Invite.cpp Mode.cpp Send.cpp Topic.cpp Kick.cpp User.cpp Nick.cpp Pass.cpp Join.cpp Privmsg.cpp Quit.cpp Duelbot.cpp DuelbotParser.cpp Duel.cpp Rank.cpp Accept.cpp Refuse.cpp Scoreboard.cpp
 
 OBJS		= $(SRCS:%.cpp=$(OBJS_DIR)%.o)
 DEPS		= $(SRCS:%.cpp=$(DEPS_DIR)%.d)

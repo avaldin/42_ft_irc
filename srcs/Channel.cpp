@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 15:47:43 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/24 18:33:22 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <iostream>
 
 Channel::Channel( void ) : _channelType(MODE), _channelName("") {
 	return ;
@@ -125,12 +124,10 @@ bool	Channel::isClient(int const clientID) {
 	return true;
 }
 
-// #include <iostream>
-
-// void	Channel::debugPrintChannel( void ) const {
-// 	std::cout << "Channel: " << this->_channelName << std::endl;
-// 	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
-// 		if (it->second)
-// 			std::cout << "   -" << it->second->_nickname << std::endl; 
-// 	}
-// }
+bool	Channel::isClient(std::string const clientNick) {
+	for (std::map<int, Client const *>::iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
+			if (!it->second->_nickname.compare(clientNick))
+				return true;
+		}
+		return false;
+}

@@ -4,6 +4,8 @@
 #include "Send.namespace.hpp"
 #include "Error.define.hpp"
 
+#include <iostream>
+
 Server*	Privmsg::_server = Server::instantiate();
 
 void(Privmsg::*Privmsg::_method[CHECK_MSG])(t_data&) = {
@@ -33,8 +35,14 @@ void	Privmsg::execute(Client &client) {
 	std::string	toSend(":" + client._nickname + " PRIVMSG " + myData.target + " :" + _message);
 	if (myData.targetType == CLIENT)
 		Send::ToClient(this->_server->findClientNickname(_receiver)->_clientID, toSend);
-	else if (myData.targetType == CHANNEL)
+	else if (myData.targetType == CHANNEL) {
 		myData.targetChannel->privMsgToChannel(toSend, client._clientID);
+		if (this->_message.size()) {
+			std::string	botAnswer( myData.targetChannel->_myBot.useBot(client, this->_message, *myData.targetChannel));
+			if (!botAnswer.empty())
+				Send::ToChannel(*myData.targetChannel, ":Duelbot PRIVMSG " + myData.target + " :" + botAnswer);
+		}
+	}
 }
 
 void	Privmsg::checkRegistered(t_data& myData) {
