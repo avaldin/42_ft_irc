@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 15:54:44 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/24 19:25:20 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/27 17:14:57 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef struct s_duel {
 class Duelbot {
 public:
 	Duelbot( void ) : name("!duelbot") {}
-	~Duelbot( void ) {}
+	~Duelbot( void );
 
 	std::string	useBot(Client&, std::string const &, Channel&);
 
@@ -51,7 +51,6 @@ private:
 	}				t_data;
 	
 	void		sortScoreBoard( void );
-	void		updateDb( void );
 	bool		isClient(std::string const &) const;
 
 	bool		isPlayer(std::string const &) const;

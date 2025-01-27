@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Duelbot.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 16:29:20 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/25 17:42:55 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/27 17:14:47 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,13 @@
 #include <time.h>
 #include <vector>
 
-#include <iostream>
+Duelbot::~Duelbot( void ) {
+	for (std::vector<t_duel*>::iterator it = this->_pendingDuel.begin(); it != this->_pendingDuel.end(); it++)
+		delete *it;
+	for (std::vector<t_player*>::iterator it = this->_scoreBoard.begin(); it != this->_scoreBoard.end(); it++)
+		delete *it;
+	return ;
+}
 
 std::string	Duelbot::useBot(Client& client, std::string const & line, Channel& channel) {
 	DuelbotParser	parser(line);
@@ -43,7 +49,6 @@ std::string	Duelbot::useBot(Client& client, std::string const & line, Channel& c
 		botMessage = cmd->execute(client, channel);
 		delete cmd;
 	}
-	this->updateDb();
 	this->sortScoreBoard();
 	return botMessage;
 }
@@ -140,16 +145,4 @@ t_duel*	Duelbot::findDuel(t_player* player) const {
 		return *it;
 	}
 	return NULL;
-}
-
-void	Duelbot::updateDb( void ) {
-	int	size = this->_scoreBoard.size();
-	for (int idx = 0; idx < size; idx++) {
-		std::cout << this->_scoreBoard[idx] << std::endl;
-		if (this->_scoreBoard[idx] && !this->isClient(this->_scoreBoard[idx]->nick)) {
-			this->deletePlayer(this->_scoreBoard[idx]->nick);
-			break ;
-		}
-	}
-	return ;
 }

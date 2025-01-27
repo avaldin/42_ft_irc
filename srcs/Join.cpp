@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:01:25 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/22 11:01:19 by avaldin          ###   ########.fr       */
+/*   Updated: 2025/01/27 18:23:58 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	Join::execute(Client& client) {
 	int		idx;
 
 	myData.client = &client;
-	for (idx = 0; idx < 2 && myData.error.empty(); idx++)// attention au 2
+	for (idx = 0; idx < 2 && myData.error.empty(); idx++)
 		(this->*_method[idx])(myData);
 	if (!myData.error.empty()) {
 		Send::ToClient(client._clientID, myData.error);
@@ -53,6 +53,8 @@ void	Join::execute(Client& client) {
 		myData.targetName = this->_targetChannels[idxChannel];
 		for (int idxCheck = idx; idxCheck < idx + 2 && myData.error.empty(); idxCheck++)
 			(this->*_method[idxCheck])(myData);
+		if (myData.error.empty() && !myData.targetName.compare("0"))
+			return quitChannels(myData);
 		if (myData.error.empty() && myData.targetChannel)
 			joinChannel(myData);
 		else if (myData.error.empty())
@@ -96,6 +98,16 @@ void	Join::joinChannel(t_data& myData) {
 	return ;
 }
 
+void	Join::quitChannels(t_data& myData) {
+	for (std::map<std::string, Channel *>::iterator it = _server->_serverChannel.begin(); it != _server->_serverChannel.end() ; ++it) {
+		if (it->second->isClient(myData.client->_clientID)) {
+			Send::ToChannel(*it->second, ":" + myData.client->_nickname + " PART :" + it->second->_channelName);
+			it->second->deleteClient(myData.client->_clientID);
+		}
+	}
+	return ;
+}
+
 void	Join::createChannel(t_data& myData) {
 	this->_server->addChannel(MODE, myData.targetName);
 	myData.targetChannel = this->_server->_serverChannel[myData.targetName];
@@ -121,6 +133,8 @@ void	Join::checkParams(t_data& myData) {
 void	Join::checkChannelName(t_data& myData) {
 	int const size = myData.targetName.size();
 	
+	if (!myData.targetName.compare("0"))
+		return ;
 	if (size > 50 || myData.targetName[0] != '&')
 		myData.error = ERR_BADCHANMASK(myData.client->_nickname, myData.targetName);
 	for (int idx = 0; idx < size && myData.error.empty(); idx++) {

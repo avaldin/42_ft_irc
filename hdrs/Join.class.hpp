@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 16:59:40 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/20 18:26:27 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/27 18:08:02 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ private:
 
 	void	createChannel(t_data& myData);
 	void	joinChannel(t_data& myData);
+	void	quitChannels(t_data& myData);
 
 	void	RPL_join(t_data& myData);
 

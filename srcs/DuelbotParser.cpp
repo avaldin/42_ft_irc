@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 02:38:53 by thibaud           #+#    #+#             */
-/*   Updated: 2025/01/24 19:36:39 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/27 17:23:12 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,29 +77,23 @@ void	DuelbotParser::setRank(std::vector<std::string> splited, int idx) {
 	return ;
 }
 
-void	DuelbotParser::setAccept(std::vector<std::string> splited, int idx) {
+void	DuelbotParser::setAccept(std::vector<std::string>, int) {
 	Accept*	newCmd = new Accept;
 
-	(void)splited;
-	(void)idx;
 	this->_command = newCmd;
 	return ;
 }
 
-void	DuelbotParser::setRefuse(std::vector<std::string> splited, int idx) {
+void	DuelbotParser::setRefuse(std::vector<std::string>, int) {
 	Refuse*	newCmd = new Refuse;
 
-	(void)splited;
-	(void)idx;
 	this->_command = newCmd;
 	return ;
 }
 
-void	DuelbotParser::setScoreboard(std::vector<std::string> splited, int idx) {
+void	DuelbotParser::setScoreboard(std::vector<std::string>, int) {
 	Scoreboard*	newCmd = new Scoreboard;
 
-	(void)splited;
-	(void)idx;
 	this->_command = newCmd;
 	return ;	
 }
