@@ -10,13 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
 #include "User.class.hpp"
 #include "Error.define.hpp"
 #include "Reply.define.hpp"
 #include "Server.class.hpp"
 #include "Send.namespace.hpp"
-
 #include "Client.class.hpp"
 
 Server*	User::_server = Server::instantiate();

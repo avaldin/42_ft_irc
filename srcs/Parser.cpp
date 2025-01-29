@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "Parser.class.hpp"
-#include "Reply.define.hpp"
 
 #include "Mode.class.hpp"
 #include "Topic.class.hpp"
@@ -24,7 +23,6 @@
 #include "Privmsg.class.hpp"
 #include "Quit.class.hpp"
 
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>

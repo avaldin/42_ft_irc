@@ -11,16 +11,10 @@
 /* ************************************************************************** */
 
 #include "Scoreboard.class.hpp"
-
-#include "Duelbot.class.hpp"
-#include "BotError.define.hpp"
 #include "Channel.class.hpp"
 #include "Client.class.hpp"
 
 #include <sstream>
-#include <stdlib.h>
-#include <time.h>
-
 #include <iostream>
 
 void(Scoreboard::*Scoreboard::_method[CHECK_SCOREBOARD])(t_data&) = {

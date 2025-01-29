@@ -17,8 +17,6 @@
 
 #include "Client.class.hpp"
 
-#include <iostream>
-
 Server*	Pass::_server = Server::instantiate();
 
 void(Pass::*Pass::_method[3])(t_data&) = {

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "Server.class.hpp"
-#include "Exception.class.hpp"
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
@@ -20,10 +19,7 @@
 #include "Send.namespace.hpp"
 
 #include "Mode.class.hpp"
-#include <cmath>
 #include <sstream>
-
-#include <stdio.h>
 
 Server* Mode::_server = Server::instantiate();
 

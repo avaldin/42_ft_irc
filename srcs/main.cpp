@@ -36,7 +36,7 @@ int	main(int argc, char **argv)
 	Server*				ircServer = Server::instantiate();
 
 	if ((port = parsingArgs(argc, argv)) == -1)
-		return (-1);
+		return (delete ircServer, -1);
 	try {ircServer->startServer(port, argv[2]);}
 	catch (Exception& e) {
 		e.what();

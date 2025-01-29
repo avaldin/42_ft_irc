@@ -1,10 +1,7 @@
-#include <iostream>
 #include "Privmsg.class.hpp"
 #include "Server.class.hpp"
 #include "Send.namespace.hpp"
 #include "Error.define.hpp"
-
-#include <iostream>
 
 Server*	Privmsg::_server = Server::instantiate();
 

@@ -19,8 +19,6 @@
 #include "Channel.class.hpp"
 #include "Parser.class.hpp"
 
-#include <iostream>
-
 Server*	Topic::_server = Server::instantiate();
 
 void(Topic::*Topic::_method[CHECK_TOPIC])(t_data&) = {

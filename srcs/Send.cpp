@@ -14,8 +14,6 @@
 #include "Channel.class.hpp"
 #include "Client.class.hpp"
 #include <sys/socket.h>
-#include <iostream>
-
 
 void	Send::ToConsole(int const & targetID, std::string const & message) {
 	send(targetID, (message + "\r\n").c_str(), message.size() + 2, 0);

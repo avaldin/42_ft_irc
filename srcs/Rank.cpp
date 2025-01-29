@@ -12,7 +12,6 @@
 
 #include "Rank.class.hpp"
 
-#include "Duelbot.class.hpp"
 #include "BotError.define.hpp"
 #include "Channel.class.hpp"
 #include "Client.class.hpp"

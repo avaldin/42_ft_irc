@@ -1,6 +1,5 @@
 #include "Quit.class.hpp"
 #include "Send.namespace.hpp"
-#include "Exception.class.hpp"
 #include "Error.define.hpp"
 
 Server*	Quit::_server = Server::instantiate();
