@@ -3,20 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:03:42 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/09 18:13:53 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/22 15:21:31 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.class.hpp"
 #include "Server.class.hpp"
-#include "utils.hpp"
+#include "Exception.class.hpp"
 
 #include <iostream>
+#include <sys/socket.h>
+#include <sstream>
 
-Client::Client( void ) : _clientID(0), _username("*") {
+Client::Client( void ) : _clientID(0), _username("*"), status(NOT_REGISTERED) {
 	return ;
 }
 
@@ -24,7 +26,7 @@ Client::~Client( void ) {
 	return ;
 }
 
-Client::Client(int clientID) : _clientID(clientID), _username("*") {
+Client::Client(int clientID) : _clientID(clientID), _username("*"), status(NOT_REGISTERED) {
 	return ;
 }
 
@@ -49,12 +51,37 @@ void	Client::uninstantiateClient(Client* oldClient) {
 }
 
 void	Client::action( void ) {
-	std::string message = my_recv(this->_clientID);
-	Server::instantiate()->serverRequest(this->_clientID, message);
+	char		buff[513];
+	int 		bytesReceived;
+
+	bytesReceived = recv(this->_clientID, buff, 512, 0);
+	if (bytesReceived == -1)
+		throw RecvException();
+	else if (!bytesReceived)
+	{
+		_message = "QUIT :Abrupt Disconnection";
+		Server::instantiate()->serverRequest(*this, _message);
+		return ;
+	}
+	buff[bytesReceived] = '\0';
+	if ((_message += buff).size() > 512 || _message.find('\n') != std::string::npos)
+	{
+		if (_message.size() > 512)
+			_message.erase(510).append("\r\n");
+		std::stringstream ss(_message);
+		while (status != DISCONNECTED && std::getline(ss, _message, '\n'))
+			Server::instantiate()->serverRequest(*this, _message);
+		_message = "";
+	}
 	return ;
 }
 
 void	Client::addChannel(std::string newChannel) {
 	this->_actualChannel.push_back(newChannel);
+	return ;
+}
+
+void	Client::updatePrefix( void ) {
+	this->_prefix = this->_nickname + "!" + this->_username + "@" + this->localHost;
 	return ;
 }

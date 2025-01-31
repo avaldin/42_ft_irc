@@ -6,7 +6,7 @@
 /*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:02:50 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/19 18:38:09 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/27 16:49:29 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <string.h>
 
 Channel::Channel( void ) : _channelType(MODE), _channelName("") {
 	return ;
@@ -64,9 +63,17 @@ void	Channel::uninstantiateChannel(Channel* oldChannel) {
 
 void	Channel::sendToChannel(std::string const message) const {
 	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
-		send(it->second->_clientID, message.c_str(), message.size(), 0);
+		send(it->first, message.c_str(), message.size(), 0);
 	}
 	return ;
+}
+
+void Channel::privMsgToChannel(const std::string message, int clientID) const
+{
+	for (std::map<int, Client const *>::const_iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
+		if (it->second->_clientID != clientID)
+			send(it->second->_clientID, (message + "\r\n").c_str(), message.size() + 2, 0);
+	}
 }
 
 void	Channel::addOperator(int const clientID) {
@@ -100,19 +107,27 @@ void	Channel::deleteInvited(int const clientID) {
 }
 
 bool	Channel::isOperator(int const clientID) {
-	if (this->_channelOperator[clientID])
-		return true;
-	return false;
+	if (this->_channelOperator.find(clientID) == this->_channelOperator.end())
+		return false;
+	return true;
 }
 
 bool	Channel::isInvited(int const clientID) {
-	if (this->_invitedClient[clientID])
-		return true;
-	return false;
+	if (this->_invitedClient.find(clientID) == this->_invitedClient.end())
+		return false;
+	return true;
 }
 
 bool	Channel::isClient(int const clientID) {
-	if (this->_channelClient[clientID])
-		return true;
-	return false;
+	if (this->_channelClient.find(clientID) == this->_channelClient.end())
+		return false;
+	return true;
+}
+
+bool	Channel::isClient(std::string const clientNick) {
+	for (std::map<int, Client const *>::iterator it = this->_channelClient.begin(); it != this->_channelClient.end(); it++) {
+			if (!it->second->_nickname.compare(clientNick))
+				return true;
+		}
+		return false;
 }

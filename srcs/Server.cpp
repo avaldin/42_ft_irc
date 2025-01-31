@@ -3,10 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:46:54 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 02:18:58 by tmouche          ###   ########.fr       */
+
+/*   Updated: 2025/01/11 19:33:11 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +16,19 @@
 #include "Client.class.hpp"
 #include "Channel.class.hpp"
 #include "Error.define.hpp"
-#include "Command.class.hpp"
+#include "Parser.class.hpp"
 #include "Send.namespace.hpp"
 
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
-#include <string.h>
-#include <sstream>
+#include <sys/signalfd.h>
+#include <cstring>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <csignal>
+#include <map>
+
 
 Server*	Server::_me = nullptr;
 
@@ -47,7 +53,7 @@ Server*	Server::instantiate( void ) {
 	return res;
 }
 
-void	Server::startServer(int port) {
+void	Server::startServer(int port, const std::string& password) {
 	static sockaddr_in	address;
 	
 	if (this->_mySocket != -1)
@@ -55,6 +61,9 @@ void	Server::startServer(int port) {
 	this->_mySocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_mySocket == -1)
 		throw SocketException();
+	int opt = 1;
+	if (setsockopt(this->_mySocket,SOL_SOCKET, SO_REUSEADDR, &opt,  sizeof(opt)) == -1)
+		throw setsockoptException();
 	this->_address = &address;
 	this->_port = port;
 	this->_address->sin_family = AF_INET;
@@ -72,9 +81,8 @@ void	Server::startServer(int port) {
 	this->_ev.data.fd = this->_mySocket;
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, this->_mySocket, &this->_ev) == -1)
 		throw EpollCtlException();
-	this->_console = Factory::createClient(1);
-	this->_console->_nickname = "CONSOLE";
-	this->_console->_username = "CONSOLE";
+	this->_serverPassword = password;
+	signalHandler();
 	return ;
 }
 
@@ -82,11 +90,9 @@ void	Server::runServer( void ) {
 	int					nfds;
 	struct epoll_event	events[10];
 
-	std::cout << "server start running, my socket = " << this->_mySocket << std::endl;
 	while (true) {
 		nfds = epoll_wait(this->_epollfd, events, 10, -1);
-		std::cout << "epoll received something" << std::endl;
-		if (nfds == -1) 
+		if (nfds == -1)
 			throw EpollWaitException();
 		for (int nfd = 0; nfd < nfds; ++nfd) {
 			if (events[nfd].data.fd == this->_mySocket) {
@@ -95,47 +101,34 @@ void	Server::runServer( void ) {
 					throw AcceptException();
 				}
 			}
+			else if (events[nfd].data.fd == this->_signalfd) {
+				struct signalfd_siginfo si;
+				read(_signalfd, &si, sizeof(si));
+				if (si.ssi_signo == SIGINT ||si.ssi_signo == SIGQUIT || si.ssi_signo == SIGPIPE) {
+					closeServer();
+					_exit(0);
+				}
+			}
 			else {
-				this->_serverClient[events[nfd].data.fd]->action();
+				this->_serverClientId[events[nfd].data.fd]->action();
+				if (_serverClientId[events[nfd].data.fd]->status == DISCONNECTED)
+					eraseClient(events[nfd].data.fd);
 			}
 		}
 	}
 }
 
-void	Server::LegacysendToServer(int const clientID, std::string token) {
-	std::string nickname = this->_serverClient[clientID]->_nickname + ": " + token;
+void	Server::serverRequest(Client& client, std::string rawLine) {
+	std::string	const	logLine = ":" + client._nickname + "!" + client._username + "@" + this->_serverName + " " + rawLine;
+	Parser		parsed(rawLine);
+	Command*	myCommand = parsed.getCommand();
 
-	std::cout << nickname << std::endl;
-	for (std::map<int, Client *>::iterator it = this->_serverClient.begin(); it != this->_serverClient.end(); it++) {
-		int otherClient = it->second->_clientID;
-		send(otherClient, nickname.c_str(), nickname.size(), 0);
+	if (myCommand) {
+		myCommand->execute(client);
+		delete(myCommand);
 	}
-}
-
-void	Server::LegacysendToChannel(std::string const channelName, int const clientID, std::string token) {
-	std::string	line;
-
-	if (this->_serverChannel[channelName]->isOperator(clientID))
-		line += "@";
-	line += (this->_serverClient[clientID]->_nickname + ": " + token);
-	this->_serverChannel[channelName]->sendToChannel(line);
-	return ;
-}
-
-void	Server::serverRequest(int clientID, std::string rawLine) {
-	Client	*currentClient = this->_serverClient[clientID];
-	if (!currentClient)
-		return ;// throw BIG ERROR, make non sense if this append
-	std::string	const	logLine = ":" + currentClient->_nickname + "!" + currentClient->_username + "@" + this->_serverName + " " + rawLine; 
-	
-	Send::ToConsole(clientID, logLine);
-	Command		myCommand(rawLine);
-	processCommand(&myCommand);
-	return ;
-}
-
-void	Server::processCommand(Command* command) {
-	(void)command;
+	else
+		Send::ToClient(client._clientID, ERR_UNKNOWNCOMMAND(client._nickname, parsed._cmdName));
 	return ;
 }
 
@@ -151,24 +144,50 @@ void	Server::eraseChannel(std::string channelName) {
 	return ;
 }
 
-void	Server::addClient() {
+void	Server::addClient( void ) {
 	struct epoll_event	event;
 	int	clientID = accept(this->_mySocket, (sockaddr *)this->_address, &this->_serverLen);
 	if (clientID == -1)
 		throw AcceptException();
 	event.data.fd = clientID;
-	event.events = EPOLLIN | EPOLLPRI;             //jsp pk epollpri je l'ai pris sur internet
-	std::cout << "client accepted" << std::endl;
+	event.events = EPOLLIN | EPOLLPRI;      //jsp pk epollpri je l'ai pris sur internet
 	if (epoll_ctl(this->_epollfd, EPOLL_CTL_ADD, clientID, &event) == -1)
 		throw EpollCtlException();
 	Client*	newClient = Factory::createClient(clientID);
-	this->_serverClient[clientID] = newClient;
+	newClient->localHost = inet_ntoa(this->_address->sin_addr);
+	this->_serverClientId[clientID] = newClient;
 }
 
-void	Server::eraseClient(int clientID) {
-	Factory::deleteClient(this->_serverClient[clientID]);
-	this->_serverClient.erase(clientID);
-	return ;	
+void	Server::eraseClient(int const & clientID) {
+	Client* toDelete = this->_serverClientId[clientID];
+	if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, clientID, nullptr) == -1)
+		throw EpollCtlException();
+	this->_serverClientId.erase(clientID);
+	Factory::deleteClient(toDelete);
+	return ;
+}
+
+Client*	Server::findClientUsername(std::string const & username) {
+	for (std::map<int, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+		if (!it->second->_username.compare(username))
+			return it->second;
+	}
+	return NULL;
+}
+
+Client*	Server::findClientNickname(std::string const & nickname) {
+	for (std::map<int, Client*>::iterator it = this->_serverClientId.begin(); it != this->_serverClientId.end(); it++) {
+		if (!it->second->_nickname.compare(nickname))
+			return it->second;
+	}
+	return NULL;
+}
+
+Client*	Server::findClientId(int const & id) {
+	std::map<int,Client*>::iterator	it = this->_serverClientId.find(id);
+	if (it == this->_serverClientId.end()) 
+		return NULL;
+	return it->second;
 }
 
 // SUBCLASS FACTORY //
@@ -199,9 +218,39 @@ void	Server::Factory::deleteChannel(Channel* oldChannel) {
 	return ;
 }
 
-void	Server::sendError(int const clientId, std::string const & msgError)
-{
-	if (send(clientId, msgError.c_str(), msgError.size(), 0) == -1)
-		throw SendException();
-	return ;
+void	Server::signalHandler() {
+	sigset_t sigmask;
+	sigemptyset(&sigmask);
+	sigaddset(&sigmask, SIGINT);
+	sigaddset(&sigmask, SIGQUIT);
+	sigaddset(&sigmask, SIGPIPE);
+	if (sigprocmask(SIG_BLOCK, &sigmask, NULL) != 0) {
+		std::cout << "fail" << std::endl;
+	}
+
+	if ((_signalfd = signalfd(-1, &sigmask, 0)) == -1) {
+		throw signalfdException();
+	}
+
+	struct epoll_event event;
+	event.events = EPOLLIN;
+	event.data.fd = _signalfd;
+	if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _signalfd, &event) == -1) {
+		throw EpollCtlException();
+	}
+}
+
+void	Server::closeServer() {
+	for (std::map<int, Client*>::iterator it = _serverClientId.begin(); it != _serverClientId.end() ; ++it) {
+		if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, it->first, nullptr) == -1)
+			throw EpollCtlException();
+		close(it->first);
+		Factory::deleteClient(it->second);
+	}
+	for (std::map<std::string, Channel*>::iterator it = _serverChannel.begin(); it != _serverChannel.end() ; ++it) {
+		Factory::deleteChannel(it->second);
+	}
+	close(this->_mySocket);
+	close(_epollfd);
+	delete this;
 }

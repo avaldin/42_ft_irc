@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ICommand.interface.hpp                             :+:      :+:    :+:   */
+/*   Command.class.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 16:29:24 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 00:58:02 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/20 18:41:02 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ICOMMAND_INTERFACE_HPP
-# define ICOMMAND_INTERFACE_HPP
+#ifndef COMMAND_CLASS_HPP
+# define COMMAND_CLASS_HPP
 # include <string>
 
-class Command;
+class Parser;
 class Client;
+struct t_data;
 
-class ICommand {
+class Command {
 public:
-	virtual ~ICommand( void ) {};
-	virtual void	execute(Client const & client) = 0;
-protected:
-	std::string const	_cmdName;
+	Command( void ) {}
+	virtual ~Command( void ) {}
+	
+	// virtual void	execute(Client const &) {}
+	virtual void	execute(Client &) {}
+	
+	std::string const	cmdName;
 };
 
 #endif

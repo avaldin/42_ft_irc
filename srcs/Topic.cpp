@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmouche < tmouche@student.42lyon.fr>       +#+  +:+       +#+        */
+/*   By: avaldin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:01:51 by tmouche           #+#    #+#             */
-/*   Updated: 2024/12/21 01:13:38 by tmouche          ###   ########.fr       */
+/*   Updated: 2025/01/22 11:39:11 by avaldin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,69 +17,69 @@
 #include "Reply.define.hpp"
 #include "Error.define.hpp"
 #include "Channel.class.hpp"
-#include "Command.class.hpp"
-
-#include <cstring>
+#include "Parser.class.hpp"
 
 Server*	Topic::_server = Server::instantiate();
 
-std::string(Topic::*Topic::_method[4])(t_data const &) const = {
+void(Topic::*Topic::_method[CHECK_TOPIC])(t_data&) = {
+	&Topic::checkRegistered,
+	&Topic::checkParams,
+	&Topic::checkChannelExist,
 	&Topic::checkChannelClient,
-	&Topic::checkCommandMessage,
-	&Topic::checkChannelClient,
-	&Topic::checkChannelOperator};
+	&Topic::checkChannelOperator,
+	&Topic::checkCommandMessage};
 
-Topic::Topic( void ) : _cmdName("TOPIC") {
-	return ;
-}
-
-Topic::~Topic( void ) {
-	return ;
-}
-
-void	Topic::execute(Client const & client) {
-	t_data		myData;
-	std::string	error;
+void	Topic::execute(Client& client) {
+	t_data	myData;
 
 	myData.client = &client;
-	if (this->_targetChannel.empty())
-		error = ERR_NEEDMOREPARAMS(this->_cmdName);	
-	myData.channel = this->_server->_serverChannel[this->_targetChannel];
-	for (int idx = 0;idx < 4 && error.empty(); idx++) {
-		std::string(Topic::*func)(t_data const &)const = this->_method[idx];
-		error = (this->*func)(myData);
-	}
-	if (!error.empty()) {
-		Send::ToClient(client._clientID, error);
+	for (int idx = 0; idx < CHECK_TOPIC && myData.error.empty(); idx++)
+		(this->*_method[idx])(myData);
+	if (!myData.error.empty()) {
+		Send::ToClient(client._clientID, myData.error);
 		return ;
 	}
 	myData.channel->_channelTopic = this->_topic;
-	Send::ToChannel(*myData.channel, client._prefix + " TOPIC " + myData.channel->_channelName + " :" + myData.channel->_channelTopic);
+	Send::ToChannel(*myData.channel, ":" + client._prefix + " TOPIC " + myData.channel->_channelName + " :" + myData.channel->_channelTopic);
 	return ;
 }
 
-std::string	Topic::checkChannelExist(t_data const & myData) const {
-	if (!myData.channel)
-		return ERR_NOSUCHCHANNEL(this->_targetChannel);
-	return "";
+void	Topic::checkRegistered(t_data& myData) {
+	if (myData.client->status != REGISTERED)
+		myData.error = ERR_NOTREGISTRATED(myData.client->_nickname);
 }
 
-std::string	Topic::checkCommandMessage(t_data const & myData) const {
+void	Topic::checkParams(t_data& myData) {
+	if (this->_targetChannel.empty())
+		myData.error = ERR_NEEDMOREPARAMS(myData.client->_nickname, this->cmdName);
+}
+
+void	Topic::checkChannelExist(t_data& myData) {
+	std::map<std::string, Channel*>::iterator it = this->_server->_serverChannel.find(this->_targetChannel);
+
+	if (it == this->_server->_serverChannel.end())
+		myData.error = ERR_NOSUCHCHANNEL(myData.client->_nickname, this->_targetChannel);
+	else
+		myData.channel = it->second;
+	return ;
+}
+
+void	Topic::checkCommandMessage(t_data& myData) {
 	if (this->_topic.empty() && myData.channel->_channelTopic.empty())
-		return RPL_NOTOPIC(myData.channel->_channelName);
+		myData.error = RPL_NOTOPIC(myData.client->_nickname, myData.channel->_channelName);
 	else if (this->_topic.empty())
-		return RPL_TOPIC(myData.channel->_channelName, myData.channel->_channelTopic);
-	return "";
+		myData.error = RPL_TOPIC(myData.client->_nickname, myData.channel->_channelName, myData.channel->_channelTopic);
+	return ;
 }
 
-std::string	Topic::checkChannelClient(t_data const & myData) const {
+void	Topic::checkChannelClient(t_data& myData) {
 	if (!myData.channel->isClient(myData.client->_clientID))
-		return ERR_NOTONCHANNEL(myData.channel->_channelName);
-	return "";
+		myData.error =  ERR_NOTONCHANNEL(myData.client->_nickname, myData.channel->_channelName);
+	return ;
 }
 
-std::string	Topic::checkChannelOperator(t_data const & myData) const {
+void	Topic::checkChannelOperator(t_data& myData) {
 	if (!myData.channel->isOperator(myData.client->_clientID))
-		return ERR_CHANOPRIVSNEEDED(myData.channel->_channelName);
-	return "";
+		myData.error = ERR_CHANOPRIVSNEEDED(myData.client->_nickname, myData.channel->_channelName);
+	return ;
 }
