@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:26:46 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/24 06:10:19 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:34:37 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,24 +86,6 @@ void	Parser::deleteNewline(std::string& line) {
 	return ;
 }
 
-t_user	*Parser::parseUser(std::string user) {
-	int			idx = 0;
-	int const	size = user.size();
-	t_user*		userStruct = new t_user;
-	
-	while (idx < size && user[idx] != '!')
-		userStruct->targetNickname += user[idx++];
-	if (user[idx] == '!')
-		++idx;
-	while (idx < size && user[idx] != '@')
-		userStruct->targetUsername += user[idx++];
-	if (user[idx] == '@')
-		++idx;
-	while (idx < size)
-		userStruct->targetServer += user[idx++];
-	return userStruct;
-}
-
 void	Parser::setPASS(std::vector<std::string> splitedLine, int idx) {
 	Pass*		newCommand = new Pass();
 	int const	size = splitedLine.size();
@@ -143,10 +125,12 @@ void	Parser::setJOIN(std::vector<std::string> splitedLine, int idx) {
 	int	const			size = splitedLine.size();
 	Join*				newCommand = new Join();
 	std::string			parsed;
-
-	std::stringstream	channelSS(splitedLine[idx++]);
-	while (std::getline(channelSS, parsed, ','))
-		newCommand->_targetChannels.push_back(parsed);
+	
+	if (idx < size) {
+		std::stringstream	channelSS(splitedLine[idx++]);
+		while (std::getline(channelSS, parsed, ','))
+			newCommand->_targetChannels.push_back(parsed);
+	}
 	parsed.clear();
 	if (idx < size) {
 		std::stringstream	keySS(splitedLine[idx++]);
@@ -162,9 +146,11 @@ void	Parser::setKICK(std::vector<std::string> splitedLine, int idx) {
 	Kick*		newCommand = new Kick();
 	std::string	parsed;
 	
-	std::stringstream	channelSS(splitedLine[idx++]);
-	while (std::getline(channelSS, parsed, ','))
-		newCommand->_targetChannels.push_back(parsed);
+	if (idx < size) {
+		std::stringstream	channelSS(splitedLine[idx++]);
+		while (std::getline(channelSS, parsed, ','))
+			newCommand->_targetChannels.push_back(parsed);
+	}
 	parsed.clear();
 	if (idx < size) {
 		std::stringstream	targetSS(splitedLine[idx++]);

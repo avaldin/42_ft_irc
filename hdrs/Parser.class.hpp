@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thibaud <thibaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tmouche <tmouche@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:15:18 by tmouche           #+#    #+#             */
-/*   Updated: 2025/01/24 02:37:45 by thibaud          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:34:49 by tmouche          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ private:
 
 	void	parseRawline( void );
 	void	deleteNewline(std::string& line);
-	t_user*	parseUser(std::string user);
 	
 	void	setPASS(std::vector<std::string> splitedLine, int idx);
 	void	setNICK(std::vector<std::string> splitedLine, int idx);
